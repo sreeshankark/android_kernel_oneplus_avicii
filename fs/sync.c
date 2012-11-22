@@ -33,6 +33,9 @@ DEFINE_TRACE(syscall_sync_timeout);
 bool fsync_enabled = true;
 module_param(fsync_enabled, bool, 0644);
 
+bool fsync_enabled = true;
+module_param(fsync_enabled, bool, 0755);
+
 #define VALID_FLAGS (SYNC_FILE_RANGE_WAIT_BEFORE|SYNC_FILE_RANGE_WRITE| \
 			SYNC_FILE_RANGE_WAIT_AFTER)
 
@@ -233,6 +236,9 @@ EXPORT_SYMBOL(vfs_fsync_range);
  */
 int vfs_fsync(struct file *file, int datasync)
 {
+	if (!fsync_enabled)
+		return 0;
+		
 	return vfs_fsync_range(file, 0, LLONG_MAX, datasync);
 }
 EXPORT_SYMBOL(vfs_fsync);
@@ -245,7 +251,6 @@ static int do_fsync(unsigned int fd, int datasync)
 // Add for record  fsync  time
 #ifdef CONFIG_OPLUS_HEALTHINFO
     unsigned long fsync_time = jiffies;
-#endif
 #endif /* OPLUS_FEATURE_HEALTHINFO */
 
 	if (!fsync_enabled)
@@ -272,11 +277,17 @@ static int do_fsync(unsigned int fd, int datasync)
 
 SYSCALL_DEFINE1(fsync, unsigned int, fd)
 {
+	if (!fsync_enabled)
+		return 0;
+
 	return do_fsync(fd, 0);
 }
 
 SYSCALL_DEFINE1(fdatasync, unsigned int, fd)
 {
+	if (!fsync_enabled)
+		return 0;
+		
 	return do_fsync(fd, 1);
 }
 
