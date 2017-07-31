@@ -1073,3 +1073,6 @@ CONFIG_OPLUS_FEATURE_STATS_CALC=y
 # KernelSU
 CONFIG_KSU=y
 # CONFIG_KSU_DEBUG is not set
+
+#Force faster charge rate for USB
+CONFIG_FORCE_FAST_CHARGE=y
