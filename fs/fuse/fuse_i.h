@@ -1032,4 +1032,9 @@ void acm_fuse_init_cache(void);
 void acm_fuse_free_cache(void);
 #endif
 
+/**
+ * Return the number of bytes in an arguments list
+ */
+unsigned int fuse_len_args(unsigned int numargs, struct fuse_arg *args);
+
 #endif /* _FS_FUSE_I_H */
