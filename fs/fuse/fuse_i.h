@@ -1038,4 +1038,9 @@ void acm_fuse_free_cache(void);
  */
 unsigned int fuse_len_args(unsigned int numargs, struct fuse_arg *args);
 
+/**
+ * Get the next unique ID for a request
+ */
+u64 fuse_get_unique(struct fuse_iqueue *fiq);
+
 #endif /* _FS_FUSE_I_H */
