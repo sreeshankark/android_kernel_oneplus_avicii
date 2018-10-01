@@ -175,6 +175,24 @@ struct fuse_file {
 	/** Entry on inode's write_files list */
 	struct list_head write_entry;
 
+	/* Readdir related */
+	struct {
+		/*
+		 * Protects below fields against (crazy) parallel readdir on
+		 * same open file.  Uncontended in the normal case.
+		 */
+		struct mutex lock;
+
+		/* Dir stream position */
+		loff_t pos;
+
+		/* Offset in cache */
+		loff_t cache_off;
+	} readdir;
+
+	/** Container for data related to the passthrough functionality */
+	struct fuse_passthrough passthrough;
+
 	/** RB node to be linked on fuse_conn->polled_files */
 	struct rb_node polled_node;
 
