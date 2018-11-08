@@ -474,8 +474,10 @@ static void request_end(struct fuse_conn *fc, struct fuse_req *req)
 		fc->active_background--;
 		flush_bg_queue(fc);
 		spin_unlock(&fc->bg_lock);
+	} else {
+		/* Wake up waiter sleeping in request_wait_answer() */
+		wake_up(&req->waitq);
 	}
-	wake_up_sync(&req->waitq);
 	if (req->end)
 		req->end(fc, req);
 put_request:
