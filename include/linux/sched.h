@@ -1825,6 +1825,7 @@ extern struct pid *cad_pid;
 #ifdef CONFIG_SONY_SCHED
 #define PF_MIGRATE_ED_TASK      0x02000000      /* early detection task migration */
 #endif
+#define PF_UMH			0x02000000	/* I'm an Usermodehelper process */
 #define PF_NO_SETAFFINITY	0x04000000	/* Userland is not allowed to meddle with cpus_allowed */
 #define PF_MCE_EARLY		0x08000000      /* Early kill for mce process policy */
 #define PF_WAKE_UP_IDLE         0x10000000	/* TTWU on an idle CPU */
@@ -2358,6 +2359,14 @@ static inline void rseq_execve(struct task_struct *t)
 }
 
 #endif
+
+void __exit_umh(struct task_struct *tsk);
+
+static inline void exit_umh(struct task_struct *tsk)
+{
+	if (unlikely(tsk->flags & PF_UMH))
+		__exit_umh(tsk);
+}
 
 #ifdef CONFIG_DEBUG_RSEQ
 
