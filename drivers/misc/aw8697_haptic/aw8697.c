@@ -73,6 +73,15 @@
 #define AW8697_MAX_FIRMWARE_LOAD_CNT 20
 #define OP_AW_DEBUG
 //#define AISCAN_CTRL
+
+#ifdef CONFIG_HAPTIC_FEEDBACK_DISABLE
+int ignore_next_request = 0;
+void hap_ignore_next_request(void)
+{
+    ignore_next_request = 1;
+}
+#endif
+
 /******************************************************
  *
  * variable
@@ -8639,6 +8648,13 @@ static ssize_t aw8697_level_store(struct device *dev,
 
     if (val < 0 || val > 10)
         val = 3;
+
+#ifdef CONFIG_HAPTIC_FEEDBACK_DISABLE
+    if ((ignore_next_request) && (val != 0)) {
+       ignore_next_request = 0;
+       return count;
+    }
+#endif
 
     pr_info("%s: value=%d\n", __FUNCTION__, val);
     mutex_lock(&aw8697->lock);
