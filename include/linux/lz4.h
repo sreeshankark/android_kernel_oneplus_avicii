@@ -1,4 +1,3 @@
-
 /* LZ4 Kernel Interface
  *
  * Copyright (C) 2013, LG Electronics, Kyungsik Lee <kyungsik.lee@lge.com>
@@ -307,7 +306,7 @@ int LZ4_decompress_safe(const char *source, char *dest, int compressedSize,
  *	or a negative result in case of error
  *
  */
-static int LZ4_decompress_safe_partial(const char *source, char *dest,
+int LZ4_decompress_safe_partial(const char *source, char *dest,
 				int compressedSize, int targetOutputSize,
 				int maxDecompressedSize);
 
@@ -546,8 +545,7 @@ static int LZ4_setStreamDecode(LZ4_streamDecode_t *LZ4_streamDecode,
  *	(necessarily <= maxDecompressedSize)
  *	or a negative result in case of error
  */
-<<<<<<< HEAD
-int LZ4_decompress_safe_continue(LZ4_streamDecode_t *LZ4_streamDecode,
+static int LZ4_decompress_safe_continue(LZ4_streamDecode_t *LZ4_streamDecode,
 				 const char *source, char *dest,
 				 int compressedSize, int maxDecompressedSize);
 
