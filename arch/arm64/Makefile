@@ -44,12 +44,8 @@ cc_has_k_constraint := $(call try-run,echo				\
 		return 0;						\
 	}' | $(CC) -S -x c -o "$$TMP" -,,-DCONFIG_CC_HAS_K_CONSTRAINT=1)
 
-ifeq ($(CONFIG_ARM64), y)
-brokengasinst := $(call as-instr,1:\n.inst 0\n.rept . - 1b\n\nnop\n.endr\n,,-DCONFIG_BROKEN_GAS_INST=1)
-
-  ifneq ($(brokengasinst),)
+ifeq ($(CONFIG_BROKEN_GAS_INST),y)
 $(warning Detected assembler with broken .inst; disassembly will be unreliable)
-  endif
 endif
 
 ifeq ($(cc-name),clang)
@@ -57,7 +53,7 @@ KBUILD_CFLAGS	+= -mno-implicit-float
 else
 KBUILD_CFLAGS	+= -mgeneral-regs-only
 endif
-KBUILD_CFLAGS   += $(brokengasinst) $(compat_vdso) $(cc_has_k_constraint)
+KBUILD_CFLAGS   += $(compat_vdso) $(cc_has_k_constraint)
 
 ifeq ($(CONFIG_ARCH_LITO), y)
 ifeq ($(cc-name),clang)
@@ -74,7 +70,7 @@ endif
 
 KBUILD_CFLAGS	+= -fno-asynchronous-unwind-tables
 KBUILD_CFLAGS	+= $(call cc-disable-warning, psabi)
-KBUILD_AFLAGS	+= $(brokengasinst) $(compat_vdso)
+KBUILD_AFLAGS	+= $(compat_vdso)
 
 KBUILD_CFLAGS	+= $(call cc-option,-mabi=lp64)
 KBUILD_AFLAGS	+= $(call cc-option,-mabi=lp64)
