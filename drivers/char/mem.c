@@ -897,12 +897,11 @@ static const struct memdev {
 #endif
 	 [5] = { "zero", 0666, &zero_fops, 0 },
 	 [7] = { "full", 0666, &full_fops, 0 },
-<<<<<<< HEAD
 #ifdef CONFIG_SRANDOM
          [8] = { "random", 0666, &sfops, FMODE_NOWAIT },
          [9] = { "urandom", 0666, &sfops, FMODE_NOWAIT },
 #else
-	 [8] = { "random", 0666, &random_fops, FMODE_NOWAIT },
+	 [8] = { "random", 0666, &urandom_fops, FMODE_NOWAIT },
 	 [9] = { "urandom", 0666, &urandom_fops, FMODE_NOWAIT },
 #endif
 #ifndef CONFIG_HW_RANDOM
