@@ -55,6 +55,9 @@
 #include <linux/reserve_area.h>
 #endif
 
+#define CREATE_TRACE_POINTS
+#include <trace/events/mmap.h>
+
 #include "internal.h"
 
 #ifndef arch_mmap_check
@@ -2059,10 +2062,15 @@ EXPORT_SYMBOL_GPL(unmapped_area_topdown);
  */
 unsigned long vm_unmapped_area(struct vm_unmapped_area_info *info)
 {
+	unsigned long addr;
+
 	if (info->flags & VM_UNMAPPED_AREA_TOPDOWN)
-		return unmapped_area_topdown(info);
+		addr = unmapped_area_topdown(info);
 	else
-		return unmapped_area(info);
+		addr = unmapped_area(info);
+
+	trace_vm_unmapped_area(addr, info);
+	return addr;
 }
 
 /* Get an address range which is currently unmapped.
