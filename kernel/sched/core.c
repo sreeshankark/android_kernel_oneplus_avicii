@@ -2697,7 +2697,9 @@ static void ttwu_queue(struct task_struct *p, int cpu, int wake_flags)
 	struct rq_flags rf;
 
 #if defined(CONFIG_SMP)
-	if ((sched_feat(TTWU_QUEUE) && !cpus_share_cache(smp_processor_id(), cpu)) ||
+	if ((sched_feat(TTWU_QUEUE) && 
+			!idle_cpu(cpu) &&
+			!cpus_share_cache(smp_processor_id(), cpu)) ||
 			walt_want_remote_wakeup()) {
 #ifdef CONFIG_SONY_SCHED
 		if (prev_cpu != cpu)
