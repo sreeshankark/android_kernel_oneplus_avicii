@@ -1245,7 +1245,7 @@ static int sec_get_touch_points(void *chip_data, struct point_info *points, int 
 	int left_event = 0;
 	struct sec_event_coordinate *p_event_coord = NULL;
 	uint32_t obj_attention = 0;
-	u8 event_buff[MAX_EVENT_COUNT * SEC_EVENT_BUFF_SIZE] = dma_buffer->event_buff;
+	u8 *event_buff = dma_buffer->event_buff;
 	struct chip_data_s6sy761 *chip_info = (struct chip_data_s6sy761 *)chip_data;
 
 	p_event_coord = (struct sec_event_coordinate *)chip_info->first_event;
@@ -1272,7 +1272,6 @@ static int sec_get_touch_points(void *chip_data, struct point_info *points, int 
 		TPD_INFO("%s: read left event beyond max touch points\n", __func__);
 		left_event = max_num - 1;
 	}
-        memset(event_buff, 0, sizeof(event_buff));
 	ret = touch_i2c_read_block(chip_info->client, SEC_READ_ALL_EVENT, SEC_EVENT_BUFF_SIZE * left_event, &event_buff[0]);
 	if (ret < 0) {
 		TPD_INFO("%s: i2c read all event failed\n", __func__);
