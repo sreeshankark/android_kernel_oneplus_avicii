@@ -3766,13 +3766,6 @@ static ssize_t aw8697_level_store(struct device *dev,
     if (val < 0 || val > 10)
         val = 3;
 
-#ifdef CONFIG_HAPTIC_FEEDBACK_DISABLE
-    if ((ignore_next_request) && (val != 0)) {
-       ignore_next_request = 0;
-       return count;
-    }
-#endif
-
     pr_info("%s: value=%d\n", __FUNCTION__, val);
     mutex_lock(&aw8697->lock);
     aw8697->level = val;
