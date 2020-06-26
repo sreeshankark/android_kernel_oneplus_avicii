@@ -16,6 +16,7 @@ obj-y     = fork.o exec_domain.o panic.o \
 obj-y += panic_flush.o
 #endif
 
+obj-$(CONFIG_BPFILTER) += usermode_driver.o
 obj-$(CONFIG_MODULES) += kmod.o
 obj-$(CONFIG_MULTIUSER) += groups.o
 
