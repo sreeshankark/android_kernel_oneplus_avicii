@@ -107,7 +107,8 @@ static const struct file_operations __name ## _fops = {\
 }
 #endif /*OPLUS_FEATURE_POWERINFO_RPMH*/
 
-extern int bpf_iter_init_seq_net(void *priv_data);
+struct bpf_iter_aux_info;
+extern int bpf_iter_init_seq_net(void *priv_data, struct bpf_iter_aux_info *aux);
 extern void bpf_iter_fini_seq_net(void *priv_data);
 
 #else /* CONFIG_PROC_FS */
