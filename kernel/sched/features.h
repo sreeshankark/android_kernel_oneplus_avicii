@@ -110,7 +110,7 @@ SCHED_FEAT(FIND_BEST_TARGET, true)
  *   crucial CPU is found, it takes precedence over a prefer_idle
  *   selection.
  */
-SCHED_FEAT(EAS_PREFER_IDLE, true)
+SCHED_FEAT(EAS_PREFER_IDLE, false)
 SCHED_FEAT(EAS_CRUCIAL, true)
 
 /*
