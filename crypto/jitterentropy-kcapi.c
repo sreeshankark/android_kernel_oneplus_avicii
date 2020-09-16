@@ -42,8 +42,7 @@
 #include <linux/time.h>
 #include <linux/crypto.h>
 #include <crypto/internal/rng.h>
-
-#include "jitterentropy.h"
+#include <crypto/internal/jitterentropy.h>
 
 /***************************************************************************
  * Helper function
