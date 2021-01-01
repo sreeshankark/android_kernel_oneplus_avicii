@@ -90,6 +90,15 @@ static DEFINE_RWLOCK(binfmt_lock);
 #define UDFPS_BIN_PREFIX "/vendor/bin/hw/android.hardware.biometrics.fingerprint"
 #define SFLINGER_BIN_PREFIX "/system/bin/surfaceflinger"
 #define NETD_BIN_PREFIX "/system/bin/netd"
+#define ZYGOTE32_BIN "/system/bin/app_process32"
+#define ZYGOTE64_BIN "/system/bin/app_process64"
+static struct signal_struct *zygote32_sig;
+static struct signal_struct *zygote64_sig;
+
+bool task_is_zygote(struct task_struct *p)
+{
+	return p->signal == zygote32_sig || p->signal == zygote64_sig;
+}
 
 void __register_binfmt(struct linux_binfmt * fmt, int insert)
 {
@@ -1919,6 +1928,10 @@ static int __do_execve_file(int fd, struct filename *filename,
 			current->pc_flags |= PC_HP_AFFINE;
 			set_cpus_allowed_ptr(current, cpu_hp_mask);
 		}
+		if (unlikely(!strcmp(filename->name, ZYGOTE32_BIN)))
+			zygote32_sig = current->signal;
+		else if (unlikely(!strcmp(filename->name, ZYGOTE64_BIN)))
+			zygote64_sig = current->signal;
 	}
 
 	/* execve succeeded */
