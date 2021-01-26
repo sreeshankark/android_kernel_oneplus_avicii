@@ -667,6 +667,10 @@ struct msm_drm_private {
 #ifdef OPLUS_FEATURE_ADFR
 	struct msm_drm_thread adfr_thread[MAX_CRTCS];
 #endif
+	struct {
+		struct task_struct *thread;
+		struct kthread_worker worker;
+	} clean_thread;
 
 	struct task_struct *pp_event_thread;
 	struct kthread_worker pp_event_worker;
