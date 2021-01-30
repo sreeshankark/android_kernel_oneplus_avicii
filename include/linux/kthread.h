@@ -64,10 +64,10 @@ bool kthread_is_per_cpu(struct task_struct *k);
 	if (!IS_ERR(__k)) {						   \
 		BUILD_BUG_ON(perfmask != cpu_lp_mask &&			   \
 			     perfmask != cpu_perf_mask &&		   \
-			     perfmask != cpu_prime_mask &&		   \
+			     perfmask != cpu_perfp_mask &&		   \
 			     perfmask != cpu_hp_mask);			   \
-		if (perfmask == cpu_prime_mask)				   \
-			__k->pc_flags |= PC_PRIME_AFFINE;		   \
+		if (perfmask == cpu_perfp_mask)				   \
+			__k->pc_flags |= PC_PERFP_AFFINE;		   \
 		else if (perfmask == cpu_perf_mask)			   \
 			__k->pc_flags |= PC_PERF_AFFINE;		   \
 		else if (perfmask == cpu_hp_mask)			   \

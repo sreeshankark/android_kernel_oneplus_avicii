@@ -1839,7 +1839,7 @@ extern struct pid *cad_pid;
  */
 #define PC_LITTLE_AFFINE		0x00000001
 #define PC_PERF_AFFINE			0x00000002
-#define PC_PRIME_AFFINE			0x00000004
+#define PC_PERFP_AFFINE			0x00000004
 #define PC_HP_AFFINE			0x00000008
 
 /*
