@@ -2553,6 +2553,8 @@ static void compact_nodes(void)
 		compact_node(nid);
 }
 
+void zram_compact(void);
+
 static void do_compaction(struct work_struct *work)
 {
 	/* Return early if the screen is on */
@@ -2563,6 +2565,9 @@ static void do_compaction(struct work_struct *work)
 
 	/* Do full compaction */
 	compact_nodes();
+
+	/* Do ZRAM compaction */
+	zram_compact();
 
 	/* Force compaction timeout */
 	compaction_forced_timeout = jiffies + msecs_to_jiffies(compaction_timeout_ms);
