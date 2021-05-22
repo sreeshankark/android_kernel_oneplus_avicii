@@ -248,6 +248,20 @@ config SCHEDUTIL_DOWN_RATE_LIMIT
 
 endif
 	  
+config SCHEDUTIL_UP_RATE_LIMIT
+	int "Default up rate-limit for schedutil"
+	default 1000
+	help
+	  This sets schedutil's default frequency up rate-limit in
+	  microseconds.
+
+config SCHEDUTIL_DOWN_RATE_LIMIT
+	int "Default down rate-limit for schedutil"
+	default 1000
+	help
+	  This sets schedutil's default frequency down rate-limit in
+	  microseconds.
+
 config CPU_FREQ_GOV_SCHEDHORIZON
 	bool "'schedhorizon' cpufreq policy governor"
 	depends on CPU_FREQ && SMP
