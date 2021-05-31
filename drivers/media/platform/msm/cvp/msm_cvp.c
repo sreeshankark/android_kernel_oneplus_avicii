@@ -10,6 +10,9 @@
 #include <linux/sched.h>
 #include <uapi/linux/sched/types.h>
 #endif
+
+#include <linux/workqueue.h>
+
 #include "msm_cvp.h"
 #include "cvp_hfi.h"
 #ifndef OPLUS_FEATURE_CAMERA_COMMON
@@ -23,6 +26,8 @@ struct cvp_power_level {
 	unsigned long op_core_sum;
 	unsigned long bw_sum;
 };
+
+static struct workqueue_struct *fence_workqueue;
 
 void print_internal_buffer(u32 tag, const char *str,
 		struct msm_cvp_inst *inst, struct msm_cvp_internal_buffer *cbuf)
@@ -1135,8 +1140,9 @@ static bool cvp_fence_wait(struct cvp_fence_queue *q,
 }
 #endif
 #define CVP_FENCE_RUN	0x100
-static int msm_cvp_thread_fence_run(void *data)
+static void msm_cvp_thread_fence_run(struct work_struct *data)
 {
+
 	int i, rc = 0;
 	unsigned long timeout_ms = 100;
 	int synx_obj;
@@ -1168,7 +1174,8 @@ static int msm_cvp_thread_fence_run(void *data)
 #endif
 	}
 
-	fence_thread_data = data;
+	fence_thread_data =
+		container_of(data, struct msm_cvp_fence_thread_data, work);
 	inst = fence_thread_data->inst;
 	if (!inst) {
 		dprintk(CVP_ERR, "%s Wrong inst %pK\n", __func__, inst);
@@ -1328,6 +1335,7 @@ static int msm_cvp_thread_fence_run(void *data)
 				}
 				rc = synx_wait(synx_obj, timeout_ms);
 				if (rc) {
+					rc = synx_release(synx_obj);
 					dprintk(CVP_ERR,
 						"%s: synx_wait failed\n",
 						__func__);
@@ -1380,6 +1388,7 @@ static int msm_cvp_thread_fence_run(void *data)
 		}
 		rc = synx_signal(synx_obj, synx_state);
 		if (rc) {
+			rc = synx_release(synx_obj);
 			dprintk(CVP_ERR, "%s: synx_signal failed\n", __func__);
 			goto exit;
 		}
@@ -1409,6 +1418,7 @@ static int msm_cvp_thread_fence_run(void *data)
 				}
 				rc = synx_wait(synx_obj, timeout_ms);
 				if (rc) {
+					rc = synx_release(synx_obj);
 					dprintk(CVP_ERR,
 						"%s: synx_wait %d failed\n",
 						__func__, i<<1);
@@ -1472,6 +1482,7 @@ static int msm_cvp_thread_fence_run(void *data)
 				}
 				rc = synx_signal(synx_obj, synx_state);
 				if (rc) {
+					rc = synx_release(synx_obj);
 					dprintk(CVP_ERR,
 						"%s: synx_signal %d failed\n",
 						__func__, i<<1);
@@ -1546,7 +1557,6 @@ wait:
 exit:
 	dprintk(CVP_DBG, "%s exit\n", current->comm);
 	cvp_put_inst(inst);
-	do_exit(rc);
 }
 #endif
 
@@ -1637,6 +1647,11 @@ static int msm_cvp_session_process_hfi_fence(
 #ifdef OPLUS_FEATURE_CAMERA_COMMON
 	cmd_hdr = (struct cvp_hfi_cmd_session_hdr *)in_pkt;
 	cmd_hdr->client_data.kdata |= FENCE_BIT;
+
+	if (fence_workqueue == NULL) {
+		fence_workqueue = alloc_workqueue("cvp_fence_workqueue", __WQ_LEGACY | WQ_MEM_RECLAIM | WQ_UNBOUND | WQ_HIGHPRI, 1);
+	}
+
 	fence_thread_data->inst = inst;
 	fence_thread_data->device_id = (unsigned int)inst->core->id;
 	memcpy(&fence_thread_data->in_fence_pkt, &arg->data.hfi_fence_pkt,
@@ -1653,15 +1668,10 @@ static int msm_cvp_session_process_hfi_fence(
 	goto exit;
 #else
 	snprintf(thread_fence_name, sizeof(thread_fence_name),
-				"thread_fence_%d", thread_num);
-	thread = kthread_run(msm_cvp_thread_fence_run,
-			fence_thread_data, thread_fence_name);
-	if (!thread) {
-		dprintk(CVP_ERR, "%s fail to create kthread\n", __func__);
-		rc = -ECHILD;
-		goto free_and_exit;
-	}
+			"thread_fence_%d", thread_num);
 
+	INIT_WORK(&fence_thread_data->work, msm_cvp_thread_fence_run);
+	queue_work(fence_workqueue, &fence_thread_data->work);
 	return 0;
 #endif
 
