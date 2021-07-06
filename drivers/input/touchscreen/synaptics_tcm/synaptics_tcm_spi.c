@@ -643,6 +643,7 @@ static struct spi_driver syna_tcm_spi_driver = {
 		.name = SPI_MODULE_NAME,
 		.owner = THIS_MODULE,
 		.of_match_table = syna_tcm_of_match_table,
+                .probe_type = PROBE_PREFER_ASYNCHRONOUS,
 	},
 	.probe = syna_tcm_spi_probe,
 	.remove = syna_tcm_spi_remove,

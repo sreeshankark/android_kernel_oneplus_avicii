@@ -3748,6 +3748,7 @@ static struct platform_driver syna_tcm_driver = {
 #ifdef CONFIG_PM
 		.pm = &syna_tcm_dev_pm_ops,
 #endif
+                .probe_type = PROBE_PREFER_ASYNCHRONOUS,
 	},
 	.probe = syna_tcm_probe,
 	.remove = syna_tcm_remove,

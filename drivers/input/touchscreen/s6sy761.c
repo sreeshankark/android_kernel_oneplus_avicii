@@ -541,6 +541,7 @@ static struct i2c_driver s6sy761_driver = {
 		.name = S6SY761_DEV_NAME,
 		.of_match_table = of_match_ptr(s6sy761_of_match),
 		.pm = &s6sy761_pm_ops,
+                .probe_type = PROBE_PREFER_ASYNCHRONOUS,
 	},
 	.probe = s6sy761_probe,
 	.remove = s6sy761_remove,

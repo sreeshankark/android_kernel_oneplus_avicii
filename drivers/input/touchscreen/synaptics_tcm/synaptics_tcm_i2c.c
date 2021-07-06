@@ -494,6 +494,7 @@ static struct i2c_driver syna_tcm_i2c_driver = {
 		.name = I2C_MODULE_NAME,
 		.owner = THIS_MODULE,
 		.of_match_table = syna_tcm_of_match_table,
+                .probe_type = PROBE_PREFER_ASYNCHRONOUS,
 	},
 	.probe = syna_tcm_i2c_probe,
 	.remove = syna_tcm_i2c_remove,
