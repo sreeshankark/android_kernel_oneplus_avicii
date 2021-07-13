@@ -39,9 +39,8 @@
 */
 #define AW8697_LONG_VIB_BIN_COUNT	25
 /* Macro to evaluate long vib start index */
-/*#define AW8697_LONG_INDEX_HEAD \
-	(sizeof(aw8697_rtp_name)/AW8697_RTP_NAME_MAX - \
-	 AW8697_LONG_VIB_BIN_COUNT)*/
+#define AW8697_LONG_INDEX_HEAD         94
+
 #endif
 
 #ifdef AAC_RICHTAP
@@ -8343,26 +8342,18 @@ static ssize_t aw8697_activate_store(struct device *dev,
 		if (aw8697->duration <= 500) {
 			aw8697->sin_add_flag = 0;
 			val = (aw8697->duration - 1) / 20;
-			val = val + rtp_max_num - AW8697_LONG_VIB_BIN_COUNT;
+			aw8697->rtp_file_num = val+AW8697_LONG_INDEX_HEAD;
 		} else {
 			aw8697->sin_add_flag = 1;
-			val = rtp_max_num - 1;
+			val = AW8697_LONG_VIB_BIN_COUNT;
+			aw8697->rtp_file_num = 13 + AW8697_LONG_INDEX_HEAD; //280ms_RTP.bin
 		}
 
 		pr_info("%s:a aw8697->rtp_file_num=%d\n", __FUNCTION__, val);
 		aw8697_haptic_stop(aw8697);
 		aw8697_haptic_set_rtp_aei(aw8697, false);
 		aw8697_interrupt_clear(aw8697);
-		if (val < rtp_max_num) {
-			aw8697->rtp_file_num = val;
-			rtp_is_going_on = aw8697_haptic_juge_RTP_is_going_on(aw8697);
-			if (!rtp_is_going_on)
-				queue_work(system_highpri_wq, &aw8697->rtp_work);
-			else
-				pr_info("%s: rtp_is_going_on ignore vibrate:%d\n", __FUNCTION__, aw8697->rtp_file_num);
-		} else {
-			pr_err("%s: rtp_file_num 0x%02x over max value 0x%02x \n", __func__, aw8697->rtp_file_num, rtp_max_num);
-		}
+		queue_work(system_highpri_wq, &aw8697->rtp_work);
 	}
 	mutex_unlock(&aw8697->lock);
 #endif
