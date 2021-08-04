@@ -625,6 +625,7 @@ config RB5_GPIOS_ENABLE
 	  140/145,116/117 to mezzanine connectors.
 
 source "drivers/char/srandom/Kconfig"
+source "drivers/char/lrng/Kconfig"
 
 endmenu
 
