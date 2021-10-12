@@ -2838,14 +2838,16 @@ static int _dsi_ctrl_setup_isr(struct dsi_ctrl *dsi_ctrl)
 	init_completion(&dsi_ctrl->irq_info.bta_done);
 
 	/* If there is unbalanced refcount for any interrupt, irq_stat_mask
-	 * remain non zero on suspend. Due to this, enable_irq does not get
-	 * called on resume, leading to ctrl ISR permanently disabled.
-	 * This is a defensive check to recover from such scenario.
+	 * does not get clear during suspend. On resume, enable irq is not
+	 * called leading to ctrl ISR permanently disabled. This is a defensive
+	 * check to recover from such scenario.
 	 */
-	for (intr_idx = 0; intr_idx < DSI_STATUS_INTERRUPT_COUNT; intr_idx++) {
+	for (intr_idx = DSI_SINT_CMD_MODE_DMA_DONE;
+	     intr_idx < DSI_STATUS_INTERRUPT_COUNT; intr_idx++) {
 		if (dsi_ctrl->irq_info.irq_stat_refcount[intr_idx]) {
 			DSI_CTRL_ERR(dsi_ctrl,
-				"refcount mismatch: intr_idx %d\n", intr_idx);
+				     "refcount mismatch: intr_idx %d\n",
+				     intr_idx);
 			dsi_ctrl->irq_info.irq_stat_refcount[intr_idx] = 0;
 		}
 	}
