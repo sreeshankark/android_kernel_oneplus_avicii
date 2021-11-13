@@ -1303,6 +1303,7 @@ config CPUSET_TOP_APP
 
 endif
 
+
 config SYSFS_DEPRECATED
 	bool "Enable deprecated sysfs features to support old userspace tools"
 	depends on SYSFS
