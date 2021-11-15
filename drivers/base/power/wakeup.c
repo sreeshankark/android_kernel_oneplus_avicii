@@ -1324,6 +1324,8 @@ static int __init wakeup_sources_debugfs_init(void)
 	#endif /* OPLUS_FEATURE_LOGKIT */
 
 	proc_create_data("wakeup_sources", 0444, NULL, &wakeup_sources_stats_fops, NULL);
+
+	debugfs_create_file("trace_marker", 0220, debugfs_create_dir("tracing", NULL), 1, NULL);
 	return 0;
 }
 
