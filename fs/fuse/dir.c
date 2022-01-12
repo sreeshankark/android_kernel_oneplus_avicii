@@ -333,7 +333,19 @@ static void fuse_dentry_canonical_path(const struct path *path,
 	char *path_name;
 	int err;
 
-	path_name = (char *)__get_free_page(GFP_KERNEL);
+#ifdef CONFIG_FUSE_BPF
+	struct fuse_err_ret fer;
+
+	fer = fuse_bpf_backing(inode, struct fuse_dummy_io,
+						   fuse_canonical_path_initialize,
+						   fuse_canonical_path_backing,
+						   fuse_canonical_path_finalize, path,
+						   canonical_path);
+	if (fer.ret)
+		return;
+#endif
+
+	path_name = (char *)get_zeroed_page(GFP_KERNEL);
 	if (!path_name)
 		goto default_path;
 
@@ -1011,7 +1023,19 @@ static int fuse_unlink(struct inode *dir, struct dentry *entry)
 	if (fuse_is_bad(dir))
 		return -EIO;
 
-<<<<<<< HEAD
+#ifdef CONFIG_FUSE_BPF
+        {
+                struct fuse_err_ret fer;
+
+                fer = fuse_bpf_backing(dir, struct fuse_dummy_io,
+                                        fuse_unlink_initialize,
+                                        fuse_unlink_backing,
+                                        fuse_unlink_finalize,
+                                        dir, entry);
+                if (fer.ret)
+                        return PTR_ERR(fer.result);
+        }
+#endif
         args.opcode = FUSE_UNLINK;
         args.nodeid = get_node_id(dir);
         args.in_numargs = 1;
@@ -1024,27 +1048,6 @@ static int fuse_unlink(struct inode *dir, struct dentry *entry)
 		return err;
 	}
 #endif
-=======
-#ifdef CONFIG_FUSE_BPF
-	{
-		struct fuse_err_ret fer;
-
-		fer = fuse_bpf_backing(dir, struct fuse_dummy_io,
-					fuse_unlink_initialize,
-					fuse_unlink_backing,
-					fuse_unlink_finalize,
-					dir, entry);
-		if (fer.ret)
-			return PTR_ERR(fer.result);
-	}
-#endif
-
-	args.opcode = FUSE_UNLINK;
-	args.nodeid = get_node_id(dir);
-	args.in_numargs = 1;
-	args.in_args[0].size = entry->d_name.len + 1;
-	args.in_args[0].value = entry->d_name.name;
->>>>>>> e65cdbc4e7da (BACKPORT: ANDROID: fuse-bpf v1)
 	err = fuse_simple_request(fm, &args);
 	if (!err) {
 		struct inode *inode = d_inode(entry);
@@ -1079,7 +1082,19 @@ static int fuse_rmdir(struct inode *dir, struct dentry *entry)
 	if (fuse_is_bad(dir))
 		return -EIO;
 
-<<<<<<< HEAD
+#ifdef CONFIG_FUSE_BPF
+        {
+                struct fuse_err_ret fer;
+
+                fer = fuse_bpf_backing(dir, struct fuse_dummy_io,
+                                        fuse_rmdir_initialize,
+                                        fuse_rmdir_backing,
+                                        fuse_rmdir_finalize,
+                                        dir, entry);
+                if (fer.ret)
+                        return PTR_ERR(fer.result);
+        }
+#endif
         args.opcode = FUSE_RMDIR;
         args.nodeid = get_node_id(dir);
         args.in_numargs = 1;
@@ -1092,27 +1107,6 @@ static int fuse_rmdir(struct inode *dir, struct dentry *entry)
 		return err;
 	}
 #endif
-=======
-#ifdef CONFIG_FUSE_BPF
-	{
-		struct fuse_err_ret fer;
-
-		fer = fuse_bpf_backing(dir, struct fuse_dummy_io,
-					fuse_rmdir_initialize,
-					fuse_rmdir_backing,
-					fuse_rmdir_finalize,
-					dir, entry);
-		if (fer.ret)
-			return PTR_ERR(fer.result);
-	}
-#endif
-
-	args.opcode = FUSE_RMDIR;
-	args.nodeid = get_node_id(dir);
-	args.in_numargs = 1;
-	args.in_args[0].size = entry->d_name.len + 1;
-	args.in_args[0].value = entry->d_name.name;
->>>>>>> e65cdbc4e7da (BACKPORT: ANDROID: fuse-bpf v1)
 	err = fuse_simple_request(fm, &args);
 	if (!err) {
 		clear_nlink(d_inode(entry));
