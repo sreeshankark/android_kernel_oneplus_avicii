@@ -27,6 +27,8 @@ static unsigned int default_above_hispeed_delay[] = {
 static unsigned int default_target_loads[] = { DEFAULT_TARGET_LOAD };
 #endif
 
+#define SUGOV_KTHREAD_PRIORITY	50
+
 struct sugov_tunables {
 	struct gov_attr_set	attr_set;
 	unsigned int		up_rate_limit_us;
