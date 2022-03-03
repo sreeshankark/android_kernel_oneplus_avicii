@@ -24,6 +24,9 @@
 #include <linux/jiffies.h>
 #include <linux/thermal.h>
 
+#include <linux/pm_qos.h>
+#include <linux/i2c-qcom-geni.h>
+
 #include "util_interface/touch_interfaces.h"
 #include "tp_devices.h"
 
@@ -914,6 +917,9 @@ struct touchpanel_data {
 	struct register_info
 		reg_info;                      /*debug node for register length*/
 	struct black_gesture_test gesture_test;             /*gesture test struct*/
+
+	struct pm_qos_request pm_i2c_req;
+	struct pm_qos_request pm_touch_req;
 
 	void                  *chip_data;                   /*Chip Related data*/
 	void                  *private_data;                /*Reserved Private data*/

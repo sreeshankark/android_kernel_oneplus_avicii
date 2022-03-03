@@ -1320,6 +1320,10 @@ static void tp_work_func(struct touchpanel_data *ts)
 		return;
 	}
 
+
+	pm_qos_update_request(&ts->pm_touch_req, 100);
+	pm_qos_update_request(&ts->pm_i2c_req, 100);
+
 	/*
 	 *  trigger_reason:this callback determine which trigger reason should be
 	 *  The value returned has some policy!
@@ -1373,6 +1377,9 @@ static void tp_work_func(struct touchpanel_data *ts)
 	} else {
 		TPD_DEBUG("unknown irq trigger reason\n");
 	}
+
+	pm_qos_update_request(&ts->pm_i2c_req, PM_QOS_DEFAULT_VALUE);
+	pm_qos_update_request(&ts->pm_touch_req, PM_QOS_DEFAULT_VALUE);
 }
 
 static void tp_work_func_unlock(struct touchpanel_data *ts)
@@ -8252,6 +8259,17 @@ static void tp_rate_calc(struct touchpanel_data *ts, tp_rate tp_rate_type)
 int tp_register_irq_func(struct touchpanel_data *ts)
 {
 	int ret = 0;
+
+	ts->pm_i2c_req.type = PM_QOS_REQ_AFFINE_IRQ;
+	ts->pm_i2c_req.irq = geni_i2c_get_adap_irq(ts->client);
+	pm_qos_add_request(&ts->pm_i2c_req, PM_QOS_CPU_DMA_LATENCY,
+			   PM_QOS_DEFAULT_VALUE);
+
+	ts->pm_touch_req.type = PM_QOS_REQ_AFFINE_IRQ;
+	ts->pm_touch_req.irq = ts->irq;
+	pm_qos_add_request(&ts->pm_touch_req, PM_QOS_CPU_DMA_LATENCY,
+			   PM_QOS_DEFAULT_VALUE);
+
 #ifdef TPD_USE_EINT
 
 	if (gpio_is_valid(ts->hw_res.irq_gpio)) {
@@ -8300,6 +8318,13 @@ int tp_register_irq_func(struct touchpanel_data *ts)
 #endif
 
 	return ret;
+}
+
+static void tp_unregister_irq_func(struct touchpanel_data *ts)
+{
+	pm_qos_remove_request(&ts->pm_touch_req);
+	pm_qos_remove_request(&ts->pm_i2c_req);
+	free_irq(ts->irq, ts);
 }
 
 //work schdule for reading&update delta
@@ -8578,7 +8603,7 @@ int register_common_touch_device(struct touchpanel_data *pdata)
 		ret = -EFTM;
 
 		if (ts->int_mode == UNBANNABLE) {
-			free_irq(ts->irq, ts);
+			tp_unregister_irq_func(ts);
 		}
 
 		g_tp = ts;
@@ -8850,7 +8875,7 @@ earsense_alloc_free:
 	kfree(ts->earsense_delta);
 
 threaded_irq_free:
-	free_irq(ts->irq, ts);
+	tp_unregister_irq_func(ts);
 
 manu_info_alloc_err:
 	kfree(ts->panel_data.manufacture_info.version);
@@ -9106,7 +9131,7 @@ static void tp_resume(struct device *dev)
 			mutex_lock(&ts->mutex);
 		}
 
-		free_irq(ts->irq, ts);
+		tp_unregister_irq_func(ts);
 
 		if (ts->int_mode == UNBANNABLE) {
 			mutex_unlock(&ts->mutex);
