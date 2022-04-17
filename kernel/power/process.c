@@ -27,7 +27,7 @@
  * Timeout for stopping processes
  */
 #ifndef OPLUS_FEATURE_POWERINFO_STANDBY
-unsigned int __read_mostly freeze_timeout_msecs = 20 * MSEC_PER_SEC;
+unsigned int __read_mostly freeze_timeout_msecs = 10 * MSEC_PER_SEC;
 #else
 unsigned int __read_mostly freeze_timeout_msecs = 2 * MSEC_PER_SEC;
 #endif /*OPLUS_FEATURE_POWERINFO_STANDBY*/
