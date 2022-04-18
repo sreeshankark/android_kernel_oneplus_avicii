@@ -7941,7 +7941,7 @@ static int aw8697_haptic_init(struct aw8697 *aw8697)
 
     aw8697->activate_mode = AW8697_HAPTIC_ACTIVATE_CONT_MODE;
 	aw8697->vibration_style = AW8697_HAPTIC_VIBRATION_CRISP_STYLE;
-    aw8697->level = 3;
+    aw8697->level = 4;
 
     ret = aw8697_i2c_read(aw8697, AW8697_REG_WAVSEQ1, &reg_val);
     aw8697->index = reg_val & 0x7F;
