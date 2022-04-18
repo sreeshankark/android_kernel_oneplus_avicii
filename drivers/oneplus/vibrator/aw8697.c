@@ -3233,7 +3233,7 @@ static int aw8697_haptic_init(struct aw8697 *aw8697)
     /*For haptic test 90mA in AT begin*/
     aw8697->activate_mode = AW8697_HAPTIC_ACTIVATE_RAM_MODE;
     aw8697_haptic_set_wav_loop(aw8697, aw8697->loop[0x00], 0xff);
-    aw8697->level = 3;
+    aw8697->level = 4;
     if (check_factory_mode()) {
        aw8697_haptic_set_bst_vol(aw8697, 0x09);
        aw8697_haptic_set_gain(aw8697, 0x80);
