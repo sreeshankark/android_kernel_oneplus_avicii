@@ -17,6 +17,7 @@
 #include <soc/qcom/qtee_shmbridge.h>
 #include <linux/of_platform.h>
 #include "governor.h"
+#include <linux/kprofiles.h>
 
 static DEFINE_SPINLOCK(tz_lock);
 static DEFINE_SPINLOCK(sample_lock);
@@ -462,7 +463,11 @@ static int tz_get_target_freq(struct devfreq *devfreq, unsigned long *freq)
 
 		scm_data[0] = level;
 		scm_data[1] = priv->bin.total_time;
-		scm_data[2] = priv->bin.busy_time * 3 / 2;
+		if (active_mode() == 1) {
+			scm_data[2] = priv->bin.busy_time;
+		} else {
+			scm_data[2] = priv->bin.busy_time * 3 / 2;
+		}
 		scm_data[3] = context_count;
 		__secure_tz_update_entry3(scm_data, sizeof(scm_data),
 					&val, sizeof(val), priv);
