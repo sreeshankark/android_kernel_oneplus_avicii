@@ -102,7 +102,6 @@ alternative_else_nop_endif
 
 	// Do not touch any register after this!
 	eret
-	sb
 ENDPROC(__guest_enter)
 
 ENTRY(__guest_exit)
