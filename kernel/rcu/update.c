@@ -64,11 +64,11 @@
 #define MODULE_PARAM_PREFIX "rcupdate."
 
 #ifndef CONFIG_TINY_RCU
-static int rcu_expedited = 1; /* from sysctl */
+static int rcu_expedited = 0; /* from sysctl */
 //module_param(rcu_expedited, int, 0);
 static int rcu_normal = 0; /* from sysctl */
 //module_param(rcu_normal, int, 0);
-static int rcu_normal_after_boot = 0;
+static int rcu_normal_after_boot = 1;
 //module_param(rcu_normal_after_boot, int, 0);
 #endif /* #ifndef CONFIG_TINY_RCU */
 
