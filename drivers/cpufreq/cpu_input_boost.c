@@ -170,7 +170,7 @@ static void update_online_cpu_policy(void)
 
 static void __cpu_input_boost_kick(struct boost_drv *b)
 {
-	if (!test_bit(SCREEN_ON, &b->state) || active_mode() == 1)
+	if (!test_bit(SCREEN_ON, &b->state) || active_mode() != 3)
 		return;
 
 	set_bit(INPUT_BOOST, &b->state);
@@ -194,7 +194,7 @@ static void __cpu_input_boost_kick_max(struct boost_drv *b,
 	unsigned long boost_jiffies = msecs_to_jiffies(duration_ms);
 	unsigned long curr_expires, new_expires;
 
-	if (!test_bit(SCREEN_ON, &b->state) || active_mode() == 1)
+	if (!test_bit(SCREEN_ON, &b->state) || active_mode() != 3)
 		return;
 
 	do {
