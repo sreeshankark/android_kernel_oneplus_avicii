@@ -73,6 +73,17 @@ static long ratelimit_pages = 256;
 /* The following parameters are exported via /proc/sys/vm */
 
 /*
+ * Start background writeback (via writeback threads) at this percentage
+ */
+int dirty_background_ratio = 5;
+
+/*
+ * dirty_background_bytes starts at 0 (disabled) so that it is a function of
+ * dirty_background_ratio * the amount of dirtyable memory
+ */
+unsigned long dirty_background_bytes;
+
+/*
  * free highmem will not be subtracted from the total free memory
  * for calculating free ratios if vm_highmem_is_dirtyable is true
  */
@@ -81,7 +92,7 @@ int vm_highmem_is_dirtyable;
 /*
  * The generator of dirty data starts writeback at this percentage
  */
-int vm_dirty_ratio = 30;
+int vm_dirty_ratio = 20;
 
 /*
  * vm_dirty_bytes starts at 0 (disabled) so that it is a function of
