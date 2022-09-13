@@ -65,7 +65,7 @@ static struct df_boost_drv df_boost_drv_g __read_mostly = {
 
 static void __devfreq_boost_kick(struct boost_dev *b)
 {
-	if (!READ_ONCE(b->df) || !test_bit(SCREEN_ON, &b->state) || active_mode() == 1)
+	if (!READ_ONCE(b->df) || !test_bit(SCREEN_ON, &b->state) || active_mode() != 3)
 		return;
 
 	set_bit(INPUT_BOOST, &b->state);
@@ -90,7 +90,7 @@ static void __devfreq_boost_kick_max(struct boost_dev *b,
 	unsigned long boost_jiffies = msecs_to_jiffies(duration_ms);
 	unsigned long curr_expires, new_expires;
 
-	if (!READ_ONCE(b->df) || !test_bit(SCREEN_ON, &b->state) || active_mode() == 1)
+	if (!READ_ONCE(b->df) || !test_bit(SCREEN_ON, &b->state) || active_mode() != 3)
 		return;
 
 	do {
