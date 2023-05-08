@@ -1611,9 +1611,6 @@ int fuse_fill_super_common(struct super_block *sb, struct fuse_fs_context *ctx)
 	if (ctx->fudptr)
 		*ctx->fudptr = fud;
 	mutex_unlock(&fuse_mutex);
-#ifdef CONFIG_OPLUS_FEATURE_ACM
-	acm_fuse_init_cache();
-#endif
 	return 0;
 
  err_unlock:
@@ -1748,9 +1745,6 @@ bool fuse_mount_remove(struct fuse_mount *fm)
 	struct fuse_conn *fc = fm->fc;
 	bool last = false;
 
-#ifdef CONFIG_OPLUS_FEATURE_ACM
-		acm_fuse_free_cache();
-#endif
 	down_write(&fc->killsb);
 	list_del_init(&fm->fc_entry);
 	if (list_empty(&fc->mounts))

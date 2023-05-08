@@ -19,17 +19,9 @@
 #include <linux/irqdesc.h>
 #include <linux/wakeup_reason.h>
 #include <trace/events/power.h>
-#ifdef OPLUS_FEATURE_LOGKIT
-#include <linux/rtc.h>
-#include <soc/oplus/system/oplus_sync_time.h>
-#endif /* OPLUS_FEATURE_LOGKIT */
 #include <linux/irq.h>
 #include <linux/interrupt.h>
 #include <linux/irqdesc.h>
-
-#ifdef OPLUS_FEATURE_POWERINFO_STANDBY
-#include <soc/oplus/oplus_wakelock_profiler.h>
-#endif /* OPLUS_FEATURE_POWERINFO_STANDBY */
 
 #include "power.h"
 
@@ -565,10 +557,6 @@ static void wakeup_source_activate(struct wakeup_source *ws)
 			"unregistered wakeup source\n"))
 		return;
 
-	#ifdef OPLUS_FEATURE_POWERINFO_STANDBY
-	wakeup_get_start_time();
-	#endif /* OPLUS_FEATURE_POWERINFO_STANDBY */
-
 	ws->active = true;
 	ws->active_count++;
 	ws->last_time = ktime_get();
@@ -770,9 +758,6 @@ static void wakeup_source_deactivate(struct wakeup_source *ws)
 
 	split_counters(&cnt, &inpr);
 	if (!inpr && waitqueue_active(&wakeup_count_wait_queue)) {
-		#ifdef OPLUS_FEATURE_POWERINFO_STANDBY
-		wakeup_get_end_hold_time();
-		#endif /* OPLUS_FEATURE_POWERINFO_STANDBY */
 		wake_up(&wakeup_count_wait_queue);
 	}
 }
@@ -948,11 +933,7 @@ void pm_print_active_wakeup_sources(void)
 	srcuidx = srcu_read_lock(&wakeup_srcu);
 	list_for_each_entry_rcu(ws, &wakeup_sources, entry) {
 		if (ws->active) {
-			#ifdef OPLUS_FEATURE_POWERINFO_STANDBY
-			pr_info("active wakeup source: %s\n", ws->name);
-			#else
 			pr_debug("active wakeup source: %s\n", ws->name);
-			#endif /* OPLUS_FEATURE_POWERINFO_STANDBY */
 			active = 1;
 #ifdef CONFIG_BOEFFLA_WL_BLOCKER
 			if (!check_for_block(ws))	// AP: check if wakelock is on wakelock blocker list
@@ -967,44 +948,12 @@ void pm_print_active_wakeup_sources(void)
 	}
 
 	if (!active && last_activity_ws) {
-		#ifdef OPLUS_FEATURE_POWERINFO_STANDBY
-		pr_info("last active wakeup source: %s\n",
-			last_activity_ws->name);
-		#else
 		pr_debug("last active wakeup source: %s\n",
 			last_activity_ws->name);
-		#endif /* OPLUS_FEATURE_POWERINFO_STANDBY */
 	}
 	srcu_read_unlock(&wakeup_srcu, srcuidx);
 }
 EXPORT_SYMBOL_GPL(pm_print_active_wakeup_sources);
-
-#ifdef OPLUS_FEATURE_POWERINFO_STANDBY
-void get_ws_listhead(struct list_head **ws)
-{
-	if (ws)
-		*ws = &wakeup_sources;
-}
-
-void wakeup_srcu_read_lock(int *srcuidx)
-{
-	*srcuidx = srcu_read_lock(&wakeup_srcu);
-}
-
-void wakeup_srcu_read_unlock(int srcuidx)
-{
-	srcu_read_unlock(&wakeup_srcu, srcuidx);
-}
-
-bool ws_all_release(void)
-{
-	unsigned int cnt, inpr;
-
-	pr_info("Enter: %s\n", __func__);
-	split_counters(&cnt, &inpr);
-	return (!inpr) ? true : false;
-}
-#endif /* OPLUS_FEATURE_POWERINFO_STANDBY */
 
 /**
  * pm_wakeup_pending - Check if power transition in progress should be aborted.
@@ -1079,11 +1028,6 @@ void pm_system_irq_wakeup(unsigned int irq_number)
 
 		log_irq_wakeup_reason(irq_number);
 		pr_warn("%s: %d triggered %s\n", __func__, irq_number, name);
-
-		#ifdef OPLUS_FEATURE_POWERINFO_STANDBY
-		pr_info("%s: resume caused by irq=%d, name=%s\n", __func__, irq_number, name);
-		wakeup_reasons_statics(name, WS_CNT_POWERKEY|WS_CNT_RTCALARM);
-		#endif /* OPLUS_FEATURE_POWERINFO_STANDBY */
 
 		pm_wakeup_irq = irq_number;
 		pm_system_wakeup();
@@ -1308,20 +1252,12 @@ static const struct file_operations wakeup_sources_stats_fops = {
 	.read = seq_read,
 	.llseek = seq_lseek,
 	.release = seq_release_private,
-#ifdef OPLUS_FEATURE_LOGKIT
-	.write          = watchdog_write,
-#endif /* OPLUS_FEATURE_LOGKIT */
 };
 
 static int __init wakeup_sources_debugfs_init(void)
 {
-	#ifndef OPLUS_FEATURE_LOGKIT
 	wakeup_sources_stats_dentry = debugfs_create_file("wakeup_sources",
-			S_IRUGO, NULL, NULL, &wakeup_sources_stats_fops);
-	#else /* OPLUS_FEATURE_LOGKIT */
-	wakeup_sources_stats_dentry = debugfs_create_file("wakeup_sources",
-			S_IRUGO| S_IWUGO, NULL, NULL, &wakeup_sources_stats_fops);
-	#endif /* OPLUS_FEATURE_LOGKIT */
+                       S_IRUGO, NULL, NULL, &wakeup_sources_stats_fops);
 
 	proc_create_data("wakeup_sources", 0444, NULL, &wakeup_sources_stats_fops, NULL);
 	return 0;

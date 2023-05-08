@@ -3054,17 +3054,6 @@ static int mmc_blk_probe(struct mmc_card *card)
 	return 0;
 }
 
-#ifdef CONFIG_EMMC_SDCARD_OPTIMIZE
-char *capacity_string(struct mmc_card *card){
-	static char cap_str[10] = "unknown";
-	struct mmc_blk_data *md = (struct mmc_blk_data *)card->dev.driver_data;
-	if(md==NULL){
-		return 0;
-	}
-	string_get_size((u64)get_capacity(md->disk), 512, STRING_UNITS_2, cap_str, sizeof(cap_str));
-	return cap_str;
-}
-#endif
 static void mmc_blk_remove(struct mmc_card *card)
 {
 	struct mmc_blk_data *md = dev_get_drvdata(&card->dev);

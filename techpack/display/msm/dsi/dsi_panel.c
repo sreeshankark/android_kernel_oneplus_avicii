@@ -29,10 +29,6 @@
 #include "oplus_display_panel_cabc.h"
 #endif
 
-#ifdef CONFIG_OPLUS_FEATURE_MISC
-#include <soc/oplus/system/oplus_misc.h>
-#endif
-
 #ifdef OPLUS_FEATURE_ADFR
 #include "oplus_adfr.h"
 #include "sde_trace.h"

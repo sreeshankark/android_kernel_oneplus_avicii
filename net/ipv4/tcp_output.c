@@ -41,16 +41,9 @@
 #include <linux/compiler.h>
 #include <linux/gfp.h>
 #include <linux/module.h>
-//#ifdef OPLUS_FEATURE_DATA_EVAL
-#include <net/oplus/oplus_kernel2user.h>
-//#endif /* OPLUS_FEATURE_DATA_EVAL */
 #include <linux/static_key.h>
 
 #include <trace/events/tcp.h>
-
-//#ifdef OPLUS_FEATURE_NWPOWER
-#include <net/oplus_nwpower.h>
-//#endif /* OPLUS_FEATURE_NWPOWER */
 
 /* Refresh clocks of a TCP socket,
  * ensuring monotically increasing values.
@@ -69,11 +62,6 @@ void tcp_mstamp_refresh(struct tcp_sock *tp)
 
 static bool tcp_write_xmit(struct sock *sk, unsigned int mss_now, int nonagle,
 			   int push_one, gfp_t gfp);
-
-#ifdef OPLUS_FEATURE_APP_MONITOR
-/* Add code for push detect function */
-extern void oplus_app_monitor_update_app_info(struct sock *sk, const struct sk_buff *skb, int send, int retrans);
-#endif /* OPLUS_FEATURE_APP_MONITOR */
 
 /* Account for new data that has been sent to the network. */
 static void tcp_event_new_data_sent(struct sock *sk, struct sk_buff *skb)
@@ -1343,18 +1331,9 @@ static int __tcp_transmit_skb(struct sock *sk, struct sk_buff *skb,
 	memset(skb->cb, 0, max(sizeof(struct inet_skb_parm),
 			       sizeof(struct inet6_skb_parm)));
 
-	#ifdef OPLUS_FEATURE_APP_MONITOR
-	/* Add code for push detect function */
-	oplus_app_monitor_update_app_info(sk, skb, 1, 0);
-	#endif /* OPLUS_FEATURE_APP_MONITOR */
-
 	err = INDIRECT_CALL_INET(icsk->icsk_af_ops->queue_xmit,
 				 inet6_csk_xmit, ip_queue_xmit,
 				 sk, skb, &inet->cork.fl);
-
-	//#ifdef OPLUS_FEATURE_NWPOWER
-	oplus_match_tcp_output(sk);
-	//#endif /* OPLUS_FEATURE_NWPOWER */
 
 	if (unlikely(err > 0)) {
 		tcp_enter_cwr(sk);
@@ -3210,15 +3189,6 @@ start:
 
 	if (likely(!err)) {
 		TCP_SKB_CB(skb)->sacked |= TCPCB_EVER_RETRANS;
-
-		#ifdef OPLUS_FEATURE_APP_MONITOR
-		/* Add code for push detect function */
-		oplus_app_monitor_update_app_info(sk, skb, 1, 1);
-		#endif /* OPLUS_FEATURE_APP_MONITOR */
-
-		//#ifdef OPLUS_FEATURE_NWPOWER
-		oplus_match_tcp_output_retrans(sk);
-		//#endif /* OPLUS_FEATURE_NWPOWER */
 
 		trace_tcp_retransmit_skb(sk, skb);
 	} else if (err != -EBUSY) {
