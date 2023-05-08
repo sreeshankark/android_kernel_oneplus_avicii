@@ -130,14 +130,6 @@ struct oplus_chg_debug_info {
 	int chg_full_notified_flag;
 	int rechg_counts;/*add for rechg counts*/
 	struct workqueue_struct *oplus_chg_debug_wq;
-#ifdef CONFIG_OPLUS_FEATURE_FEEDBACK
-	struct kernel_packet_info *dcs_info;
-	struct mutex dcs_info_lock;
-#define SEND_INFO_DELAY 3000
-	struct delayed_work send_info_dwork;
-#define SEND_INFO_MAX_CNT 5
-	int retry_cnt;
-#endif
 	char flag_reason[32];
 	char type_reason[32];
 	int vooc_mcu_error;

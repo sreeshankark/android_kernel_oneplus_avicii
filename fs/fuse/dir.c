@@ -20,11 +20,6 @@
 #include <linux/iversion.h>
 #include <linux/posix_acl.h>
 
-#ifdef CONFIG_OPLUS_FEATURE_ACM
-#include <linux/acm_fs.h>
-#define ACM_DELETE_ERR  999
-#endif
-
 #include "../internal.h"
 
 static void fuse_advise_use_readdirplus(struct inode *dir)
@@ -817,9 +812,6 @@ static int fuse_create_open(struct inode *dir, struct dentry *entry,
 		else if (!(ff->open_flags & FOPEN_KEEP_CACHE))
 			invalidate_inode_pages2(inode->i_mapping);
 	}
-#ifdef CONFIG_OPLUS_FEATURE_ACM
-	monitor_acm2(entry, NULL, args.opcode);
-#endif
 	return err;
 
 out_free_ff:
@@ -932,11 +924,6 @@ static int create_new_entry(struct fuse_mount *fm, struct fuse_args *args,
 	} else {
 		fuse_change_entry_timeout(entry, &outarg);
 	}
-#ifdef CONFIG_OPLUS_FEATURE_ACM
-	if ((args->opcode == FUSE_MKNOD) ||
-		(args->opcode == FUSE_MKDIR))
-		monitor_acm2(entry, NULL, args->opcode);
-#endif
         fuse_dir_changed(dir);
 	return 0;
 
@@ -1087,13 +1074,6 @@ static int fuse_unlink(struct inode *dir, struct dentry *entry)
         args.in_numargs = 1;
         args.in_args[0].size = entry->d_name.len + 1;
         args.in_args[0].value = entry->d_name.name;
-#ifdef CONFIG_OPLUS_FEATURE_ACM
-	err = monitor_acm2(entry, NULL, args.opcode);
-	if (err) {
-		err = ACM_DELETE_ERR;
-		return err;
-	}
-#endif
 	err = fuse_simple_request(fm, &args);
 	if (!err) {
 		struct inode *inode = d_inode(entry);
@@ -1146,13 +1126,6 @@ static int fuse_rmdir(struct inode *dir, struct dentry *entry)
         args.in_numargs = 1;
         args.in_args[0].size = entry->d_name.len + 1;
         args.in_args[0].value = entry->d_name.name;
-#ifdef CONFIG_OPLUS_FEATURE_ACM
-	err = monitor_acm2(entry, NULL, args.opcode);
-	if (err) {
-		err = ACM_DELETE_ERR;
-		return err;
-	}
-#endif
 	err = fuse_simple_request(fm, &args);
 	if (!err) {
 		clear_nlink(d_inode(entry));
@@ -1215,9 +1188,6 @@ static int fuse_rename_common(struct inode *olddir, struct dentry *oldent,
 		if (d_really_is_positive(newent))
 			fuse_invalidate_entry(newent);
 	}
-#ifdef CONFIG_OPLUS_FEATURE_ACM
-	monitor_acm2(oldent, newent, args.opcode);
-#endif
 	return err;
 }
 

@@ -26,18 +26,6 @@
 #include <linux/regulator/machine.h>
 #include <linux/regulator/of_regulator.h>
 
-#ifdef OPLUS_FEATURE_THEIA
-#include <soc/oplus/system/oplus_bscheck.h>
-#include <soc/oplus/system/oplus_brightscreen_check.h>
-#endif
-
-#ifdef CONFIG_OPLUS_FEATURE_MISC
-#include <linux/syscalls.h>
-#include <linux/sched/debug.h>
-#include <soc/oplus/system/boot_mode.h>
-#include <soc/oplus/system/oplus_misc.h>
-#endif
-
 #define PMIC_VER_8941				0x01
 #define PMIC_VERSION_REG			0x0105
 #define PMIC_VERSION_REV4_REG			0x0103
@@ -203,56 +191,6 @@ struct pon_regulator {
 	bool			enabled;
 };
 
-#ifdef OPLUS_FEATURE_QCOM_PMICWD
-#ifndef CONFIG_OPLUS_FEATURE_QCOM_PMICWD
-struct qpnp_pon {
-	struct device		*dev;
-	struct regmap		*regmap;
-	struct input_dev	*pon_input;
-	struct qpnp_pon_config	*pon_cfg;
-	struct pon_regulator	*pon_reg_cfg;
-	struct list_head	list;
-	struct delayed_work	bark_work;
-	struct dentry		*debugfs;
-	u16			base;
-	u8			subtype;
-	u8			pon_ver;
-	u8			warm_reset_reason1;
-	u8			warm_reset_reason2;
-	int			num_pon_config;
-	int			num_pon_reg;
-	int			pon_trigger_reason;
-	int			pon_power_off_reason;
-	u32			dbc_time_us;
-	u32			uvlo;
-	int			warm_reset_poff_type;
-	int			hard_reset_poff_type;
-	int			shutdown_poff_type;
-	int			resin_warm_reset_type;
-	int			resin_hard_reset_type;
-	int			resin_shutdown_type;
-	bool			is_spon;
-	bool			store_hard_reset_reason;
-	bool			resin_hard_reset_disable;
-	bool			resin_shutdown_disable;
-	bool			ps_hold_hard_reset_disable;
-	bool			ps_hold_shutdown_disable;
-	bool			kpdpwr_dbc_enable;
-	bool			resin_pon_reset;
-	ktime_t			kpdpwr_last_release_time;
-};
-#endif
-
-static int pon_ship_mode_en;
-module_param_named(
-	ship_mode_en, pon_ship_mode_en, int, 0600
-);
-
-#ifndef CONFIG_OPLUS_FEATURE_QCOM_PMICWD
-static struct qpnp_pon *sys_reset_dev;
-#endif
-
-#else
 struct qpnp_pon {
 	struct device		*dev;
 	struct regmap		*regmap;
@@ -297,7 +235,6 @@ module_param_named(
 );
 
 static struct qpnp_pon *sys_reset_dev;
-#endif /* OPLUS_FEATURE_QCOM_PMICWD */
 
 static struct qpnp_pon *modem_reset_dev;
 static DEFINE_SPINLOCK(spon_list_slock);
@@ -369,18 +306,8 @@ static const char * const qpnp_poff_reason[] = {
 	[39] = "Triggered from S3_RESET_KPDPWR_ANDOR_RESIN",
 };
 
-#ifdef OPLUS_FEATURE_QCOM_PMICWD
-#ifdef CONFIG_OPLUS_FEATURE_QCOM_PMICWD
-int qpnp_pon_masked_write(struct qpnp_pon *pon, u16 addr, u8 mask, u8 val)
-#else
 static int
 qpnp_pon_masked_write(struct qpnp_pon *pon, u16 addr, u8 mask, u8 val)
-#endif
-
-#else
-static int
-qpnp_pon_masked_write(struct qpnp_pon *pon, u16 addr, u8 mask, u8 val)
-#endif /* OPLUS_FEATURE_QCOM_PMICWD */
 {
 	int rc;
 
@@ -1017,16 +944,6 @@ static int qpnp_pon_input_dispatch(struct qpnp_pon *pon, u32 pon_type)
 	switch (cfg->pon_type) {
 	case PON_KPDPWR:
 		pon_rt_bit = QPNP_PON_KPDPWR_N_SET;
-#ifdef CONFIG_OPLUS_FEATURE_MISC
-		if ((pon_rt_sts & pon_rt_bit) == 0) {
-			pr_debug("Power-Key UP\n");
-			cancel_delayed_work(&pon->press_work);
-		} else {
-			pr_debug("Power-Key DOWN\n");
-			schedule_delayed_work(&pon->press_work,
-				msecs_to_jiffies(4000));
-		}
-#endif
 		break;
 	case PON_RESIN:
 		pon_rt_bit = QPNP_PON_RESIN_N_SET;
@@ -1062,21 +979,6 @@ static int qpnp_pon_input_dispatch(struct qpnp_pon *pon, u32 pon_type)
 		input_report_key(pon->pon_input, cfg->key_code, 1);
 		input_sync(pon->pon_input);
 	}
-
-	#ifdef OPLUS_FEATURE_QCOM_PMICWD
-	#ifdef CONFIG_OPLUS_FEATURE_QCOM_PMICWD
-	pr_err("keycode = %d,key_st = %d\n",cfg->key_code, key_status);
-	#endif
-	#endif /* OPLUS_FEATURE_QCOM_PMICWD */
-
-	#ifdef OPLUS_FEATURE_THEIA
-	pr_err("keycode = %d,key_st = %d  old_state= %d   %d \n",cfg->key_code, key_status,cfg->old_state ,KEY_POWER);
-	if(cfg->key_code == KEY_POWER && key_status == 1 && cfg->old_state == 0){
-		//we should canel per work
-		black_screen_timer_restart();
-		bright_screen_timer_restart();
-	}
-	#endif
 
 	input_report_key(pon->pon_input, cfg->key_code, key_status);
 	input_sync(pon->pon_input);
@@ -1230,44 +1132,6 @@ static void bark_work_func(struct work_struct *work)
 		schedule_delayed_work(&pon->bark_work, QPNP_KEY_STATUS_DELAY);
 	}
 }
-
-#ifdef CONFIG_OPLUS_FEATURE_MISC
-static void press_work_func(struct work_struct *work)
-{
-	int display_bl, boot_mode;
-	int rc;
-	uint pon_rt_sts = 0;
-	struct qpnp_pon_config *cfg;
-	struct qpnp_pon *pon =
-	container_of(work, struct qpnp_pon, press_work.work);
-
-	cfg = qpnp_get_cfg(pon, PON_KPDPWR);
-	if (!cfg) {
-		dev_err(pon->dev, "Invalid config pointer\n");
-		goto err_return;
-	}
-	/* check the RT status to get the current status of the line */
-	rc = regmap_read(pon->regmap, QPNP_PON_RT_STS(pon), &pon_rt_sts);
-	if (rc) {
-		dev_err(pon->dev, "Unable to read PON RT status\n");
-		goto err_return;
-	}
-	if ((pon_rt_sts & QPNP_PON_KPDPWR_N_SET) == 1) {
-		dev_err(pon->dev, "after 4s Power-Key is still DOWN\n");
-		display_bl = dsi_panel_backlight_get();
-		boot_mode = get_boot_mode();
-		if (display_bl == 0 && boot_mode == MSM_BOOT_MODE__NORMAL) {
-			oplus_switch_fulldump(0);
-			show_state_filter(TASK_UNINTERRUPTIBLE);
-			panic("power key still pressed\n");
-		}
-	}
-	msleep(20);
-	ksys_sync();
-err_return:
-	return;
-}
-#endif
 
 static irqreturn_t qpnp_resin_bark_irq(int irq, void *_pon)
 {
@@ -2519,9 +2383,6 @@ static int qpnp_pon_probe(struct platform_device *pdev)
 	dev_set_drvdata(dev, pon);
 
 	INIT_DELAYED_WORK(&pon->bark_work, bark_work_func);
-#ifdef CONFIG_OPLUS_FEATURE_MISC
-	INIT_DELAYED_WORK(&pon->press_work, press_work_func);
-#endif
 	rc = qpnp_pon_parse_dt_power_off_config(pon);
 	if (rc)
 		return rc;
@@ -2582,13 +2443,6 @@ static int qpnp_pon_probe(struct platform_device *pdev)
 
         qpnp_pon_debugfs_init(pon);
 
-	#ifdef OPLUS_FEATURE_QCOM_PMICWD
-	#ifdef CONFIG_OPLUS_FEATURE_QCOM_PMICWD
-	pmicwd_init(pdev, pon, sys_reset);
-	kpdpwr_init(pon, sys_reset);
-	#endif
-	#endif /* OPLUS_FEATURE_QCOM_PMICWD */
-
 	return 0;
 }
 
@@ -2618,11 +2472,6 @@ static const struct of_device_id qpnp_pon_match_table[] = {
 
 static struct platform_driver qpnp_pon_driver = {
 	.driver = {
-		#ifdef OPLUS_FEATURE_QCOM_PMICWD
-		#ifdef CONFIG_OPLUS_FEATURE_QCOM_PMICWD
-		.pm = &qpnp_pm_ops,
-		#endif
-		#endif /* OPLUS_FEATURE_QCOM_PMICWD */
 		.name = "qcom,qpnp-power-on",
 		.of_match_table = qpnp_pon_match_table,
 	},

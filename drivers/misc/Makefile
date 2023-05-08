@@ -79,34 +79,11 @@ obj-$(CONFIG_QTI_XR_SMRTVWR_MISC) += qxr-stdalonevwr.o
 obj-$(CONFIG_USB7002_HUB)       += usb7002/
 obj-$(CONFIG_QTI_HEARTBEAT)     += heartbeat/
 
-# ifdef OPLUS_FEATURE_TP_BASIC
-obj-$(CONFIG_CS_F61_NDT) 	+= cs_press/
-# endif /* OPLUS_FEATURE_TP_BASIC */
-
-#ifdef OPLUS_FEATURE_TP_BASIC
-obj-$(CONFIG_COLOR_CTRL) 	+= colorctrl/
-obj-$(CONFIG_COLOR_CTRL_V2) 	+= colorctrl_v2/
-#endif /* OPLUS_FEATURE_TP_BASIC */
-
-#ifdef VENDOR_EDIT//Qingjun.Wang@BSP.Haptic,add 2020/03/17 for vib aw8697
 obj-$(CONFIG_AW8697_HAPTIC)     += aw8697_haptic/
-#endif
-
 obj-$(CONFIG_FPR_FPC)		+= fpr_FingerprintCard/
 obj-y                           += qrc/
-obj-$(CONFIG_KINECTICS_XR_NORDIC) += kxrctrl/
-
-#ifdef OPLUS_FEATURE_RF_CABLE_DETECT
 obj-$(CONFIG_OPLUS_RF_CABLE_MONITOR)	+= oplus_rf_cable_monitor.o
 obj-$(CONFIG_OPLUS_RF_CABLE_MONITOR) += op_ant_detect.o
-#endif /* OPLUS_FEATURE_RF_CABLE_DETECT */
-
-#ifdef OPLUS_FEATURE_SIM_DETECT
 obj-$(CONFIG_SIM_DETECT)	+= sim_detect.o
-#endif
-
-#ifdef OPLUS_FEATURE_SIM_DETECT
-obj-$(CONFIG_OEM_QMI)	+= oem_qmi_client.o
-#endif
 
 obj-$(CONFIG_FORCE_FAST_CHARGE) += fastchg.o

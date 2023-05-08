@@ -857,11 +857,6 @@ static int copy_pte_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
 	int progress = 0;
 	int rss[NR_MM_COUNTERS];
 
-#ifdef OPLUS_BUG_STABILITY
-//Bin.Xu @ BSP.Kernel.Stability, 2020/4/1, checklist: flush_tlb_range for dirty pages
-	unsigned long orig_addr = addr;
-#endif /* OPLUS_BUG_STABILITY */
-
 	swp_entry_t entry = (swp_entry_t){0};
 
 again:
@@ -900,13 +895,6 @@ again:
 	} while (dst_pte++, src_pte++, addr += PAGE_SIZE, addr != end);
 
 	arch_leave_lazy_mmu_mode();
-
-#ifdef OPLUS_BUG_STABILITY
-//Bin.Xu @ BSP.Kernel.Stability, 2020/4/1, checklist: flush_tlb_range for dirty pages
-	if (IS_ENABLED(CONFIG_SPECULATIVE_PAGE_FAULT) &&
-		is_cow_mapping(vma->vm_flags))
-		flush_tlb_range(vma, orig_addr, end);
-#endif /* OPLUS_BUG_STABILITY */
 
 	spin_unlock(src_ptl);
 	pte_unmap(orig_src_pte);
