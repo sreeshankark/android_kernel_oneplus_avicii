@@ -326,11 +326,6 @@ struct kgsl_device {
 	struct idr timelines;
 	/** @timelines_lock: Spinlock to protect the timelines idr */
 	spinlock_t timelines_lock;
-
-	#if defined(OPLUS_FEATURE_GPU_MINIDUMP)
-	bool snapshot_control;
-	int snapshotfault;
-	#endif /* OPLUS_FEATURE_GPU_MINIDUMP */
 };
 
 #define KGSL_MMU_DEVICE(_mmu) \
@@ -555,10 +550,6 @@ struct kgsl_snapshot {
 	bool gmu_fault;
 	bool recovered;
 	struct kgsl_device *device;
-
-	#if defined(OPLUS_FEATURE_GPU_MINIDUMP)
-	char snapshot_hashid[96];
-	#endif /* OPLUS_FEATURE_GPU_MINIDUMP */
 };
 
 /**
