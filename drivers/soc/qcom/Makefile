@@ -92,9 +92,6 @@ else
        obj-$(CONFIG_QTI_RPM_STATS_LOG) += rpm_master_stat.o
 endif
 obj-$(CONFIG_QCOM_DCC) += dcc.o
-#ifdef OPLUS_FEATURE_POWERINFO_RPMH
-obj-$(CONFIG_RPMH_MODEM_SLEEPINFO_BUFFER) += rpmh_modem_sleepinfo.o
-#endif /* OPLUS_FEATURE_POWERINFO_RPMH */
 obj-$(CONFIG_QTI_RPM_STATS_LOG) += rpm_stats.o
 obj-$(CONFIG_QCOM_MEM_OFFLINE) += mem-offline.o
 obj-$(CONFIG_QTI_DDR_STATS_LOG) += ddr_stats.o
