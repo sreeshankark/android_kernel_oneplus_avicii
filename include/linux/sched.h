@@ -1405,21 +1405,6 @@ struct task_struct {
 	int				latency_record_count;
 	struct latency_record		latency_record[LT_SAVECOUNT];
 #endif
-
-#ifdef CONFIG_OPLUS_FEATURE_UID_PERF
-#define UID_PERF_EVENTS 3
-	struct perf_event* uid_pevents[UID_PERF_EVENTS];
-	long long uid_counts[UID_PERF_EVENTS];
-	long long uid_prev_counts[UID_PERF_EVENTS];
-	long long uid_leaving_counts[UID_PERF_EVENTS];
-
-	/* define for grouping info */
-#define UID_GROUP_SIZE 8
-	long long uid_group[UID_GROUP_SIZE];
-	long long uid_group_prev_counts[UID_GROUP_SIZE];
-	long long uid_group_snapshot_prev_counts[UID_GROUP_SIZE];
-#endif
-
 	/*
 	 * Time slack values; these are used to round up poll() and
 	 * select() etc timeout values. These are in nanoseconds.

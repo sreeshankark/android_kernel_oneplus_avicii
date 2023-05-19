@@ -908,10 +908,6 @@ void __noreturn do_exit(long code)
 	exit_signals(tsk);  /* sets PF_EXITING */
 	sched_exit(tsk);
 
-#ifdef CONFIG_OPLUS_FEATURE_UID_PERF
-	uid_check_out_pevent(tsk);
-#endif
-
 	/* sync mm's RSS info before statistics gathering */
 	if (tsk->mm)
 		sync_mm_rss(tsk->mm);
