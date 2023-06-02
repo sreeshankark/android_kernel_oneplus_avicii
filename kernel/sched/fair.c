@@ -8150,6 +8150,10 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu,
 
 	if (sync && (need_idle || (is_rtg && curr_is_rtg)))
 		sync = 0;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8b9f4007386b (treewide: Clean up oplus input boost)
 #ifdef OPLUS_FEATURE_SCHED_ASSIST
 	ux_skip_sync_wakeup(p, &sync);
 #endif
@@ -8301,7 +8305,10 @@ unlock:
 #endif /* CONFIG_OPLUS_FEATURE_TPP */
 
 done:
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8b9f4007386b (treewide: Clean up oplus input boost)
 	trace_sched_task_util(p, cpumask_bits(candidates)[0], best_energy_cpu,
 			sync, fbt_env.need_idle, fbt_env.fastpath,
 			placement_boost, start_t, boosted, is_rtg,
@@ -13668,7 +13675,11 @@ void check_for_migration(struct rq *rq, struct task_struct *p)
 		is_heavy_ux_task(p) && ux_task_misfit(p, prev_cpu))) {
 #else
 	if (rq->misfit_task_load) {
+<<<<<<< HEAD
 #endif
+=======
+#endif /* OPLUS_FEATURE_SCHED_ASSIST */
+>>>>>>> 8b9f4007386b (treewide: Clean up oplus input boost)
 		if (rq->curr->state != TASK_RUNNING ||
 		    rq->curr->nr_cpus_allowed == 1)
 			return;
