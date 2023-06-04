@@ -70,5 +70,3 @@ obj-$(CONFIG_OPLUS_FEATURE_TPD)     +=  oplus/tpd/
 
 #Add for NandSwap
 obj-$(CONFIG_NANDSWAP)		+= oplus/oplus_nandswap/
-
-
