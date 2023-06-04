@@ -2047,6 +2047,7 @@ extern pid_t alloc_svc_tgid;
 #endif /* CONFIG_OPLUS_ION_BOOSTPOOL */
 
 extern void __set_task_comm(struct task_struct *tsk, const char *from, bool exec);
+
 static inline void set_task_comm(struct task_struct *tsk, const char *from)
 {
 	__set_task_comm(tsk, from, false);

@@ -2863,6 +2863,7 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags,
 		goto out;
 
 	trace_sched_waking(p);
+
 #ifdef CONFIG_OPLUS_FEATURE_RT_INFO
     if (rt_handler != NULL)
         rt_handler(p);
