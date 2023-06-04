@@ -78,10 +78,6 @@
 #include <linux/reserve_area.h>
 #endif
 
-#ifdef CONFIG_OPLUS_FEATURE_TPD
-#include <linux/tpd/tpd.h>
-#endif
-
 /*
  * The default value should be high enough to not crash a system that randomly
  * crashes its kernel from time to time, but low enough to at least not permit
@@ -239,10 +235,6 @@ static void __exit_signal(struct task_struct *tsk)
 static void delayed_put_task_struct(struct rcu_head *rhp)
 {
 	struct task_struct *tsk = container_of(rhp, struct task_struct, rcu);
-
-#ifdef CONFIG_OPLUS_FEATURE_TPD
-	tpd_tglist_del(tsk);
-#endif
 
 	perf_event_delayed_put(tsk);
 	trace_sched_process_free(tsk);
@@ -627,10 +619,6 @@ static void exit_mm(void)
 	enter_lazy_tlb(mm, current);
 	task_unlock(current);
 	mm_update_next_owner(mm);
-#if defined(OPLUS_FEATURE_VIRTUAL_RESERVE_MEMORY) && defined(CONFIG_OPLUS_HEALTHINFO) && defined(CONFIG_VIRTUAL_RESERVE_MEMORY)
-	//Trigger and upload the event.
-	trigger_svm_oom_event(mm, false, false);
-#endif
 	mmput(mm);
 	if (test_thread_flag(TIF_MEMDIE))
 		exit_oom_victim();

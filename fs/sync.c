@@ -18,12 +18,6 @@
 #include <linux/quotaops.h>
 #include <linux/backing-dev.h>
 #include "internal.h"
-#ifdef OPLUS_FEATURE_HEALTHINFO
-// Add for get cpu load
-#ifdef CONFIG_OPLUS_HEALTHINFO
-#include <soc/oplus/healthinfo.h>
-#endif
-#endif /* OPLUS_FEATURE_HEALTHINFO */
 
 bool fsync_enabled = true;
 module_param(fsync_enabled, bool, 0644);
@@ -236,12 +230,6 @@ static int do_fsync(unsigned int fd, int datasync)
 {
 	struct fd f;
 	int ret = -EBADF;
-#ifdef OPLUS_FEATURE_HEALTHINFO
-// Add for record  fsync  time
-#ifdef CONFIG_OPLUS_HEALTHINFO
-    unsigned long fsync_time = jiffies;
-#endif
-#endif /* OPLUS_FEATURE_HEALTHINFO */
 
 	if (!fsync_enabled)
 		return 0;
@@ -252,12 +240,6 @@ static int do_fsync(unsigned int fd, int datasync)
 		fdput(f);
 		inc_syscfs(current);
 	}
-#ifdef OPLUS_FEATURE_HEALTHINFO
-// Add for record  fsync  time
-#ifdef CONFIG_OPLUS_HEALTHINFO
-	ohm_schedstats_record(OHM_SCHED_FSYNC, current, jiffies_to_msecs(jiffies - fsync_time));
-#endif
-#endif /* OPLUS_FEATURE_HEALTHINFO */
 	return ret;
 }
 
