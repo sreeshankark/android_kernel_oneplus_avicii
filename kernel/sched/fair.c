@@ -33,9 +33,6 @@
 #endif
 #endif /* OPLUS_FEATURE_HEALTHINFO */
 
-#if defined(OPLUS_FEATURE_IOMONITOR) && defined(CONFIG_IOMONITOR)
-#include <linux/iomonitor/iomonitor.h>
-#endif /*OPLUS_FEATURE_IOMONITOR*/
 #ifdef CONFIG_SMP
 static inline bool task_fits_max(struct task_struct *p, int cpu);
 #endif /* CONFIG_SMP */
@@ -1068,9 +1065,6 @@ update_stats_enqueue_sleeper(struct cfs_rq *cfs_rq, struct sched_entity *se)
 				ohm_schedstats_record(OHM_SCHED_IOWAIT, tsk, (delta >> 20));
 #endif
 #endif /* OPLUS_FEATURE_HEALTHINFO */
-#if defined(OPLUS_FEATURE_IOMONITOR) && defined(CONFIG_IOMONITOR)
-				iomonitor_record_iowait(tsk, (delta >> 20));
-#endif /*OPLUS_FEATURE_IOMONITOR*/
 			}
 #ifdef OPLUS_FEATURE_HEALTHINFO
 #ifdef CONFIG_OPLUS_HEALTHINFO
