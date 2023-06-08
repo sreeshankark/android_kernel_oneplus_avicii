@@ -56,14 +56,6 @@ extern void susfs_auto_add_try_umount_for_bind_mount(struct path *path);
 bool susfs_is_auto_add_try_umount_for_bind_mount_enabled = true;
 #endif
 
-#ifdef CONFIG_OPLUS_SECURE_GUARD
-#ifdef CONFIG_OPLUS_MOUNT_BLOCK
-#ifdef CONFIG_OPLUS_KEVENT_UPLOAD
-#include <linux/oplus_kevent.h>
-#endif /* CONFIG_OPLUS_KEVENT_UPLOAD */
-#endif /* CONFIG_OPLUS_MOUNT_BLOCK */
-#endif /* CONFIG_OPLUS_SECURE_GUARD*/
-
 /* Maximum number of mounts in a mount namespace */
 unsigned int sysctl_mount_max __read_mostly = 100000;
 
@@ -3035,11 +3027,6 @@ char *copy_mount_string(const void __user *data)
 	return data ? strndup_user(data, PAGE_SIZE) : NULL;
 }
 
-#ifdef CONFIG_OPLUS_SECURE_GUARD
-#ifdef CONFIG_OPLUS_MOUNT_BLOCK
-extern int oplus_mount_block(const char __user *dir_name, unsigned long flags);
-#endif /* CONFIG_OPLUS_MOUNT_BLOCK */
-#endif /* CONFIG_OPLUS_SECURE_GUARD */
 /*
  * Flags is a 32-bit value that allows up to 31 non-fs dependent flags to
  * be given to the mount() call (ie: read-only, no-dev, no-suid etc).
@@ -3061,14 +3048,6 @@ long do_mount(const char *dev_name, const char __user *dir_name,
 	unsigned int mnt_flags = 0, sb_flags;
 	int retval = 0;
 
-#ifdef CONFIG_OPLUS_SECURE_GUARD
-#ifdef CONFIG_OPLUS_MOUNT_BLOCK
-	retval = oplus_mount_block(dir_name, flags);
-	if (retval < 0){
-		return -EPERM;
-	}
-#endif /* CONFIG_OPLUS_MOUNT_BLOCK */
-#endif /* CONFIG_OPLUS_SECURE_GUARD */
 	/* Discard magic */
 	if ((flags & MS_MGC_MSK) == MS_MGC_VAL)
 		flags &= ~MS_MGC_MSK;
