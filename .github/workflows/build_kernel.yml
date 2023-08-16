@@ -1,0 +1,30 @@
+name: NeverSettle Kernel Compiler
+on:
+  workflow_dispatch:
+      inputs:
+         Changelog:
+             description: 'Build Changelog'
+             required: true
+             default: '* No Changelog provided by the developer'
+  
+env:
+  TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+  CHATID: ${{ secrets.TG_CHAT_ID }}
+  CHANGELOG: ${{ github.event.inputs.Changelog }}
+jobs:
+  NSK_CI:
+    runs-on: ubuntu-22.04
+    steps:
+       - name: Install packages
+         run: |
+            sudo apt-get update
+            sudo apt-get -y install mkisofs git python2 bc cpio python3 python-is-python3 device-tree-compiler
+       - name: Clone NS Kernel Source
+         run: |
+            cd ~
+            git clone https://github.com/Sanju0910/android_kernel_oneplus_avicii-neversettle --recursive --depth=1 kernel
+       - name: Build NS Kernel
+         run: |
+            cd ~/kernel
+            python build.py 	    
+
