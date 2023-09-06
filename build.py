@@ -57,8 +57,8 @@ objdir="${kernel_dir}/out"
 kf=$HOME/kf
 builddir="${kernel_dir}/build"
 ZIMAGE=$kernel_dir/out/arch/arm64/boot/Image.gz-dtb
-ns_version=v1.9.201
-kernel_version=4.19.292
+ns_version=v1.9.4
+kernel_version=4.19.294
 ksu_apk_name=KernelSU_v0.6.7_11210-release.apk
 ksu_apk=https://github.com/tiann/KernelSU/releases/download/v0.6.7/KernelSU_v0.6.7_11210-release.apk
 kernel_name="NeverSettle-Kernel-$ns_version-avicii"
@@ -131,7 +131,7 @@ completion() {
     tg_post_msg "<b>Changelog ($(date +%d-%m-%Y))</b>%0A<code>$CHANGELOG</code>"
     tg_post_build "$HOME/${ksu_apk_name}" "KernelSU Manager for this build"
     tg_post_msg "<code>Compiled successfully✅</code>"
-    tg_post_msg "<b>Support the developer❤️</b>%0A<b>UPI:</b> <code>sreeshankar@axl</code>%0A%0A<b>Paypal:</b> PayPal.me/SreeshankarK"
+    tg_post_msg "<b>Support the developer❤️</b>%0A<b>UPI:</b> <code>sreeshankark@axl</code>%0A%0A<b>Paypal:</b> PayPal.me/SreeshankarK"
     curl --upload-file $HOME/$zip_name https://free.keep.sh
     echo
     echo -e ${LGR} "############################################"
