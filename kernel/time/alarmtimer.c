@@ -299,7 +299,7 @@ static int alarmtimer_suspend(struct device *dev)
 		return 0;
 
 	if (ktime_to_ns(min) < 2 * NSEC_PER_SEC) {
-		__pm_wakeup_event(ws, ktime_to_ms(min) + 1);
+		__pm_wakeup_event(ws, MSEC_PER_SEC / 2);
 		#ifdef OPLUS_FEATURE_POWERINFO_STANDBY
 		alarmtimer_suspend_flag_clear();
 		alarmtimer_busy_flag_set();
