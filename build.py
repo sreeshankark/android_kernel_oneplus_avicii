@@ -66,7 +66,7 @@ zip_name="$kernel_name-$(date +"%d%m%Y-%H%M").zip"
 TC_DIR=$HOME/tc/
 export ARCH=arm64
 export SUBARCH=arm64
-export CONFIG_FILE="avicii_defconfig"
+export CONFIG_FILE="avicii_defconfig debugfs.config"
 export BRAND_SHOW_FLAG=oneplus
 export CCACHE=$(command -v ccache)
 export PATH="${PWD}/clang-llvm/bin:${PATH}"
@@ -95,7 +95,7 @@ make_defconfig()
 {
     START=$(date +"%s")
     echo -e ${LGR} "########### Generating Defconfig ############${NC}"
-    make -s ARCH=arm64 O=out avicii_defconfig -j$(nproc --all)
+    make -s ARCH=arm64 O=out $CONFIG_FILE -j$(nproc --all)
 }
 compile()
 {
