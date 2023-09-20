@@ -5,9 +5,6 @@
 | ---------- | ---------- |
 | NS version | 5.1 |
 | Linux Kernel version | 4.19.325-cip135-st19 |
-| KernelSU-Next version | 3.3.0 |
-| KernelSU-Next version code | 33292 |
-| SUSFS version | 2.2.0 |
 
 ## Kernel Features
 (1) Supports 5V-6A Fast Charging 
@@ -22,19 +19,13 @@
 
 (6) Supports Wireguard VPN
 
-(7) Supports KernelSU-Next & SUSFS
+(7) Supports WPA3 SAE WiFi authentication
 
-(8) Supports WPA3 SAE WiFi authentication
-
-(9) De-OPLUS-ified kernel, removed unwanted OPLUS code additions
+(8) De-OPLUS-ified kernel, removed unwanted OPLUS code additions
 
 ## Credits
 
 - [Linux Kernel Organisation](https://kernel.org): For the development of base kernel
-- [weishu](https://github.com/tiann): For the development of KernelSU
-- [Rifat Azad](https://github.com/rifsxd): For the development of KernelSU-Next
-- [simonpunk](https://gitlab.com/simonpunk): For the development of SUSFS4KSU
-- [osm0sis](https://github.com/osm0sis): For the development of AnyKernel3
 
 Linux kernel
 ============
