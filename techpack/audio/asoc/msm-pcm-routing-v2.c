@@ -1011,7 +1011,7 @@ int msm_pcm_routing_send_chmix_cfg(int fe_id, int ip_channel_cnt,
 
 	return 0;
 }
-EXPORT_SYMBOL(msm_pcm_routing_send_chmix_cfg);
+EXPORT_SYMBOL_GPL(msm_pcm_routing_send_chmix_cfg);
 
 /**
  * msm_pcm_routing_set_channel_mixer_cfg - cache channel mixer
@@ -1056,7 +1056,7 @@ int msm_pcm_routing_set_channel_mixer_cfg(
 
 	return 0;
 }
-EXPORT_SYMBOL(msm_pcm_routing_set_channel_mixer_cfg);
+EXPORT_SYMBOL_GPL(msm_pcm_routing_set_channel_mixer_cfg);
 
 int msm_pcm_routing_reg_stream_app_type_cfg(
 	int fedai_id, int session_type, int be_id,
@@ -1106,7 +1106,7 @@ int msm_pcm_routing_reg_stream_app_type_cfg(
 done:
 	return ret;
 }
-EXPORT_SYMBOL(msm_pcm_routing_reg_stream_app_type_cfg);
+EXPORT_SYMBOL_GPL(msm_pcm_routing_reg_stream_app_type_cfg);
 
 /**
  * msm_pcm_routing_get_stream_app_type_cfg
@@ -1163,7 +1163,7 @@ int msm_pcm_routing_get_stream_app_type_cfg(
 done:
 	return ret;
 }
-EXPORT_SYMBOL(msm_pcm_routing_get_stream_app_type_cfg);
+EXPORT_SYMBOL_GPL(msm_pcm_routing_get_stream_app_type_cfg);
 
 static struct cal_block_data *msm_routing_find_topology_by_path(int path,
 								int cal_index)
@@ -1434,7 +1434,7 @@ int msm_pcm_routing_get_pp_ch_cnt(int fe_id, int session_type)
 	app_type_idx = msm_pcm_routing_get_lsm_app_type_idx(app_type);
 	return lsm_app_type_cfg[app_type_idx].num_out_channels;
 }
-EXPORT_SYMBOL(msm_pcm_routing_get_pp_ch_cnt);
+EXPORT_SYMBOL_GPL(msm_pcm_routing_get_pp_ch_cnt);
 
 int msm_pcm_routing_reg_phy_compr_stream(int fe_id, int perf_mode,
 					  int dspst_id, int stream_type,
@@ -1833,7 +1833,7 @@ int msm_pcm_routing_set_channel_mixer_runtime(int be_id, int session_id,
 	}
 	return rc;
 }
-EXPORT_SYMBOL(msm_pcm_routing_set_channel_mixer_runtime);
+EXPORT_SYMBOL_GPL(msm_pcm_routing_set_channel_mixer_runtime);
 
 int msm_pcm_routing_reg_phy_stream(int fedai_id, int perf_mode,
 					int dspst_id, int stream_type)

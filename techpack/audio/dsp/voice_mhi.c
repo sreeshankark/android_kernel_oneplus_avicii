@@ -251,7 +251,7 @@ done:
 
 	return ret;
 }
-EXPORT_SYMBOL(voice_mhi_start);
+EXPORT_SYMBOL_GPL(voice_mhi_start);
 
 /**
  * voice_mhi_end -
@@ -277,7 +277,7 @@ int voice_mhi_end(void)
 
 	return 0;
 }
-EXPORT_SYMBOL(voice_mhi_end);
+EXPORT_SYMBOL_GPL(voice_mhi_end);
 
 static int voice_mhi_set_mailbox_memory_config(void)
 {

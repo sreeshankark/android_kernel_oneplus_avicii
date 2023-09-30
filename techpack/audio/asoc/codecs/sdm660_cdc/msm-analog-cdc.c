@@ -347,7 +347,7 @@ void msm_anlg_cdc_spk_ext_pa_cb(
 	dev_dbg(component->dev, "%s: Enter\n", __func__);
 	sdm660_cdc->codec_spk_ext_pa_cb = codec_spk_ext_pa;
 }
-EXPORT_SYMBOL(msm_anlg_cdc_spk_ext_pa_cb);
+EXPORT_SYMBOL_GPL(msm_anlg_cdc_spk_ext_pa_cb);
 
 static void msm_anlg_cdc_compute_impedance(struct snd_soc_component *component,
 						s16 l, s16 r,
@@ -3229,7 +3229,7 @@ int msm_anlg_cdc_mclk_enable(struct snd_soc_component *component,
 	}
 	return 0;
 }
-EXPORT_SYMBOL(msm_anlg_cdc_mclk_enable);
+EXPORT_SYMBOL_GPL(msm_anlg_cdc_mclk_enable);
 
 static int msm_anlg_cdc_set_dai_sysclk(struct snd_soc_dai *dai,
 		int clk_id, unsigned int freq, int dir)
@@ -3989,7 +3989,7 @@ int msm_anlg_cdc_hs_detect(struct snd_soc_component *component,
 
 	return wcd_mbhc_start(&sdm660_cdc_priv->mbhc, mbhc_cfg);
 }
-EXPORT_SYMBOL(msm_anlg_cdc_hs_detect);
+EXPORT_SYMBOL_GPL(msm_anlg_cdc_hs_detect);
 
 void msm_anlg_cdc_hs_detect_exit(struct snd_soc_component *component)
 {
@@ -3998,14 +3998,14 @@ void msm_anlg_cdc_hs_detect_exit(struct snd_soc_component *component)
 
 	wcd_mbhc_stop(&sdm660_cdc_priv->mbhc);
 }
-EXPORT_SYMBOL(msm_anlg_cdc_hs_detect_exit);
+EXPORT_SYMBOL_GPL(msm_anlg_cdc_hs_detect_exit);
 
 void msm_anlg_cdc_update_int_spk_boost(bool enable)
 {
 	pr_debug("%s: enable = %d\n", __func__, enable);
 	spkr_boost_en = enable;
 }
-EXPORT_SYMBOL(msm_anlg_cdc_update_int_spk_boost);
+EXPORT_SYMBOL_GPL(msm_anlg_cdc_update_int_spk_boost);
 
 static void msm_anlg_cdc_set_micb_v(struct snd_soc_component *component)
 {
@@ -4164,7 +4164,7 @@ int msm_anlg_codec_info_create_codec_entry(struct snd_info_entry *codec_root,
 	}
 	return 0;
 }
-EXPORT_SYMBOL(msm_anlg_codec_info_create_codec_entry);
+EXPORT_SYMBOL_GPL(msm_anlg_codec_info_create_codec_entry);
 
 static int msm_anlg_cdc_soc_probe(struct snd_soc_component *component)
 {

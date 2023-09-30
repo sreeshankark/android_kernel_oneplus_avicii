@@ -530,7 +530,7 @@ int wsa_macro_set_spkr_gain_offset(struct snd_soc_component *component,
 	wsa_priv->spkr_gain_offset = offset;
 	return 0;
 }
-EXPORT_SYMBOL(wsa_macro_set_spkr_gain_offset);
+EXPORT_SYMBOL_GPL(wsa_macro_set_spkr_gain_offset);
 
 /**
  * wsa_macro_set_spkr_mode - Configures speaker compander and smartboost
@@ -574,7 +574,7 @@ int wsa_macro_set_spkr_mode(struct snd_soc_component *component, int mode)
 				    regs[i].mask, regs[i].val);
 	return 0;
 }
-EXPORT_SYMBOL(wsa_macro_set_spkr_mode);
+EXPORT_SYMBOL_GPL(wsa_macro_set_spkr_mode);
 
 static int wsa_macro_set_prim_interpolator_rate(struct snd_soc_dai *dai,
 					    u8 int_prim_fs_rate_reg_val,

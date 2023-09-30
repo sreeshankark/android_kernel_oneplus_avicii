@@ -228,7 +228,7 @@ enum wcd9xxx_spmi_pm_state wcd9xxx_spmi_pm_cmpxchg(
 	mutex_unlock(&map.pm_lock);
 	return old;
 }
-EXPORT_SYMBOL(wcd9xxx_spmi_pm_cmpxchg);
+EXPORT_SYMBOL_GPL(wcd9xxx_spmi_pm_cmpxchg);
 
 int wcd9xxx_spmi_suspend(pm_message_t pmesg)
 {
@@ -279,7 +279,7 @@ int wcd9xxx_spmi_suspend(pm_message_t pmesg)
 
 	return ret;
 }
-EXPORT_SYMBOL(wcd9xxx_spmi_suspend);
+EXPORT_SYMBOL_GPL(wcd9xxx_spmi_suspend);
 
 int wcd9xxx_spmi_resume(void)
 {
@@ -302,7 +302,7 @@ int wcd9xxx_spmi_resume(void)
 
 	return ret;
 }
-EXPORT_SYMBOL(wcd9xxx_spmi_resume);
+EXPORT_SYMBOL_GPL(wcd9xxx_spmi_resume);
 
 bool wcd9xxx_spmi_lock_sleep(void)
 {
@@ -348,7 +348,7 @@ bool wcd9xxx_spmi_lock_sleep(void)
 	pr_debug("%s: leaving pm_state = %d\n", __func__, map.pm_state);
 	return true;
 }
-EXPORT_SYMBOL(wcd9xxx_spmi_lock_sleep);
+EXPORT_SYMBOL_GPL(wcd9xxx_spmi_lock_sleep);
 
 void wcd9xxx_spmi_unlock_sleep(void)
 {
@@ -372,7 +372,7 @@ void wcd9xxx_spmi_unlock_sleep(void)
 	pr_debug("%s: map.pm_state = %d\n", __func__, map.pm_state);
 	wake_up_all(&map.pm_wq);
 }
-EXPORT_SYMBOL(wcd9xxx_spmi_unlock_sleep);
+EXPORT_SYMBOL_GPL(wcd9xxx_spmi_unlock_sleep);
 
 void wcd9xxx_spmi_set_codec(struct snd_soc_component *component)
 {

@@ -648,7 +648,7 @@ void *wcd_cpe_get_core_handle(
 done:
 	return core;
 }
-EXPORT_SYMBOL(wcd_cpe_get_core_handle);
+EXPORT_SYMBOL_GPL(wcd_cpe_get_core_handle);
 
 /*
  * svass_engine_irq: threaded interrupt handler for svass engine irq
@@ -1155,7 +1155,7 @@ int wcd_cpe_ssr_event(void *core_handle,
 
 	return 0;
 }
-EXPORT_SYMBOL(wcd_cpe_ssr_event);
+EXPORT_SYMBOL_GPL(wcd_cpe_ssr_event);
 
 /*
  * svass_exception_irq: threaded irq handler for sva error interrupts
@@ -2064,7 +2064,7 @@ fail_cpe_initialize:
 	kfree(core);
 	return NULL;
 }
-EXPORT_SYMBOL(wcd_cpe_init);
+EXPORT_SYMBOL_GPL(wcd_cpe_init);
 
 /*
  * wcd_cpe_cmi_lsm_callback: callback called from cpe services
@@ -3935,7 +3935,7 @@ int wcd_cpe_get_lsm_ops(struct wcd_cpe_lsm_ops *lsm_ops)
 
 	return 0;
 }
-EXPORT_SYMBOL(wcd_cpe_get_lsm_ops);
+EXPORT_SYMBOL_GPL(wcd_cpe_get_lsm_ops);
 
 static int fill_afe_cmd_header(struct cmi_hdr *hdr, u8 port_id,
 				u16 opcode, u8 pld_size,
@@ -4586,7 +4586,7 @@ int wcd_cpe_get_afe_ops(struct wcd_cpe_afe_ops *afe_ops)
 
 	return 0;
 }
-EXPORT_SYMBOL(wcd_cpe_get_afe_ops);
+EXPORT_SYMBOL_GPL(wcd_cpe_get_afe_ops);
 
 MODULE_DESCRIPTION("WCD CPE Core");
 MODULE_LICENSE("GPL v2");

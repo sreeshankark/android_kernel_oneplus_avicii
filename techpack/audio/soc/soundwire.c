@@ -85,7 +85,7 @@ void swr_remove_device(struct swr_device *swr_dev)
 			list_del_init(&swr_dev_loop->dev_list);
 	}
 }
-EXPORT_SYMBOL(swr_remove_device);
+EXPORT_SYMBOL_GPL(swr_remove_device);
 
 /**
  * swr_new_device - instantiate a new soundwire device
@@ -145,7 +145,7 @@ err_out:
 	kfree(swr);
 	return NULL;
 }
-EXPORT_SYMBOL(swr_new_device);
+EXPORT_SYMBOL_GPL(swr_new_device);
 
 /**
  * of_register_swr_devices - register child devices on to the soundwire bus
@@ -193,7 +193,7 @@ int of_register_swr_devices(struct swr_master *master)
 	}
 	return 0;
 }
-EXPORT_SYMBOL(of_register_swr_devices);
+EXPORT_SYMBOL_GPL(of_register_swr_devices);
 
 /**
  * swr_port_response - response from master to free the completed transaction
@@ -216,7 +216,7 @@ void swr_port_response(struct swr_master *mstr, u8 tid)
 	mstr->port_txn[tid] = NULL;
 	kfree(txn);
 }
-EXPORT_SYMBOL(swr_port_response);
+EXPORT_SYMBOL_GPL(swr_port_response);
 
 /**
  * swr_remove_from_group - remove soundwire slave devices from group
@@ -248,7 +248,7 @@ int swr_remove_from_group(struct swr_device *dev, u8 dev_num)
 
 	return 0;
 }
-EXPORT_SYMBOL(swr_remove_from_group);
+EXPORT_SYMBOL_GPL(swr_remove_from_group);
 
 /**
  * swr_slvdev_datapath_control - Enables/Disables soundwire slave device
@@ -286,7 +286,7 @@ int swr_slvdev_datapath_control(struct swr_device *dev, u8 dev_num,
 
 	return ret;
 }
-EXPORT_SYMBOL(swr_slvdev_datapath_control);
+EXPORT_SYMBOL_GPL(swr_slvdev_datapath_control);
 
 /**
  * swr_connect_port - enable soundwire slave port(s)
@@ -377,7 +377,7 @@ int swr_connect_port(struct swr_device *dev, u8 *port_id, u8 num_port,
 	ret = master->connect_port(master, txn);
 	return ret;
 }
-EXPORT_SYMBOL(swr_connect_port);
+EXPORT_SYMBOL_GPL(swr_connect_port);
 
 /**
  * swr_disconnect_port - disable soundwire slave port(s)
@@ -456,7 +456,7 @@ int swr_disconnect_port(struct swr_device *dev, u8 *port_id, u8 num_port,
 	ret = master->disconnect_port(master, txn);
 	return ret;
 }
-EXPORT_SYMBOL(swr_disconnect_port);
+EXPORT_SYMBOL_GPL(swr_disconnect_port);
 
 /**
  * swr_get_logical_dev_num - Get soundwire slave logical device number
@@ -485,7 +485,7 @@ int swr_get_logical_dev_num(struct swr_device *dev, u64 dev_id,
 	mutex_unlock(&master->mlock);
 	return ret;
 }
-EXPORT_SYMBOL(swr_get_logical_dev_num);
+EXPORT_SYMBOL_GPL(swr_get_logical_dev_num);
 
 /**
  * swr_device_wakeup_vote - Wakeup master and slave devices from clock stop
@@ -512,7 +512,7 @@ int swr_device_wakeup_vote(struct swr_device *dev)
 
 	return ret;
 }
-EXPORT_SYMBOL(swr_device_wakeup_vote);
+EXPORT_SYMBOL_GPL(swr_device_wakeup_vote);
 
 /**
  * swr_device_wakeup_unvote - Unvote Wakeup so that master and slave
@@ -540,7 +540,7 @@ int swr_device_wakeup_unvote(struct swr_device *dev)
 
 	return ret;
 }
-EXPORT_SYMBOL(swr_device_wakeup_unvote);
+EXPORT_SYMBOL_GPL(swr_device_wakeup_unvote);
 
 /**
  * swr_read - read soundwire slave device registers
@@ -562,7 +562,7 @@ int swr_read(struct swr_device *dev, u8 dev_num, u16 reg_addr,
 		return -EINVAL;
 	return master->read(master, dev_num, reg_addr, buf, len);
 }
-EXPORT_SYMBOL(swr_read);
+EXPORT_SYMBOL_GPL(swr_read);
 
 /**
  * swr_bulk_write - write soundwire slave device registers
@@ -598,7 +598,7 @@ int swr_bulk_write(struct swr_device *dev, u8 dev_num, void *reg,
 
 	return -EOPNOTSUPP;
 }
-EXPORT_SYMBOL(swr_bulk_write);
+EXPORT_SYMBOL_GPL(swr_bulk_write);
 
 /**
  * swr_write - write soundwire slave device registers
@@ -629,7 +629,7 @@ int swr_write(struct swr_device *dev, u8 dev_num, u16 reg_addr,
 	}
 	return master->write(master, dev_num, reg_addr, buf);
 }
-EXPORT_SYMBOL(swr_write);
+EXPORT_SYMBOL_GPL(swr_write);
 
 /**
  * swr_device_up - Function to bringup the soundwire slave device
@@ -657,7 +657,7 @@ int swr_device_up(struct swr_device *swr_dev)
 
 	return -ENODEV;
 }
-EXPORT_SYMBOL(swr_device_up);
+EXPORT_SYMBOL_GPL(swr_device_up);
 
 /**
  * swr_device_down - Function to call soundwire slave device down
@@ -685,7 +685,7 @@ int swr_device_down(struct swr_device *swr_dev)
 
 	return -ENODEV;
 }
-EXPORT_SYMBOL(swr_device_down);
+EXPORT_SYMBOL_GPL(swr_device_down);
 
 /**
  * swr_reset_device - reset soundwire slave device
@@ -714,7 +714,7 @@ int swr_reset_device(struct swr_device *swr_dev)
 
 	return -ENODEV;
 }
-EXPORT_SYMBOL(swr_reset_device);
+EXPORT_SYMBOL_GPL(swr_reset_device);
 
 /**
  * swr_set_device_group - Assign group id to the slave devices
@@ -739,7 +739,7 @@ int swr_set_device_group(struct swr_device *swr_dev, u8 id)
 
 	return 0;
 }
-EXPORT_SYMBOL(swr_set_device_group);
+EXPORT_SYMBOL_GPL(swr_set_device_group);
 
 static int swr_drv_probe(struct device *dev)
 {
@@ -794,7 +794,7 @@ int swr_driver_register(struct swr_driver *drv)
 
 	return driver_register(&drv->driver);
 }
-EXPORT_SYMBOL(swr_driver_register);
+EXPORT_SYMBOL_GPL(swr_driver_register);
 
 /**
  * swr_driver_unregister - unregister a soundwire driver
@@ -805,7 +805,7 @@ void swr_driver_unregister(struct swr_driver *drv)
 	if (drv)
 		driver_unregister(&drv->driver);
 }
-EXPORT_SYMBOL(swr_driver_unregister);
+EXPORT_SYMBOL_GPL(swr_driver_unregister);
 
 static void swr_match_ctrl_to_boardinfo(struct swr_master *master,
 				struct swr_boardinfo *bi)
@@ -843,7 +843,7 @@ void swr_master_add_boarddevices(struct swr_master *master)
 		swr_match_ctrl_to_boardinfo(master, &bi->board_info);
 	mutex_unlock(&board_lock);
 }
-EXPORT_SYMBOL(swr_master_add_boarddevices);
+EXPORT_SYMBOL_GPL(swr_master_add_boarddevices);
 
 struct swr_device *get_matching_swr_slave_device(struct device_node *np)
 {
@@ -869,7 +869,7 @@ exit:
 		return NULL;
 	return swr;
 }
-EXPORT_SYMBOL(get_matching_swr_slave_device);
+EXPORT_SYMBOL_GPL(get_matching_swr_slave_device);
 
 static void swr_unregister_device(struct swr_device *swr)
 {
@@ -924,7 +924,7 @@ void swr_unregister_master(struct swr_master *master)
 	dummy = device_for_each_child(&master->dev, NULL, __unregister);
 	device_unregister(&master->dev);
 }
-EXPORT_SYMBOL(swr_unregister_master);
+EXPORT_SYMBOL_GPL(swr_unregister_master);
 
 /**
  * swr_register_master - register soundwire master controller
@@ -974,7 +974,7 @@ done:
 	idr_remove(&master_idr, master->bus_num);
 	return status;
 }
-EXPORT_SYMBOL(swr_register_master);
+EXPORT_SYMBOL_GPL(swr_register_master);
 
 #define swr_device_attr_gr NULL
 #define swr_device_uevent NULL
@@ -1098,7 +1098,7 @@ struct bus_type soundwire_type = {
 	.match		= swr_device_match,
 	.pm		= &soundwire_pm,
 };
-EXPORT_SYMBOL(soundwire_type);
+EXPORT_SYMBOL_GPL(soundwire_type);
 
 static void __exit soundwire_exit(void)
 {

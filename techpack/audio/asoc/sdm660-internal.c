@@ -3203,4 +3203,4 @@ int msm_int_cdc_init(struct platform_device *pdev,
 	msm_internal_init(pdev, pdata, *card);
 	return 0;
 }
-EXPORT_SYMBOL(msm_int_cdc_init);
+EXPORT_SYMBOL_GPL(msm_int_cdc_init);

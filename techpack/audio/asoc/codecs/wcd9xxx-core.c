@@ -155,7 +155,7 @@ int wcd9xxx_vote_ondemand_regulator(struct wcd9xxx *wcd9xxx,
 
 	return 0;
 }
-EXPORT_SYMBOL(wcd9xxx_vote_ondemand_regulator);
+EXPORT_SYMBOL_GPL(wcd9xxx_vote_ondemand_regulator);
 
 static int wcd9xxx_slim_multi_reg_write(struct wcd9xxx *wcd9xxx,
 					const void *data, size_t count)
@@ -242,7 +242,7 @@ int wcd9xxx_interface_reg_read(struct wcd9xxx *wcd9xxx, unsigned short reg)
 	else
 		return val;
 }
-EXPORT_SYMBOL(wcd9xxx_interface_reg_read);
+EXPORT_SYMBOL_GPL(wcd9xxx_interface_reg_read);
 
 /*
  * wcd9xxx_interface_reg_write: Write slim interface registers
@@ -266,7 +266,7 @@ int wcd9xxx_interface_reg_write(struct wcd9xxx *wcd9xxx, unsigned short reg,
 
 	return ret;
 }
-EXPORT_SYMBOL(wcd9xxx_interface_reg_write);
+EXPORT_SYMBOL_GPL(wcd9xxx_interface_reg_write);
 
 static int wcd9xxx_slim_read_device(struct wcd9xxx *wcd9xxx, unsigned short reg,
 				int bytes, void *dest, bool interface)
@@ -431,7 +431,7 @@ done:
 
 	return ret;
 }
-EXPORT_SYMBOL(wcd9xxx_slim_write_repeat);
+EXPORT_SYMBOL_GPL(wcd9xxx_slim_write_repeat);
 
 /*
  * wcd9xxx_slim_reserve_bw: API to reserve the slimbus bandwidth
@@ -452,7 +452,7 @@ int wcd9xxx_slim_reserve_bw(struct wcd9xxx *wcd9xxx,
 
 	return slim_reservemsg_bw(wcd9xxx->slim, bw_ops, commit);
 }
-EXPORT_SYMBOL(wcd9xxx_slim_reserve_bw);
+EXPORT_SYMBOL_GPL(wcd9xxx_slim_reserve_bw);
 
 /*
  * wcd9xxx_slim_bulk_write: API to write multiple registers with one descriptor
@@ -522,7 +522,7 @@ err:
 mem_fail:
 	return ret;
 }
-EXPORT_SYMBOL(wcd9xxx_slim_bulk_write);
+EXPORT_SYMBOL_GPL(wcd9xxx_slim_bulk_write);
 
 static int wcd9xxx_num_irq_regs(const struct wcd9xxx *wcd9xxx)
 {

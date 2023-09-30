@@ -3680,7 +3680,7 @@ done:
 	}
 	return ret;
 }
-EXPORT_SYMBOL(swrm_wcd_notify);
+EXPORT_SYMBOL_GPL(swrm_wcd_notify);
 
 /*
  * swrm_pm_cmpxchg:

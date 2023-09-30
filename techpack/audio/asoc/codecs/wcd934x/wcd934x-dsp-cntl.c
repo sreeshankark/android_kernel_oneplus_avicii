@@ -1413,7 +1413,7 @@ int wcd_dsp_ssr_event(struct wcd_dsp_cntl *cntl, enum cdc_ssr_event event)
 
 	return ret;
 }
-EXPORT_SYMBOL(wcd_dsp_ssr_event);
+EXPORT_SYMBOL_GPL(wcd_dsp_ssr_event);
 
 /*
  * wcd_dsp_cntl_init: Initialize the wcd-dsp control
@@ -1489,7 +1489,7 @@ void wcd_dsp_cntl_init(struct snd_soc_component *component,
 		*cntl = NULL;
 	}
 }
-EXPORT_SYMBOL(wcd_dsp_cntl_init);
+EXPORT_SYMBOL_GPL(wcd_dsp_cntl_init);
 
 /*
  * wcd_dsp_cntl_deinit: De-initialize the wcd-dsp control
@@ -1523,4 +1523,4 @@ void wcd_dsp_cntl_deinit(struct wcd_dsp_cntl **cntl)
 	kfree(*cntl);
 	*cntl = NULL;
 }
-EXPORT_SYMBOL(wcd_dsp_cntl_deinit);
+EXPORT_SYMBOL_GPL(wcd_dsp_cntl_deinit);

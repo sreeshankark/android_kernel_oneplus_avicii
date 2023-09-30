@@ -291,7 +291,7 @@ void wcd_clsh_imped_config(struct snd_soc_component *component, int imped,
 				imped_table_ptr[index][i].mask,
 				imped_table_ptr[index][i].val);
 }
-EXPORT_SYMBOL(wcd_clsh_imped_config);
+EXPORT_SYMBOL_GPL(wcd_clsh_imped_config);
 
 static bool is_native_44_1_active(struct snd_soc_component *component)
 {
@@ -1359,13 +1359,13 @@ void wcd_clsh_fsm(struct snd_soc_component *component,
 		break;
 	};
 }
-EXPORT_SYMBOL(wcd_clsh_fsm);
+EXPORT_SYMBOL_GPL(wcd_clsh_fsm);
 
 int wcd_clsh_get_clsh_state(struct wcd_clsh_cdc_data *clsh)
 {
 	return clsh->state;
 }
-EXPORT_SYMBOL(wcd_clsh_get_clsh_state);
+EXPORT_SYMBOL_GPL(wcd_clsh_get_clsh_state);
 
 void wcd_clsh_init(struct wcd_clsh_cdc_data *clsh)
 {
@@ -1404,7 +1404,7 @@ void wcd_clsh_init(struct wcd_clsh_cdc_data *clsh)
 	clsh->buck_users = 0;
 	clsh->clsh_users = 0;
 }
-EXPORT_SYMBOL(wcd_clsh_init);
+EXPORT_SYMBOL_GPL(wcd_clsh_init);
 
 MODULE_DESCRIPTION("WCD9XXX Common Driver");
 MODULE_LICENSE("GPL v2");

@@ -284,7 +284,7 @@ void msm_dts_srs_tm_add_controls(struct snd_soc_component *component)
 				lpa_srs_trumedia_controls_mi2s,
 			ARRAY_SIZE(lpa_srs_trumedia_controls_mi2s));
 }
-EXPORT_SYMBOL(msm_dts_srs_tm_add_controls);
+EXPORT_SYMBOL_GPL(msm_dts_srs_tm_add_controls);
 
 static int reg_ion_mem(void)
 {
@@ -339,7 +339,7 @@ void msm_dts_srs_tm_deinit(int port_id)
 		}
 	}
 }
-EXPORT_SYMBOL(msm_dts_srs_tm_deinit);
+EXPORT_SYMBOL_GPL(msm_dts_srs_tm_deinit);
 
 /**
  * msm_dts_srs_tm_init -
@@ -370,4 +370,4 @@ void msm_dts_srs_tm_init(int port_id, int copp_idx)
 	}
 	msm_dts_srs_tm_send_params(port_id, 1);
 }
-EXPORT_SYMBOL(msm_dts_srs_tm_init);
+EXPORT_SYMBOL_GPL(msm_dts_srs_tm_init);

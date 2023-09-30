@@ -391,7 +391,7 @@ int afe_get_sp_xt_logging_data(u16 port_id)
 
 	return ret;
 }
-EXPORT_SYMBOL(afe_get_sp_xt_logging_data);
+EXPORT_SYMBOL_GPL(afe_get_sp_xt_logging_data);
 
 int __init spk_params_init(void)
 {

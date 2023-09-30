@@ -895,7 +895,7 @@ int aqt_mbhc_get_impedance(struct aqt1000_mbhc *aqt_mbhc,
 
 	return wcd_mbhc_get_impedance(&aqt_mbhc->wcd_mbhc, zl, zr);
 }
-EXPORT_SYMBOL(aqt_mbhc_get_impedance);
+EXPORT_SYMBOL_GPL(aqt_mbhc_get_impedance);
 
 /*
  * aqt_mbhc_hs_detect: starts mbhc insertion/removal functionality
@@ -929,7 +929,7 @@ int aqt_mbhc_hs_detect(struct snd_soc_component *component,
 
 	return wcd_mbhc_start(&aqt_mbhc->wcd_mbhc, mbhc_cfg);
 }
-EXPORT_SYMBOL(aqt_mbhc_hs_detect);
+EXPORT_SYMBOL_GPL(aqt_mbhc_hs_detect);
 
 /*
  * aqt_mbhc_hs_detect_exit: stop mbhc insertion/removal functionality
@@ -959,7 +959,7 @@ void aqt_mbhc_hs_detect_exit(struct snd_soc_component *component)
 	}
 	wcd_mbhc_stop(&aqt_mbhc->wcd_mbhc);
 }
-EXPORT_SYMBOL(aqt_mbhc_hs_detect_exit);
+EXPORT_SYMBOL_GPL(aqt_mbhc_hs_detect_exit);
 
 /*
  * aqt_mbhc_post_ssr_init: initialize mbhc for aqt post subsystem restart
@@ -995,7 +995,7 @@ int aqt_mbhc_post_ssr_init(struct aqt1000_mbhc *mbhc,
 done:
 	return ret;
 }
-EXPORT_SYMBOL(aqt_mbhc_post_ssr_init);
+EXPORT_SYMBOL_GPL(aqt_mbhc_post_ssr_init);
 
 /*
  * aqt_mbhc_init: initialize mbhc for aqt
@@ -1057,7 +1057,7 @@ err:
 	devm_kfree(component->dev, aqt_mbhc);
 	return ret;
 }
-EXPORT_SYMBOL(aqt_mbhc_init);
+EXPORT_SYMBOL_GPL(aqt_mbhc_init);
 
 /*
  * aqt_mbhc_deinit: deinitialize mbhc for aqt
@@ -1085,4 +1085,4 @@ void aqt_mbhc_deinit(struct snd_soc_component *component)
 		devm_kfree(component->dev, aqt_mbhc);
 	}
 }
-EXPORT_SYMBOL(aqt_mbhc_deinit);
+EXPORT_SYMBOL_GPL(aqt_mbhc_deinit);

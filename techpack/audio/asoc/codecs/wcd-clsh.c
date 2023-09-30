@@ -280,7 +280,7 @@ void wcd_clsh_set_hph_mode(struct snd_soc_component *component,
 
 	snd_soc_component_update_bits(component, WCD9XXX_ANA_HPH, 0x0C, val);
 }
-EXPORT_SYMBOL(wcd_clsh_set_hph_mode);
+EXPORT_SYMBOL_GPL(wcd_clsh_set_hph_mode);
 
 static void wcd_clsh_set_flyback_current(struct snd_soc_component *component,
 				int mode)
@@ -570,7 +570,7 @@ void wcd_cls_h_fsm(struct snd_soc_component *component,
 		break;
 	};
 }
-EXPORT_SYMBOL(wcd_cls_h_fsm);
+EXPORT_SYMBOL_GPL(wcd_cls_h_fsm);
 
 /*
  * wcd_cls_h_init: Called to init clsh info
@@ -607,7 +607,7 @@ void wcd_cls_h_init(struct wcd_clsh_cdc_info *clsh)
 	clsh->flyback_users = 0;
 	clsh->buck_users = 0;
 }
-EXPORT_SYMBOL(wcd_cls_h_init);
+EXPORT_SYMBOL_GPL(wcd_cls_h_init);
 
 MODULE_DESCRIPTION("WCD Class-H Driver");
 MODULE_LICENSE("GPL v2");

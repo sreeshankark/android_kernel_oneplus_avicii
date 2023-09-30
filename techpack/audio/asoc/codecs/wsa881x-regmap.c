@@ -199,7 +199,7 @@ void wsa881x_regmap_defaults(struct regmap *regmap, u8 version)
 		pr_debug("%s: Failed to update regmap defaults ret= %d\n",
 			 __func__, ret);
 }
-EXPORT_SYMBOL(wsa881x_regmap_defaults);
+EXPORT_SYMBOL_GPL(wsa881x_regmap_defaults);
 
 static bool wsa881x_readable_register(struct device *dev, unsigned int reg)
 {

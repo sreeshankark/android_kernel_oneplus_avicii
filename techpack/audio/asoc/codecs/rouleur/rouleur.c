@@ -430,7 +430,7 @@ struct rouleur_mbhc *rouleur_soc_get_mbhc(struct snd_soc_component *component)
 
 	return rouleur->mbhc;
 }
-EXPORT_SYMBOL(rouleur_soc_get_mbhc);
+EXPORT_SYMBOL_GPL(rouleur_soc_get_mbhc);
 
 static int rouleur_codec_hphl_dac_event(struct snd_soc_dapm_widget *w,
 					struct snd_kcontrol *kcontrol,
@@ -1134,7 +1134,7 @@ int rouleur_get_micb_vout_ctl_val(u32 micb_mv)
 
 	return (micb_mv - 1600) / 50;
 }
-EXPORT_SYMBOL(rouleur_get_micb_vout_ctl_val);
+EXPORT_SYMBOL_GPL(rouleur_get_micb_vout_ctl_val);
 
 /*
  * rouleur_mbhc_micb_adjust_voltage: adjust specific micbias voltage
@@ -1219,7 +1219,7 @@ exit:
 	mutex_unlock(&rouleur->micb_lock);
 	return ret;
 }
-EXPORT_SYMBOL(rouleur_mbhc_micb_adjust_voltage);
+EXPORT_SYMBOL_GPL(rouleur_mbhc_micb_adjust_voltage);
 
 int rouleur_micbias_control(struct snd_soc_component *component,
 				int micb_num, int req, bool is_dapm)
@@ -1361,7 +1361,7 @@ done:
 	mutex_unlock(&rouleur->micb_lock);
 	return 0;
 }
-EXPORT_SYMBOL(rouleur_micbias_control);
+EXPORT_SYMBOL_GPL(rouleur_micbias_control);
 
 void rouleur_disable_bcs_before_slow_insert(struct snd_soc_component *component,
 					    bool bcs_disable)
@@ -2005,7 +2005,7 @@ int rouleur_info_create_codec_entry(struct snd_info_entry *codec_root,
 
 	return 0;
 }
-EXPORT_SYMBOL(rouleur_info_create_codec_entry);
+EXPORT_SYMBOL_GPL(rouleur_info_create_codec_entry);
 
 static int rouleur_set_micbias_data(struct rouleur_priv *rouleur,
 			      struct rouleur_pdata *pdata)

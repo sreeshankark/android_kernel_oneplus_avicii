@@ -209,7 +209,7 @@ uint8_t q6asm_get_buf_index_from_token(uint32_t token)
 	asm_token.token = token;
 	return asm_token._token.buf_index;
 }
-EXPORT_SYMBOL(q6asm_get_buf_index_from_token);
+EXPORT_SYMBOL_GPL(q6asm_get_buf_index_from_token);
 
 /*
  * q6asm_get_stream_id_from_token:
@@ -225,7 +225,7 @@ uint8_t q6asm_get_stream_id_from_token(uint32_t token)
 	asm_token.token = token;
 	return asm_token._token.stream_id;
 }
-EXPORT_SYMBOL(q6asm_get_stream_id_from_token);
+EXPORT_SYMBOL_GPL(q6asm_get_stream_id_from_token);
 
 static uint32_t adsp_reg_event_opcode[] = {
 	ASM_STREAM_CMD_REGISTER_PP_EVENTS,
@@ -1103,7 +1103,7 @@ int q6asm_audio_client_buf_free_contiguous(unsigned int dir,
 	mutex_unlock(&ac->cmd_lock);
 	return 0;
 }
-EXPORT_SYMBOL(q6asm_audio_client_buf_free_contiguous);
+EXPORT_SYMBOL_GPL(q6asm_audio_client_buf_free_contiguous);
 
 /**
  * q6asm_audio_client_free -
@@ -1154,7 +1154,7 @@ void q6asm_audio_client_free(struct audio_client *ac)
 /*done:*/
 	mutex_unlock(&session_lock);
 }
-EXPORT_SYMBOL(q6asm_audio_client_free);
+EXPORT_SYMBOL_GPL(q6asm_audio_client_free);
 
 /**
  * q6asm_set_io_mode -
@@ -1191,7 +1191,7 @@ int q6asm_set_io_mode(struct audio_client *ac, uint32_t mode1)
 
 	return ret;
 }
-EXPORT_SYMBOL(q6asm_set_io_mode);
+EXPORT_SYMBOL_GPL(q6asm_set_io_mode);
 
 void *q6asm_mmap_apr_reg(void)
 {
@@ -1312,7 +1312,7 @@ fail_send_param:
 done:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_send_stream_cmd);
+EXPORT_SYMBOL_GPL(q6asm_send_stream_cmd);
 
 /**
  * q6asm_audio_client_alloc -
@@ -1418,7 +1418,7 @@ fail_apr1:
 fail_session:
 	return NULL;
 }
-EXPORT_SYMBOL(q6asm_audio_client_alloc);
+EXPORT_SYMBOL_GPL(q6asm_audio_client_alloc);
 
 /**
  * q6asm_get_audio_client -
@@ -1446,7 +1446,7 @@ struct audio_client *q6asm_get_audio_client(int session_id)
 err:
 	return NULL;
 }
-EXPORT_SYMBOL(q6asm_get_audio_client);
+EXPORT_SYMBOL_GPL(q6asm_get_audio_client);
 
 /**
  * q6asm_audio_client_buf_alloc -
@@ -1548,7 +1548,7 @@ fail:
 	q6asm_audio_client_buf_free(dir, ac);
 	return -EINVAL;
 }
-EXPORT_SYMBOL(q6asm_audio_client_buf_alloc);
+EXPORT_SYMBOL_GPL(q6asm_audio_client_buf_alloc);
 
 /**
  * q6asm_audio_client_buf_alloc_contiguous -
@@ -1671,7 +1671,7 @@ fail:
 	q6asm_audio_client_buf_free_contiguous(dir, ac);
 	return -EINVAL;
 }
-EXPORT_SYMBOL(q6asm_audio_client_buf_alloc_contiguous);
+EXPORT_SYMBOL_GPL(q6asm_audio_client_buf_alloc_contiguous);
 
 static int32_t q6asm_srvc_callback(struct apr_client_data *data, void *priv)
 {
@@ -2585,7 +2585,7 @@ void *q6asm_is_cpu_buf_avail(int dir, struct audio_client *ac, uint32_t *size,
 	}
 	return NULL;
 }
-EXPORT_SYMBOL(q6asm_is_cpu_buf_avail);
+EXPORT_SYMBOL_GPL(q6asm_is_cpu_buf_avail);
 
 /**
  * q6asm_cpu_buf_release -
@@ -2629,7 +2629,7 @@ int q6asm_cpu_buf_release(int dir, struct audio_client *ac)
 exit:
 	return ret;
 }
-EXPORT_SYMBOL(q6asm_cpu_buf_release);
+EXPORT_SYMBOL_GPL(q6asm_cpu_buf_release);
 
 /**
  * q6asm_is_cpu_buf_avail_nolock -
@@ -2691,7 +2691,7 @@ void *q6asm_is_cpu_buf_avail_nolock(int dir, struct audio_client *ac,
 					   port->max_buf_cnt);
 	return data;
 }
-EXPORT_SYMBOL(q6asm_is_cpu_buf_avail_nolock);
+EXPORT_SYMBOL_GPL(q6asm_is_cpu_buf_avail_nolock);
 
 int q6asm_is_dsp_buf_avail(int dir, struct audio_client *ac)
 {
@@ -2986,7 +2986,7 @@ done:
 	kfree(asm_set_param);
 	return ret;
 }
-EXPORT_SYMBOL(q6asm_set_pp_params);
+EXPORT_SYMBOL_GPL(q6asm_set_pp_params);
 
 /**
  * q6asm_pack_and_set_pp_param_in_band
@@ -3027,7 +3027,7 @@ done:
 	kfree(packed_data);
 	return ret;
 }
-EXPORT_SYMBOL(q6asm_pack_and_set_pp_param_in_band);
+EXPORT_SYMBOL_GPL(q6asm_pack_and_set_pp_param_in_band);
 
 /**
  * q6asm_set_soft_volume_module_instance_ids
@@ -3060,7 +3060,7 @@ int q6asm_set_soft_volume_module_instance_ids(int instance,
 		return -EINVAL;
 	}
 }
-EXPORT_SYMBOL(q6asm_set_soft_volume_module_instance_ids);
+EXPORT_SYMBOL_GPL(q6asm_set_soft_volume_module_instance_ids);
 
 /**
  * q6asm_open_read_compressed -
@@ -3145,7 +3145,7 @@ int q6asm_open_read_compressed(struct audio_client *ac, uint32_t format,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_open_read_compressed);
+EXPORT_SYMBOL_GPL(q6asm_open_read_compressed);
 
 static int __q6asm_open_read(struct audio_client *ac,
 			     uint32_t format, uint16_t bits_per_sample,
@@ -3286,7 +3286,7 @@ int q6asm_open_read(struct audio_client *ac,
 				PCM_MEDIA_FORMAT_V2 /*media fmt block ver*/,
 				false/*ts_mode*/, ENC_CFG_ID_NONE);
 }
-EXPORT_SYMBOL(q6asm_open_read);
+EXPORT_SYMBOL_GPL(q6asm_open_read);
 
 int q6asm_open_read_v2(struct audio_client *ac, uint32_t format,
 			uint16_t bits_per_sample)
@@ -3310,7 +3310,7 @@ int q6asm_open_read_v3(struct audio_client *ac, uint32_t format,
 				 PCM_MEDIA_FORMAT_V3/*media fmt block ver*/,
 				 false/*ts_mode*/, ENC_CFG_ID_NONE);
 }
-EXPORT_SYMBOL(q6asm_open_read_v3);
+EXPORT_SYMBOL_GPL(q6asm_open_read_v3);
 
 /*
  * asm_open_read_v4 - Opens audio capture session
@@ -3328,7 +3328,7 @@ int q6asm_open_read_v4(struct audio_client *ac, uint32_t format,
 				 PCM_MEDIA_FORMAT_V4 /*media fmt block ver*/,
 				 ts_mode, enc_cfg_id);
 }
-EXPORT_SYMBOL(q6asm_open_read_v4);
+EXPORT_SYMBOL_GPL(q6asm_open_read_v4);
 
 
 /*
@@ -3346,7 +3346,7 @@ int q6asm_open_read_v5(struct audio_client *ac, uint32_t format,
 				 PCM_MEDIA_FORMAT_V5 /*media fmt block ver*/,
 				 ts_mode, enc_cfg_id);
 }
-EXPORT_SYMBOL(q6asm_open_read_v5);
+EXPORT_SYMBOL_GPL(q6asm_open_read_v5);
 
 
 /**
@@ -3463,7 +3463,7 @@ int q6asm_open_write_compressed(struct audio_client *ac, uint32_t format,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_open_write_compressed);
+EXPORT_SYMBOL_GPL(q6asm_open_write_compressed);
 
 static int __q6asm_open_write(struct audio_client *ac, uint32_t format,
 			      uint16_t bits_per_sample, uint32_t stream_id,
@@ -3637,7 +3637,7 @@ int q6asm_open_write(struct audio_client *ac, uint32_t format)
 				  false /*gapless*/,
 				  PCM_MEDIA_FORMAT_V2 /*pcm_format_block_ver*/);
 }
-EXPORT_SYMBOL(q6asm_open_write);
+EXPORT_SYMBOL_GPL(q6asm_open_write);
 
 int q6asm_open_write_v2(struct audio_client *ac, uint32_t format,
 			uint16_t bits_per_sample)
@@ -3661,7 +3661,7 @@ int q6asm_open_write_v3(struct audio_client *ac, uint32_t format,
 				  ac->stream_id, false /*gapless*/,
 				  PCM_MEDIA_FORMAT_V3 /*pcm_format_block_ver*/);
 }
-EXPORT_SYMBOL(q6asm_open_write_v3);
+EXPORT_SYMBOL_GPL(q6asm_open_write_v3);
 
 /*
  * q6asm_open_write_v4 - Opens audio playback session
@@ -3677,7 +3677,7 @@ int q6asm_open_write_v4(struct audio_client *ac, uint32_t format,
 				  ac->stream_id, false /*gapless*/,
 				  PCM_MEDIA_FORMAT_V4 /*pcm_format_block_ver*/);
 }
-EXPORT_SYMBOL(q6asm_open_write_v4);
+EXPORT_SYMBOL_GPL(q6asm_open_write_v4);
 
 int q6asm_stream_open_write_v2(struct audio_client *ac, uint32_t format,
 			       uint16_t bits_per_sample, int32_t stream_id,
@@ -3705,7 +3705,7 @@ int q6asm_stream_open_write_v3(struct audio_client *ac, uint32_t format,
 				  stream_id, is_gapless_mode,
 				  PCM_MEDIA_FORMAT_V3 /*pcm_format_block_ver*/);
 }
-EXPORT_SYMBOL(q6asm_stream_open_write_v3);
+EXPORT_SYMBOL_GPL(q6asm_stream_open_write_v3);
 
 /*
  * q6asm_open_write_v5 - Opens audio playback session
@@ -3721,7 +3721,7 @@ int q6asm_open_write_v5(struct audio_client *ac, uint32_t format,
 				  ac->stream_id, false /*gapless*/,
 				  PCM_MEDIA_FORMAT_V5 /*pcm_format_block_ver*/);
 }
-EXPORT_SYMBOL(q6asm_open_write_v5);
+EXPORT_SYMBOL_GPL(q6asm_open_write_v5);
 
 
 /*
@@ -3741,7 +3741,7 @@ int q6asm_stream_open_write_v4(struct audio_client *ac, uint32_t format,
 				  stream_id, is_gapless_mode,
 				  PCM_MEDIA_FORMAT_V4 /*pcm_format_block_ver*/);
 }
-EXPORT_SYMBOL(q6asm_stream_open_write_v4);
+EXPORT_SYMBOL_GPL(q6asm_stream_open_write_v4);
 
 /*
  * q6asm_stream_open_write_v5 - Creates audio stream for playback
@@ -3760,7 +3760,7 @@ int q6asm_stream_open_write_v5(struct audio_client *ac, uint32_t format,
 				  stream_id, is_gapless_mode,
 				  PCM_MEDIA_FORMAT_V5 /*pcm_format_block_ver*/);
 }
-EXPORT_SYMBOL(q6asm_stream_open_write_v5);
+EXPORT_SYMBOL_GPL(q6asm_stream_open_write_v5);
 
 
 static int __q6asm_open_read_write(struct audio_client *ac, uint32_t rd_format,
@@ -3953,7 +3953,7 @@ int q6asm_open_read_write(struct audio_client *ac, uint32_t rd_format,
 				       16 /*bits_per_sample*/,
 				       false /*overwrite_topology*/, 0);
 }
-EXPORT_SYMBOL(q6asm_open_read_write);
+EXPORT_SYMBOL_GPL(q6asm_open_read_write);
 
 /**
  * q6asm_open_read_write_v2 -
@@ -3978,7 +3978,7 @@ int q6asm_open_read_write_v2(struct audio_client *ac, uint32_t rd_format,
 				       is_meta_data_mode, bits_per_sample,
 				       overwrite_topology, topology);
 }
-EXPORT_SYMBOL(q6asm_open_read_write_v2);
+EXPORT_SYMBOL_GPL(q6asm_open_read_write_v2);
 
 /**
  * q6asm_open_loopback_v2 -
@@ -4089,7 +4089,7 @@ int q6asm_open_loopback_v2(struct audio_client *ac, uint16_t bits_per_sample)
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_open_loopback_v2);
+EXPORT_SYMBOL_GPL(q6asm_open_loopback_v2);
 
 /**
  * q6asm_open_transcode_loopback -
@@ -4200,7 +4200,7 @@ int q6asm_open_transcode_loopback(struct audio_client *ac,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_open_transcode_loopback);
+EXPORT_SYMBOL_GPL(q6asm_open_transcode_loopback);
 
 static
 int q6asm_set_shared_circ_buff(struct audio_client *ac,
@@ -4499,7 +4499,7 @@ done:
 	kfree(open);
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_open_shared_io);
+EXPORT_SYMBOL_GPL(q6asm_open_shared_io);
 
 /*
  * q6asm_shared_io_buf: Returns handle to the shared circular buffer being
@@ -4520,7 +4520,7 @@ struct audio_buffer *q6asm_shared_io_buf(struct audio_client *ac,
 	port = &ac->port[dir];
 	return port->buf;
 }
-EXPORT_SYMBOL(q6asm_shared_io_buf);
+EXPORT_SYMBOL_GPL(q6asm_shared_io_buf);
 
 /*
  * q6asm_shared_io_free: Frees memory allocated for a pull/push session
@@ -4552,7 +4552,7 @@ int q6asm_shared_io_free(struct audio_client *ac, int dir)
 	mutex_unlock(&ac->cmd_lock);
 	return 0;
 }
-EXPORT_SYMBOL(q6asm_shared_io_free);
+EXPORT_SYMBOL_GPL(q6asm_shared_io_free);
 
 /*
  * q6asm_get_shared_pos: Returns current read index/write index as observed
@@ -4600,7 +4600,7 @@ int q6asm_get_shared_pos(struct audio_client *ac, uint32_t *read_index,
 	       __func__);
 	return -EAGAIN;
 }
-EXPORT_SYMBOL(q6asm_get_shared_pos);
+EXPORT_SYMBOL_GPL(q6asm_get_shared_pos);
 
 /**
  * q6asm_run -
@@ -4669,7 +4669,7 @@ int q6asm_run(struct audio_client *ac, uint32_t flags,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_run);
+EXPORT_SYMBOL_GPL(q6asm_run);
 
 static int __q6asm_run_nowait(struct audio_client *ac, uint32_t flags,
 		uint32_t msw_ts, uint32_t lsw_ts, uint32_t stream_id)
@@ -4718,7 +4718,7 @@ int q6asm_run_nowait(struct audio_client *ac, uint32_t flags,
 {
 	return __q6asm_run_nowait(ac, flags, msw_ts, lsw_ts, ac->stream_id);
 }
-EXPORT_SYMBOL(q6asm_run_nowait);
+EXPORT_SYMBOL_GPL(q6asm_run_nowait);
 
 int q6asm_stream_run_nowait(struct audio_client *ac, uint32_t flags,
 			uint32_t msw_ts, uint32_t lsw_ts, uint32_t stream_id)
@@ -4819,7 +4819,7 @@ int q6asm_enc_cfg_blk_custom(struct audio_client *ac,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_enc_cfg_blk_custom);
+EXPORT_SYMBOL_GPL(q6asm_enc_cfg_blk_custom);
 
 /**
  * q6asm_enc_cfg_blk_aac -
@@ -4891,7 +4891,7 @@ int q6asm_enc_cfg_blk_aac(struct audio_client *ac,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_enc_cfg_blk_aac);
+EXPORT_SYMBOL_GPL(q6asm_enc_cfg_blk_aac);
 
 /**
  * q6asm_enc_cfg_blk_g711 -
@@ -4954,7 +4954,7 @@ int q6asm_enc_cfg_blk_g711(struct audio_client *ac,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_enc_cfg_blk_g711);
+EXPORT_SYMBOL_GPL(q6asm_enc_cfg_blk_g711);
 
 /**
  * q6asm_set_encdec_chan_map -
@@ -5024,7 +5024,7 @@ int q6asm_set_encdec_chan_map(struct audio_client *ac,
 fail_cmd:
 		return rc;
 }
-EXPORT_SYMBOL(q6asm_set_encdec_chan_map);
+EXPORT_SYMBOL_GPL(q6asm_set_encdec_chan_map);
 
 /*
  * q6asm_enc_cfg_blk_pcm_v5 - sends encoder configuration parameters
@@ -5132,7 +5132,7 @@ static int q6asm_enc_cfg_blk_pcm_v5(struct audio_client *ac,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_enc_cfg_blk_pcm_v5);
+EXPORT_SYMBOL_GPL(q6asm_enc_cfg_blk_pcm_v5);
 
 /*
  * q6asm_enc_cfg_blk_pcm_v4 - sends encoder configuration parameters
@@ -5241,7 +5241,7 @@ int q6asm_enc_cfg_blk_pcm_v4(struct audio_client *ac,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_enc_cfg_blk_pcm_v4);
+EXPORT_SYMBOL_GPL(q6asm_enc_cfg_blk_pcm_v4);
 
 /*
  * q6asm_enc_cfg_blk_pcm_v3 - sends encoder configuration parameters
@@ -5345,7 +5345,7 @@ int q6asm_enc_cfg_blk_pcm_v3(struct audio_client *ac,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_enc_cfg_blk_pcm_v3);
+EXPORT_SYMBOL_GPL(q6asm_enc_cfg_blk_pcm_v3);
 
 /**
  * q6asm_enc_cfg_blk_pcm_v2 -
@@ -5445,7 +5445,7 @@ int q6asm_enc_cfg_blk_pcm_v2(struct audio_client *ac,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_enc_cfg_blk_pcm_v2);
+EXPORT_SYMBOL_GPL(q6asm_enc_cfg_blk_pcm_v2);
 
 static int __q6asm_enc_cfg_blk_pcm_v5(struct audio_client *ac,
 				      uint32_t rate, uint32_t channels,
@@ -5503,7 +5503,7 @@ int q6asm_enc_cfg_blk_pcm(struct audio_client *ac,
 {
 	return __q6asm_enc_cfg_blk_pcm(ac, rate, channels, 16);
 }
-EXPORT_SYMBOL(q6asm_enc_cfg_blk_pcm);
+EXPORT_SYMBOL_GPL(q6asm_enc_cfg_blk_pcm);
 
 int q6asm_enc_cfg_blk_pcm_format_support(struct audio_client *ac,
 		uint32_t rate, uint32_t channels, uint16_t bits_per_sample)
@@ -5529,7 +5529,7 @@ int q6asm_enc_cfg_blk_pcm_format_support_v3(struct audio_client *ac,
 	return __q6asm_enc_cfg_blk_pcm_v3(ac, rate, channels,
 					  bits_per_sample, sample_word_size);
 }
-EXPORT_SYMBOL(q6asm_enc_cfg_blk_pcm_format_support_v3);
+EXPORT_SYMBOL_GPL(q6asm_enc_cfg_blk_pcm_format_support_v3);
 
 /*
  * q6asm_enc_cfg_blk_pcm_format_support_v4 - sends encoder configuration
@@ -5554,7 +5554,7 @@ int q6asm_enc_cfg_blk_pcm_format_support_v4(struct audio_client *ac,
 					   bits_per_sample, sample_word_size,
 					   endianness, mode);
 }
-EXPORT_SYMBOL(q6asm_enc_cfg_blk_pcm_format_support_v4);
+EXPORT_SYMBOL_GPL(q6asm_enc_cfg_blk_pcm_format_support_v4);
 
 /*
  * q6asm_enc_cfg_blk_pcm_format_support_v5 - sends encoder configuration
@@ -5580,7 +5580,7 @@ int q6asm_enc_cfg_blk_pcm_format_support_v5(struct audio_client *ac,
 					   endianness, mode);
 }
 
-EXPORT_SYMBOL(q6asm_enc_cfg_blk_pcm_format_support_v5);
+EXPORT_SYMBOL_GPL(q6asm_enc_cfg_blk_pcm_format_support_v5);
 /**
  * q6asm_enc_cfg_blk_pcm_native -
  *       command to set encode config block for pcm_native
@@ -5658,7 +5658,7 @@ int q6asm_enc_cfg_blk_pcm_native(struct audio_client *ac,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_enc_cfg_blk_pcm_native);
+EXPORT_SYMBOL_GPL(q6asm_enc_cfg_blk_pcm_native);
 
 /*
  * q6asm_map_channels:
@@ -5836,7 +5836,7 @@ int q6asm_map_channels(u8 *channel_mapping, uint32_t channels,
 	}
 	return 0;
 }
-EXPORT_SYMBOL(q6asm_map_channels);
+EXPORT_SYMBOL_GPL(q6asm_map_channels);
 
 /**
  * q6asm_enable_sbrps -
@@ -5899,7 +5899,7 @@ int q6asm_enable_sbrps(struct audio_client *ac,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_enable_sbrps);
+EXPORT_SYMBOL_GPL(q6asm_enable_sbrps);
 
 /**
  * q6asm_cfg_dual_mono_aac -
@@ -5960,7 +5960,7 @@ int q6asm_cfg_dual_mono_aac(struct audio_client *ac,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_cfg_dual_mono_aac);
+EXPORT_SYMBOL_GPL(q6asm_cfg_dual_mono_aac);
 
 /* Support for selecting stereo mixing coefficients for B family not done */
 int q6asm_cfg_aac_sel_mix_coef(struct audio_client *ac, uint32_t mix_coeff)
@@ -6007,7 +6007,7 @@ int q6asm_cfg_aac_sel_mix_coef(struct audio_client *ac, uint32_t mix_coeff)
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_cfg_aac_sel_mix_coef);
+EXPORT_SYMBOL_GPL(q6asm_cfg_aac_sel_mix_coef);
 
 /**
  * q6asm_enc_cfg_blk_qcelp -
@@ -6077,7 +6077,7 @@ int q6asm_enc_cfg_blk_qcelp(struct audio_client *ac, uint32_t frames_per_buf,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_enc_cfg_blk_qcelp);
+EXPORT_SYMBOL_GPL(q6asm_enc_cfg_blk_qcelp);
 
 /**
  * q6asm_enc_cfg_blk_evrc -
@@ -6144,7 +6144,7 @@ int q6asm_enc_cfg_blk_evrc(struct audio_client *ac, uint32_t frames_per_buf,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_enc_cfg_blk_evrc);
+EXPORT_SYMBOL_GPL(q6asm_enc_cfg_blk_evrc);
 
 /**
  * q6asm_enc_cfg_blk_amrnb -
@@ -6206,7 +6206,7 @@ int q6asm_enc_cfg_blk_amrnb(struct audio_client *ac, uint32_t frames_per_buf,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_enc_cfg_blk_amrnb);
+EXPORT_SYMBOL_GPL(q6asm_enc_cfg_blk_amrnb);
 
 /**
  * q6asm_enc_cfg_blk_amrwb -
@@ -6268,7 +6268,7 @@ int q6asm_enc_cfg_blk_amrwb(struct audio_client *ac, uint32_t frames_per_buf,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_enc_cfg_blk_amrwb);
+EXPORT_SYMBOL_GPL(q6asm_enc_cfg_blk_amrwb);
 
 
 static int __q6asm_media_format_block_pcm(struct audio_client *ac,
@@ -6642,7 +6642,7 @@ int q6asm_media_format_block_pcm(struct audio_client *ac,
 				channels, 16, ac->stream_id,
 				true, NULL);
 }
-EXPORT_SYMBOL(q6asm_media_format_block_pcm);
+EXPORT_SYMBOL_GPL(q6asm_media_format_block_pcm);
 
 /**
  * q6asm_media_format_block_pcm_format_support -
@@ -6663,7 +6663,7 @@ int q6asm_media_format_block_pcm_format_support(struct audio_client *ac,
 				channels, bits_per_sample, ac->stream_id,
 				true, NULL);
 }
-EXPORT_SYMBOL(q6asm_media_format_block_pcm_format_support);
+EXPORT_SYMBOL_GPL(q6asm_media_format_block_pcm_format_support);
 
 int q6asm_media_format_block_pcm_format_support_v2(struct audio_client *ac,
 				uint32_t rate, uint32_t channels,
@@ -6713,7 +6713,7 @@ int q6asm_media_format_block_pcm_format_support_v3(struct audio_client *ac,
 				sample_word_size);
 
 }
-EXPORT_SYMBOL(q6asm_media_format_block_pcm_format_support_v3);
+EXPORT_SYMBOL_GPL(q6asm_media_format_block_pcm_format_support_v3);
 
 /*
  * q6asm_media_format_block_pcm_format_support_v4- sends pcm decoder
@@ -6753,7 +6753,7 @@ int q6asm_media_format_block_pcm_format_support_v4(struct audio_client *ac,
 				mode);
 
 }
-EXPORT_SYMBOL(q6asm_media_format_block_pcm_format_support_v4);
+EXPORT_SYMBOL_GPL(q6asm_media_format_block_pcm_format_support_v4);
 
 
 /*
@@ -6794,7 +6794,7 @@ int q6asm_media_format_block_pcm_format_support_v5(struct audio_client *ac,
 				mode);
 
 }
-EXPORT_SYMBOL(q6asm_media_format_block_pcm_format_support_v5);
+EXPORT_SYMBOL_GPL(q6asm_media_format_block_pcm_format_support_v5);
 
 
 static int __q6asm_media_format_block_multi_ch_pcm(struct audio_client *ac,
@@ -7143,7 +7143,7 @@ int q6asm_media_format_block_multi_ch_pcm_v3(struct audio_client *ac,
 							  bits_per_sample,
 							  sample_word_size);
 }
-EXPORT_SYMBOL(q6asm_media_format_block_multi_ch_pcm_v3);
+EXPORT_SYMBOL_GPL(q6asm_media_format_block_multi_ch_pcm_v3);
 
 /*
  * q6asm_media_format_block_multi_ch_pcm_v4 - sends pcm decoder configuration
@@ -7176,7 +7176,7 @@ int q6asm_media_format_block_multi_ch_pcm_v4(struct audio_client *ac,
 							  endianness,
 							  mode);
 }
-EXPORT_SYMBOL(q6asm_media_format_block_multi_ch_pcm_v4);
+EXPORT_SYMBOL_GPL(q6asm_media_format_block_multi_ch_pcm_v4);
 
 
 /*
@@ -7210,7 +7210,7 @@ int q6asm_media_format_block_multi_ch_pcm_v5(struct audio_client *ac,
 							  endianness,
 							  mode);
 }
-EXPORT_SYMBOL(q6asm_media_format_block_multi_ch_pcm_v5);
+EXPORT_SYMBOL_GPL(q6asm_media_format_block_multi_ch_pcm_v5);
 
 
 /*
@@ -7293,7 +7293,7 @@ int q6asm_media_format_block_gen_compr(struct audio_client *ac,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_media_format_block_gen_compr);
+EXPORT_SYMBOL_GPL(q6asm_media_format_block_gen_compr);
 
 
 /*
@@ -7350,7 +7350,7 @@ int q6asm_media_format_block_iec(struct audio_client *ac,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_media_format_block_iec);
+EXPORT_SYMBOL_GPL(q6asm_media_format_block_iec);
 
 static int __q6asm_media_format_block_multi_aac(struct audio_client *ac,
 				struct asm_aac_cfg *cfg, int stream_id)
@@ -7435,7 +7435,7 @@ int q6asm_media_format_block_multi_aac(struct audio_client *ac,
 {
 	return __q6asm_media_format_block_multi_aac(ac, cfg, ac->stream_id);
 }
-EXPORT_SYMBOL(q6asm_media_format_block_multi_aac);
+EXPORT_SYMBOL_GPL(q6asm_media_format_block_multi_aac);
 
 /**
  * q6asm_media_format_block_aac -
@@ -7451,7 +7451,7 @@ int q6asm_media_format_block_aac(struct audio_client *ac,
 {
 	return __q6asm_media_format_block_multi_aac(ac, cfg, ac->stream_id);
 }
-EXPORT_SYMBOL(q6asm_media_format_block_aac);
+EXPORT_SYMBOL_GPL(q6asm_media_format_block_aac);
 
 /**
  * q6asm_stream_media_format_block_aac -
@@ -7468,7 +7468,7 @@ int q6asm_stream_media_format_block_aac(struct audio_client *ac,
 {
 	return __q6asm_media_format_block_multi_aac(ac, cfg, stream_id);
 }
-EXPORT_SYMBOL(q6asm_stream_media_format_block_aac);
+EXPORT_SYMBOL_GPL(q6asm_stream_media_format_block_aac);
 
 /**
  * q6asm_media_format_block_wma -
@@ -7535,7 +7535,7 @@ int q6asm_media_format_block_wma(struct audio_client *ac,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_media_format_block_wma);
+EXPORT_SYMBOL_GPL(q6asm_media_format_block_wma);
 
 /**
  * q6asm_media_format_block_wmapro -
@@ -7607,7 +7607,7 @@ int q6asm_media_format_block_wmapro(struct audio_client *ac,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_media_format_block_wmapro);
+EXPORT_SYMBOL_GPL(q6asm_media_format_block_wmapro);
 
 /**
  * q6asm_media_format_block_amrwbplus -
@@ -7667,7 +7667,7 @@ int q6asm_media_format_block_amrwbplus(struct audio_client *ac,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_media_format_block_amrwbplus);
+EXPORT_SYMBOL_GPL(q6asm_media_format_block_amrwbplus);
 
 /**
  * q6asm_stream_media_format_block_flac -
@@ -7732,7 +7732,7 @@ int q6asm_stream_media_format_block_flac(struct audio_client *ac,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_stream_media_format_block_flac);
+EXPORT_SYMBOL_GPL(q6asm_stream_media_format_block_flac);
 
 /**
  * q6asm_media_format_block_alac -
@@ -7800,7 +7800,7 @@ int q6asm_media_format_block_alac(struct audio_client *ac,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_media_format_block_alac);
+EXPORT_SYMBOL_GPL(q6asm_media_format_block_alac);
 
 /*
  * q6asm_media_format_block_g711 - sends g711 decoder configuration
@@ -7870,7 +7870,7 @@ int q6asm_media_format_block_g711(struct audio_client *ac,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_media_format_block_g711);
+EXPORT_SYMBOL_GPL(q6asm_media_format_block_g711);
 
 /**
  * q6asm_stream_media_format_block_vorbis -
@@ -7927,7 +7927,7 @@ int q6asm_stream_media_format_block_vorbis(struct audio_client *ac,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_stream_media_format_block_vorbis);
+EXPORT_SYMBOL_GPL(q6asm_stream_media_format_block_vorbis);
 
 /**
  * q6asm_media_format_block_ape -
@@ -7993,7 +7993,7 @@ int q6asm_media_format_block_ape(struct audio_client *ac,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_media_format_block_ape);
+EXPORT_SYMBOL_GPL(q6asm_media_format_block_ape);
 
 /*
  * q6asm_media_format_block_dsd- Sends DSD Decoder
@@ -8054,7 +8054,7 @@ int q6asm_media_format_block_dsd(struct audio_client *ac,
 done:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_media_format_block_dsd);
+EXPORT_SYMBOL_GPL(q6asm_media_format_block_dsd);
 
 /**
  * q6asm_stream_media_format_block_aptx_dec -
@@ -8117,7 +8117,7 @@ int q6asm_stream_media_format_block_aptx_dec(struct audio_client *ac,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_stream_media_format_block_aptx_dec);
+EXPORT_SYMBOL_GPL(q6asm_stream_media_format_block_aptx_dec);
 
 static int __q6asm_ds1_set_endp_params(struct audio_client *ac, int param_id,
 				int param_value, int stream_id)
@@ -8212,7 +8212,7 @@ int q6asm_ds1_set_stream_endp_params(struct audio_client *ac,
 	return __q6asm_ds1_set_endp_params(ac, param_id, param_value,
 					   stream_id);
 }
-EXPORT_SYMBOL(q6asm_ds1_set_stream_endp_params);
+EXPORT_SYMBOL_GPL(q6asm_ds1_set_stream_endp_params);
 
 /**
  * q6asm_memory_map -
@@ -8320,7 +8320,7 @@ fail_cmd:
 	kfree(mmap_region_cmd);
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_memory_map);
+EXPORT_SYMBOL_GPL(q6asm_memory_map);
 
 /**
  * q6asm_memory_unmap -
@@ -8417,7 +8417,7 @@ fail_cmd:
 	}
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_memory_unmap);
+EXPORT_SYMBOL_GPL(q6asm_memory_unmap);
 
 /**
  * q6asm_memory_map_regions -
@@ -8576,7 +8576,7 @@ fail_cmd:
 	mmap_region_cmd = NULL;
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_memory_map_regions);
+EXPORT_SYMBOL_GPL(q6asm_memory_map_regions);
 
 /**
  * q6asm_memory_unmap_regions -
@@ -8675,7 +8675,7 @@ fail_cmd:
 	}
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_memory_unmap_regions);
+EXPORT_SYMBOL_GPL(q6asm_memory_unmap_regions);
 
 int q6asm_set_lrgain(struct audio_client *ac, int left_gain, int right_gain)
 {
@@ -8775,7 +8775,7 @@ int q6asm_set_multich_gain(struct audio_client *ac, uint32_t channels,
 done:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_set_multich_gain);
+EXPORT_SYMBOL_GPL(q6asm_set_multich_gain);
 
 /**
  * q6asm_set_mute -
@@ -8806,7 +8806,7 @@ int q6asm_set_mute(struct audio_client *ac, int muteflag)
 		       __func__, param_info.param_id, rc);
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_set_mute);
+EXPORT_SYMBOL_GPL(q6asm_set_mute);
 
 static int __q6asm_set_volume(struct audio_client *ac, int volume, int instance)
 {
@@ -8849,7 +8849,7 @@ int q6asm_set_volume(struct audio_client *ac, int volume)
 {
 	return __q6asm_set_volume(ac, volume, SOFT_VOLUME_INSTANCE_1);
 }
-EXPORT_SYMBOL(q6asm_set_volume);
+EXPORT_SYMBOL_GPL(q6asm_set_volume);
 
 int q6asm_set_volume_v2(struct audio_client *ac, int volume, int instance)
 {
@@ -8928,7 +8928,7 @@ int q6asm_set_aptx_dec_bt_addr(struct audio_client *ac,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_set_aptx_dec_bt_addr);
+EXPORT_SYMBOL_GPL(q6asm_set_aptx_dec_bt_addr);
 
 /**
  * q6asm_send_ion_fd -
@@ -9022,7 +9022,7 @@ int q6asm_send_ion_fd(struct audio_client *ac, int fd)
 fail_cmd:
 	return ret;
 }
-EXPORT_SYMBOL(q6asm_send_ion_fd);
+EXPORT_SYMBOL_GPL(q6asm_send_ion_fd);
 
 /**
  * q6asm_send_rtic_event_ack -
@@ -9098,7 +9098,7 @@ fail_send_param:
 done:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_send_rtic_event_ack);
+EXPORT_SYMBOL_GPL(q6asm_send_rtic_event_ack);
 
 /**
  * q6asm_set_softpause -
@@ -9136,7 +9136,7 @@ int q6asm_set_softpause(struct audio_client *ac,
 
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_set_softpause);
+EXPORT_SYMBOL_GPL(q6asm_set_softpause);
 
 static int __q6asm_set_softvolume(struct audio_client *ac,
 				  struct asm_softvolume_params *softvol_param,
@@ -9187,7 +9187,7 @@ int q6asm_set_softvolume(struct audio_client *ac,
 	return __q6asm_set_softvolume(ac, softvol_param,
 				      SOFT_VOLUME_INSTANCE_1);
 }
-EXPORT_SYMBOL(q6asm_set_softvolume);
+EXPORT_SYMBOL_GPL(q6asm_set_softvolume);
 
 /**
  * q6asm_set_softvolume_v2 -
@@ -9205,7 +9205,7 @@ int q6asm_set_softvolume_v2(struct audio_client *ac,
 {
 	return __q6asm_set_softvolume(ac, softvol_param, instance);
 }
-EXPORT_SYMBOL(q6asm_set_softvolume_v2);
+EXPORT_SYMBOL_GPL(q6asm_set_softvolume_v2);
 
 /**
  * q6asm_equalizer -
@@ -9274,7 +9274,7 @@ int q6asm_equalizer(struct audio_client *ac, void *eq_p)
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_equalizer);
+EXPORT_SYMBOL_GPL(q6asm_equalizer);
 
 static int __q6asm_read(struct audio_client *ac, bool is_custom_len_reqd,
 			int len)
@@ -9371,7 +9371,7 @@ int q6asm_read(struct audio_client *ac)
 {
 	return __q6asm_read(ac, false/*is_custom_len_reqd*/, 0);
 }
-EXPORT_SYMBOL(q6asm_read);
+EXPORT_SYMBOL_GPL(q6asm_read);
 
 
 /**
@@ -9387,7 +9387,7 @@ int q6asm_read_v2(struct audio_client *ac, uint32_t len)
 {
 	return __q6asm_read(ac, true /*is_custom_len_reqd*/, len);
 }
-EXPORT_SYMBOL(q6asm_read_v2);
+EXPORT_SYMBOL_GPL(q6asm_read_v2);
 
 /**
  * q6asm_read_nolock -
@@ -9471,7 +9471,7 @@ int q6asm_read_nolock(struct audio_client *ac)
 fail_cmd:
 	return -EINVAL;
 }
-EXPORT_SYMBOL(q6asm_read_nolock);
+EXPORT_SYMBOL_GPL(q6asm_read_nolock);
 
 /**
  * q6asm_async_write -
@@ -9566,7 +9566,7 @@ int q6asm_async_write(struct audio_client *ac,
 fail_cmd:
 	return -EINVAL;
 }
-EXPORT_SYMBOL(q6asm_async_write);
+EXPORT_SYMBOL_GPL(q6asm_async_write);
 
 /**
  * q6asm_async_read -
@@ -9644,7 +9644,7 @@ int q6asm_async_read(struct audio_client *ac,
 fail_cmd:
 	return -EINVAL;
 }
-EXPORT_SYMBOL(q6asm_async_read);
+EXPORT_SYMBOL_GPL(q6asm_async_read);
 
 /**
  * q6asm_write -
@@ -9737,7 +9737,7 @@ int q6asm_write(struct audio_client *ac, uint32_t len, uint32_t msw_ts,
 fail_cmd:
 	return -EINVAL;
 }
-EXPORT_SYMBOL(q6asm_write);
+EXPORT_SYMBOL_GPL(q6asm_write);
 
 /**
  * q6asm_write_nolock -
@@ -9828,7 +9828,7 @@ int q6asm_write_nolock(struct audio_client *ac, uint32_t len, uint32_t msw_ts,
 fail_cmd:
 	return -EINVAL;
 }
-EXPORT_SYMBOL(q6asm_write_nolock);
+EXPORT_SYMBOL_GPL(q6asm_write_nolock);
 
 /**
  * q6asm_get_session_time_v2 -
@@ -9901,7 +9901,7 @@ int q6asm_get_session_time_v2(struct audio_client *ac, uint64_t *ses_time,
 fail_cmd:
 	return -EINVAL;
 }
-EXPORT_SYMBOL(q6asm_get_session_time_v2);
+EXPORT_SYMBOL_GPL(q6asm_get_session_time_v2);
 
 /**
  * q6asm_get_session_time -
@@ -9916,7 +9916,7 @@ int q6asm_get_session_time(struct audio_client *ac, uint64_t *tstamp)
 {
 	return q6asm_get_session_time_v2(ac, tstamp, NULL);
 }
-EXPORT_SYMBOL(q6asm_get_session_time);
+EXPORT_SYMBOL_GPL(q6asm_get_session_time);
 
 /**
  * q6asm_get_session_time_legacy -
@@ -9973,7 +9973,7 @@ int q6asm_get_session_time_legacy(struct audio_client *ac, uint64_t *tstamp)
 fail_cmd:
 	return -EINVAL;
 }
-EXPORT_SYMBOL(q6asm_get_session_time_legacy);
+EXPORT_SYMBOL_GPL(q6asm_get_session_time_legacy);
 
 /**
  * q6asm_send_mtmx_strtr_window -
@@ -10059,7 +10059,7 @@ int q6asm_send_mtmx_strtr_window(struct audio_client *ac,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_send_mtmx_strtr_window);
+EXPORT_SYMBOL_GPL(q6asm_send_mtmx_strtr_window);
 
 /**
  * q6asm_send_mtmx_strtr_ttp_offset -
@@ -10147,7 +10147,7 @@ int q6asm_send_mtmx_strtr_ttp_offset(struct audio_client *ac,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_send_mtmx_strtr_ttp_offset);
+EXPORT_SYMBOL_GPL(q6asm_send_mtmx_strtr_ttp_offset);
 
 /**
  * q6asm_send_mtmx_strtr_render_mode -
@@ -10244,7 +10244,7 @@ int q6asm_send_mtmx_strtr_render_mode(struct audio_client *ac,
 exit:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_send_mtmx_strtr_render_mode);
+EXPORT_SYMBOL_GPL(q6asm_send_mtmx_strtr_render_mode);
 
 /**
  * q6asm_send_mtmx_strtr_clk_rec_mode -
@@ -10340,7 +10340,7 @@ int q6asm_send_mtmx_strtr_clk_rec_mode(struct audio_client *ac,
 exit:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_send_mtmx_strtr_clk_rec_mode);
+EXPORT_SYMBOL_GPL(q6asm_send_mtmx_strtr_clk_rec_mode);
 
 /**
  * q6asm_send_mtmx_strtr_enable_adjust_session_clock -
@@ -10424,7 +10424,7 @@ int q6asm_send_mtmx_strtr_enable_adjust_session_clock(struct audio_client *ac,
 exit:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_send_mtmx_strtr_enable_adjust_session_clock);
+EXPORT_SYMBOL_GPL(q6asm_send_mtmx_strtr_enable_adjust_session_clock);
 
 
 static int __q6asm_cmd(struct audio_client *ac, int cmd, uint32_t stream_id)
@@ -10563,7 +10563,7 @@ int q6asm_cmd(struct audio_client *ac, int cmd)
 {
 	return __q6asm_cmd(ac, cmd, ac->stream_id);
 }
-EXPORT_SYMBOL(q6asm_cmd);
+EXPORT_SYMBOL_GPL(q6asm_cmd);
 
 /**
  * q6asm_stream_cmd -
@@ -10580,7 +10580,7 @@ int q6asm_stream_cmd(struct audio_client *ac, int cmd, uint32_t stream_id)
 {
 	return __q6asm_cmd(ac, cmd, stream_id);
 }
-EXPORT_SYMBOL(q6asm_stream_cmd);
+EXPORT_SYMBOL_GPL(q6asm_stream_cmd);
 
 /**
  * q6asm_cmd_nowait -
@@ -10661,7 +10661,7 @@ int q6asm_cmd_nowait(struct audio_client *ac, int cmd)
 	pr_debug("%s: stream_id: %d\n", __func__, ac->stream_id);
 	return __q6asm_cmd_nowait(ac, cmd, ac->stream_id);
 }
-EXPORT_SYMBOL(q6asm_cmd_nowait);
+EXPORT_SYMBOL_GPL(q6asm_cmd_nowait);
 
 /**
  * q6asm_stream_cmd_nowait -
@@ -10680,7 +10680,7 @@ int q6asm_stream_cmd_nowait(struct audio_client *ac, int cmd,
 	pr_debug("%s: stream_id: %d\n", __func__, stream_id);
 	return __q6asm_cmd_nowait(ac, cmd, stream_id);
 }
-EXPORT_SYMBOL(q6asm_stream_cmd_nowait);
+EXPORT_SYMBOL_GPL(q6asm_stream_cmd_nowait);
 
 int __q6asm_send_meta_data(struct audio_client *ac, uint32_t stream_id,
 			  uint32_t initial_samples, uint32_t trailing_samples)
@@ -10757,7 +10757,7 @@ int q6asm_stream_send_meta_data(struct audio_client *ac, uint32_t stream_id,
 	return __q6asm_send_meta_data(ac, stream_id, initial_samples,
 				     trailing_samples);
 }
-EXPORT_SYMBOL(q6asm_stream_send_meta_data);
+EXPORT_SYMBOL_GPL(q6asm_stream_send_meta_data);
 
 int q6asm_send_meta_data(struct audio_client *ac, uint32_t initial_samples,
 		uint32_t trailing_samples)
@@ -10852,7 +10852,7 @@ int q6asm_reg_tx_overflow(struct audio_client *ac, uint16_t enable)
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_reg_tx_overflow);
+EXPORT_SYMBOL_GPL(q6asm_reg_tx_overflow);
 
 int q6asm_reg_rx_underflow(struct audio_client *ac, uint16_t enable)
 {
@@ -10959,7 +10959,7 @@ int q6asm_adjust_session_clock(struct audio_client *ac,
 fail_cmd:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_adjust_session_clock);
+EXPORT_SYMBOL_GPL(q6asm_adjust_session_clock);
 
 /*
  * q6asm_get_path_delay() - get the path delay for an audio session
@@ -11010,7 +11010,7 @@ int q6asm_get_path_delay(struct audio_client *ac)
 
 	return 0;
 }
-EXPORT_SYMBOL(q6asm_get_path_delay);
+EXPORT_SYMBOL_GPL(q6asm_get_path_delay);
 
 int q6asm_get_apr_service_id(int session_id)
 {
@@ -11214,7 +11214,7 @@ unlock:
 done:
 	return rc;
 }
-EXPORT_SYMBOL(q6asm_send_cal);
+EXPORT_SYMBOL_GPL(q6asm_send_cal);
 
 static int get_cal_type_index(int32_t cal_type)
 {

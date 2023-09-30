@@ -52,7 +52,7 @@ struct firmware_cal *q6afecal_get_fw_cal(struct afe_fw_info *fw_data,
 	mutex_unlock(&fw_data->lock);
 	return fw_data->fw[type];
 }
-EXPORT_SYMBOL(q6afecal_get_fw_cal);
+EXPORT_SYMBOL_GPL(q6afecal_get_fw_cal);
 
 static int q6afecal_hwdep_ioctl_shared(struct snd_hwdep *hw,
 			struct q6afecal_ioctl_buffer fw_user)
@@ -223,4 +223,4 @@ end:
 	}
 	return -ENOMEM;
 }
-EXPORT_SYMBOL(q6afe_cal_create_hwdep);
+EXPORT_SYMBOL_GPL(q6afe_cal_create_hwdep);

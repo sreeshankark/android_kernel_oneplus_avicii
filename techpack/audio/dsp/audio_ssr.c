@@ -33,7 +33,7 @@ void *audio_ssr_register(int domain_id, struct notifier_block *nb)
 	return subsys_notif_register_notifier(
 		audio_ssr_domains[domain_id], nb);
 }
-EXPORT_SYMBOL(audio_ssr_register);
+EXPORT_SYMBOL_GPL(audio_ssr_register);
 
 /**
  * audio_ssr_deregister -
@@ -48,5 +48,5 @@ int audio_ssr_deregister(void *handle, struct notifier_block *nb)
 {
 	return subsys_notif_unregister_notifier(handle, nb);
 }
-EXPORT_SYMBOL(audio_ssr_deregister);
+EXPORT_SYMBOL_GPL(audio_ssr_deregister);
 

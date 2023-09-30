@@ -203,7 +203,7 @@ bool wcd9xxx_lock_sleep(
 	wake_up_all(&wcd9xxx_res->pm_wq);
 	return true;
 }
-EXPORT_SYMBOL(wcd9xxx_lock_sleep);
+EXPORT_SYMBOL_GPL(wcd9xxx_lock_sleep);
 
 void wcd9xxx_unlock_sleep(
 	struct wcd9xxx_core_resource *wcd9xxx_res)
@@ -225,7 +225,7 @@ void wcd9xxx_unlock_sleep(
 	mutex_unlock(&wcd9xxx_res->pm_lock);
 	wake_up_all(&wcd9xxx_res->pm_wq);
 }
-EXPORT_SYMBOL(wcd9xxx_unlock_sleep);
+EXPORT_SYMBOL_GPL(wcd9xxx_unlock_sleep);
 
 void wcd9xxx_nested_irq_lock(struct wcd9xxx_core_resource *wcd9xxx_res)
 {
@@ -431,7 +431,7 @@ void wcd9xxx_free_irq(struct wcd9xxx_core_resource *wcd9xxx_res,
 {
 	free_irq(phyirq_to_virq(wcd9xxx_res, irq), data);
 }
-EXPORT_SYMBOL(wcd9xxx_free_irq);
+EXPORT_SYMBOL_GPL(wcd9xxx_free_irq);
 
 /**
  * wcd9xxx_enable_irq
@@ -445,7 +445,7 @@ void wcd9xxx_enable_irq(struct wcd9xxx_core_resource *wcd9xxx_res, int irq)
 	if (wcd9xxx_res->irq)
 		enable_irq(phyirq_to_virq(wcd9xxx_res, irq));
 }
-EXPORT_SYMBOL(wcd9xxx_enable_irq);
+EXPORT_SYMBOL_GPL(wcd9xxx_enable_irq);
 
 /**
  * wcd9xxx_disable_irq
@@ -459,7 +459,7 @@ void wcd9xxx_disable_irq(struct wcd9xxx_core_resource *wcd9xxx_res, int irq)
 	if (wcd9xxx_res->irq)
 		disable_irq_nosync(phyirq_to_virq(wcd9xxx_res, irq));
 }
-EXPORT_SYMBOL(wcd9xxx_disable_irq);
+EXPORT_SYMBOL_GPL(wcd9xxx_disable_irq);
 
 /**
  * wcd9xxx_disable_irq_sync
@@ -474,7 +474,7 @@ void wcd9xxx_disable_irq_sync(
 	if (wcd9xxx_res->irq)
 		disable_irq(phyirq_to_virq(wcd9xxx_res, irq));
 }
-EXPORT_SYMBOL(wcd9xxx_disable_irq_sync);
+EXPORT_SYMBOL_GPL(wcd9xxx_disable_irq_sync);
 
 static int wcd9xxx_irq_setup_downstream_irq(
 			struct wcd9xxx_core_resource *wcd9xxx_res)
@@ -625,7 +625,7 @@ fail_irq_level:
 	mutex_destroy(&wcd9xxx_res->nested_irq_lock);
 	return ret;
 }
-EXPORT_SYMBOL(wcd9xxx_irq_init);
+EXPORT_SYMBOL_GPL(wcd9xxx_irq_init);
 
 int wcd9xxx_request_irq(struct wcd9xxx_core_resource *wcd9xxx_res,
 			int irq, irq_handler_t handler,
@@ -638,7 +638,7 @@ int wcd9xxx_request_irq(struct wcd9xxx_core_resource *wcd9xxx_res,
 	return request_threaded_irq(virq, NULL, handler, IRQF_TRIGGER_RISING,
 				    name, data);
 }
-EXPORT_SYMBOL(wcd9xxx_request_irq);
+EXPORT_SYMBOL_GPL(wcd9xxx_request_irq);
 
 void wcd9xxx_irq_exit(struct wcd9xxx_core_resource *wcd9xxx_res)
 {

@@ -1989,4 +1989,4 @@ struct snd_soc_card *populate_snd_card_dailinks(struct device *dev,
 
 	return card;
 }
-EXPORT_SYMBOL(populate_snd_card_dailinks);
+EXPORT_SYMBOL_GPL(populate_snd_card_dailinks);

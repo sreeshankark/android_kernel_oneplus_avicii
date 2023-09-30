@@ -1143,7 +1143,7 @@ int msm_tdm_snd_hw_params(struct snd_pcm_substream *substream,
 end:
 	return ret;
 }
-EXPORT_SYMBOL(msm_tdm_snd_hw_params);
+EXPORT_SYMBOL_GPL(msm_tdm_snd_hw_params);
 
 static int proxy_rx_ch_get(struct snd_kcontrol *kcontrol,
 			       struct snd_ctl_elem_value *ucontrol)
@@ -3454,13 +3454,13 @@ int msm_common_snd_controls_size(void)
 {
 	return ARRAY_SIZE(msm_common_snd_controls);
 }
-EXPORT_SYMBOL(msm_common_snd_controls_size);
+EXPORT_SYMBOL_GPL(msm_common_snd_controls_size);
 
 void msm_set_codec_reg_done(bool done)
 {
 	codec_reg_done = done;
 }
-EXPORT_SYMBOL(msm_set_codec_reg_done);
+EXPORT_SYMBOL_GPL(msm_set_codec_reg_done);
 
 static inline int param_is_mask(int p)
 {
@@ -4149,7 +4149,7 @@ int msm_tdm_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
 
 	return 0;
 }
-EXPORT_SYMBOL(msm_tdm_be_hw_params_fixup);
+EXPORT_SYMBOL_GPL(msm_tdm_be_hw_params_fixup);
 
 static int msm_ext_disp_get_idx_from_beid(int32_t id)
 {
@@ -4461,7 +4461,7 @@ int msm_common_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
 	}
 	return rc;
 }
-EXPORT_SYMBOL(msm_common_be_hw_params_fixup);
+EXPORT_SYMBOL_GPL(msm_common_be_hw_params_fixup);
 
 /**
  * msm_aux_pcm_snd_startup - startup ops of auxpcm.
@@ -4481,7 +4481,7 @@ int msm_aux_pcm_snd_startup(struct snd_pcm_substream *substream)
 
 	return 0;
 }
-EXPORT_SYMBOL(msm_aux_pcm_snd_startup);
+EXPORT_SYMBOL_GPL(msm_aux_pcm_snd_startup);
 
 /**
  * msm_aux_pcm_snd_shutdown - shutdown ops of auxpcm.
@@ -4498,7 +4498,7 @@ void msm_aux_pcm_snd_shutdown(struct snd_pcm_substream *substream)
 		substream->name, substream->stream,
 		rtd->cpu_dai->name, rtd->cpu_dai->id);
 }
-EXPORT_SYMBOL(msm_aux_pcm_snd_shutdown);
+EXPORT_SYMBOL_GPL(msm_aux_pcm_snd_shutdown);
 
 static int msm_get_port_id(int id)
 {
@@ -4698,7 +4698,7 @@ clean_up:
 done:
 	return ret;
 }
-EXPORT_SYMBOL(msm_mi2s_snd_startup);
+EXPORT_SYMBOL_GPL(msm_mi2s_snd_startup);
 
 /**
  * msm_mi2s_snd_shutdown - shutdown ops of mi2s.
@@ -4746,7 +4746,7 @@ void msm_mi2s_snd_shutdown(struct snd_pcm_substream *substream)
 	}
 	mutex_unlock(&mi2s_intf_conf[index].lock);
 }
-EXPORT_SYMBOL(msm_mi2s_snd_shutdown);
+EXPORT_SYMBOL_GPL(msm_mi2s_snd_shutdown);
 
 static int msm_get_tdm_mode(u32 port_id)
 {
@@ -4805,7 +4805,7 @@ int msm_tdm_snd_startup(struct snd_pcm_substream *substream)
 			pdata->mi2s_gpio_p[tdm_mode]);
 	return ret;
 }
-EXPORT_SYMBOL(msm_tdm_snd_startup);
+EXPORT_SYMBOL_GPL(msm_tdm_snd_startup);
 
 void msm_tdm_snd_shutdown(struct snd_pcm_substream *substream)
 {
@@ -4831,7 +4831,7 @@ void msm_tdm_snd_shutdown(struct snd_pcm_substream *substream)
 		msm_cdc_pinctrl_select_sleep_state(
 			pdata->mi2s_gpio_p[tdm_mode]);
 }
-EXPORT_SYMBOL(msm_tdm_snd_shutdown);
+EXPORT_SYMBOL_GPL(msm_tdm_snd_shutdown);
 
 /* Validate whether US EU switch is present or not */
 static int msm_prepare_us_euro(struct snd_soc_card *card)

@@ -1848,7 +1848,7 @@ int swrm_wcd_notify(struct platform_device *pdev, u32 id, void *data)
 	}
 	return ret;
 }
-EXPORT_SYMBOL(swrm_wcd_notify);
+EXPORT_SYMBOL_GPL(swrm_wcd_notify);
 
 #ifdef CONFIG_PM_SLEEP
 static int swrm_suspend(struct device *dev)

@@ -1502,4 +1502,4 @@ void wcd_mbhc_adc_init(struct wcd_mbhc *mbhc)
 	}
 	#endif /* OPLUS_ARCH_EXTENDS */
 }
-EXPORT_SYMBOL(wcd_mbhc_adc_init);
+EXPORT_SYMBOL_GPL(wcd_mbhc_adc_init);

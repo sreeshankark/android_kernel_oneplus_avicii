@@ -877,7 +877,7 @@ int tasha_set_spkr_gain_offset(struct snd_soc_component *component, int offset)
 	priv->spkr_gain_offset = offset;
 	return 0;
 }
-EXPORT_SYMBOL(tasha_set_spkr_gain_offset);
+EXPORT_SYMBOL_GPL(tasha_set_spkr_gain_offset);
 
 /**
  * tasha_set_spkr_mode - Configures speaker compander and smartboost
@@ -915,7 +915,7 @@ int tasha_set_spkr_mode(struct snd_soc_component *component, int mode)
 				    regs[i].mask, regs[i].val);
 	return 0;
 }
-EXPORT_SYMBOL(tasha_set_spkr_mode);
+EXPORT_SYMBOL_GPL(tasha_set_spkr_mode);
 
 static void tasha_enable_sido_buck(struct snd_soc_component *component)
 {
@@ -1128,7 +1128,7 @@ int tasha_enable_efuse_sensing(struct snd_soc_component *component)
 
 	return 0;
 }
-EXPORT_SYMBOL(tasha_enable_efuse_sensing);
+EXPORT_SYMBOL_GPL(tasha_enable_efuse_sensing);
 
 void *tasha_get_afe_config(struct snd_soc_component *component,
 			   enum afe_config_type config_type)
@@ -1156,7 +1156,7 @@ void *tasha_get_afe_config(struct snd_soc_component *component,
 		return NULL;
 	}
 }
-EXPORT_SYMBOL(tasha_get_afe_config);
+EXPORT_SYMBOL_GPL(tasha_get_afe_config);
 
 /*
  * tasha_event_register: Registers a machine driver callback
@@ -1182,7 +1182,7 @@ void tasha_event_register(
 		dev_dbg(component->dev, "%s: Invalid tasha_priv data\n",
 			__func__);
 }
-EXPORT_SYMBOL(tasha_event_register);
+EXPORT_SYMBOL_GPL(tasha_event_register);
 
 static int tasha_mbhc_request_irq(struct snd_soc_component *component,
 				   int irq, irq_handler_t handler,
@@ -1735,7 +1735,7 @@ void tasha_mbhc_zdet_gpio_ctrl(
 
 	tasha->zdet_gpio_cb = zdet_gpio_cb;
 }
-EXPORT_SYMBOL(tasha_mbhc_zdet_gpio_ctrl);
+EXPORT_SYMBOL_GPL(tasha_mbhc_zdet_gpio_ctrl);
 
 static void tasha_mbhc_zdet_ramp(struct snd_soc_component *component,
 				 struct tasha_mbhc_zdet_param *zdet_param,
@@ -6474,7 +6474,7 @@ int tasha_codec_enable_standalone_micbias(struct snd_soc_component *component,
 
 	return rc;
 }
-EXPORT_SYMBOL(tasha_codec_enable_standalone_micbias);
+EXPORT_SYMBOL_GPL(tasha_codec_enable_standalone_micbias);
 
 static const char *const tasha_anc_func_text[] = {"OFF", "ON"};
 static const struct soc_enum tasha_anc_func_enum =
@@ -12507,7 +12507,7 @@ int tasha_cdc_mclk_enable(struct snd_soc_component *component,
 
 	return __tasha_cdc_mclk_enable(tasha, enable);
 }
-EXPORT_SYMBOL(tasha_cdc_mclk_enable);
+EXPORT_SYMBOL_GPL(tasha_cdc_mclk_enable);
 
 int tasha_cdc_mclk_tx_enable(struct snd_soc_component *component,
 			     int enable, bool dapm)
@@ -12546,7 +12546,7 @@ int tasha_cdc_mclk_tx_enable(struct snd_soc_component *component,
 	}
 	return ret;
 }
-EXPORT_SYMBOL(tasha_cdc_mclk_tx_enable);
+EXPORT_SYMBOL_GPL(tasha_cdc_mclk_tx_enable);
 
 static ssize_t tasha_codec_version_read(struct snd_info_entry *entry,
 			       void *file_private_data, struct file *file,
@@ -12636,7 +12636,7 @@ int tasha_codec_info_create_codec_entry(struct snd_info_entry *codec_root,
 
 	return 0;
 }
-EXPORT_SYMBOL(tasha_codec_info_create_codec_entry);
+EXPORT_SYMBOL_GPL(tasha_codec_info_create_codec_entry);
 
 static int __tasha_codec_internal_rco_ctrl(
 	struct snd_soc_component *component, bool enable)
@@ -12702,7 +12702,7 @@ int tasha_mbhc_hs_detect(struct snd_soc_component *component,
 
 	return wcd_mbhc_start(&tasha->mbhc, mbhc_cfg);
 }
-EXPORT_SYMBOL(tasha_mbhc_hs_detect);
+EXPORT_SYMBOL_GPL(tasha_mbhc_hs_detect);
 
 /*
  * tasha_mbhc_hs_detect_exit: stop mbhc insertion/removal functionality
@@ -12714,7 +12714,7 @@ void tasha_mbhc_hs_detect_exit(struct snd_soc_component *component)
 
 	wcd_mbhc_stop(&tasha->mbhc);
 }
-EXPORT_SYMBOL(tasha_mbhc_hs_detect_exit);
+EXPORT_SYMBOL_GPL(tasha_mbhc_hs_detect_exit);
 
 static int wcd9335_get_micb_vout_ctl_val(u32 micb_mv)
 {
@@ -14573,7 +14573,7 @@ enum codec_variant tasha_codec_ver(void)
 {
 	return codec_ver;
 }
-EXPORT_SYMBOL(tasha_codec_ver);
+EXPORT_SYMBOL_GPL(tasha_codec_ver);
 
 static int __tasha_enable_efuse_sensing(struct tasha_priv *tasha)
 {
@@ -14624,7 +14624,7 @@ void tasha_get_codec_ver(struct tasha_priv *tasha)
 ret:
 	pr_debug("%s: codec is %d\n", __func__, codec_ver);
 }
-EXPORT_SYMBOL(tasha_get_codec_ver);
+EXPORT_SYMBOL_GPL(tasha_get_codec_ver);
 
 static int tasha_probe(struct platform_device *pdev)
 {

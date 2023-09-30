@@ -78,7 +78,7 @@ int msm_cdc_get_gpio_state(struct device_node *np)
 
 	return value;
 }
-EXPORT_SYMBOL(msm_cdc_get_gpio_state);
+EXPORT_SYMBOL_GPL(msm_cdc_get_gpio_state);
 
 /*
  * msm_cdc_pinctrl_select_sleep_state: select pinctrl sleep state
@@ -103,7 +103,7 @@ int msm_cdc_pinctrl_select_sleep_state(struct device_node *np)
 	return pinctrl_select_state(gpio_data->pinctrl,
 				    gpio_data->pinctrl_sleep);
 }
-EXPORT_SYMBOL(msm_cdc_pinctrl_select_sleep_state);
+EXPORT_SYMBOL_GPL(msm_cdc_pinctrl_select_sleep_state);
 
 /*
  * msm_cdc_pinctrl_select_alt_active_state: select pinctrl alt_active state
@@ -128,7 +128,7 @@ int msm_cdc_pinctrl_select_alt_active_state(struct device_node *np)
 	return pinctrl_select_state(gpio_data->pinctrl,
 				    gpio_data->pinctrl_alt_active);
 }
-EXPORT_SYMBOL(msm_cdc_pinctrl_select_alt_active_state);
+EXPORT_SYMBOL_GPL(msm_cdc_pinctrl_select_alt_active_state);
 
 /*
  * msm_cdc_pinctrl_select_active_state: select pinctrl active state
@@ -153,7 +153,7 @@ int msm_cdc_pinctrl_select_active_state(struct device_node *np)
 	return pinctrl_select_state(gpio_data->pinctrl,
 				    gpio_data->pinctrl_active);
 }
-EXPORT_SYMBOL(msm_cdc_pinctrl_select_active_state);
+EXPORT_SYMBOL_GPL(msm_cdc_pinctrl_select_active_state);
 
 /*
  * msm_cdc_pinctrl_get_state: get curren pinctrl state
@@ -172,7 +172,7 @@ int msm_cdc_pinctrl_get_state(struct device_node *np)
 
 	return gpio_data->state;
 }
-EXPORT_SYMBOL(msm_cdc_pinctrl_get_state);
+EXPORT_SYMBOL_GPL(msm_cdc_pinctrl_get_state);
 
 /*
  * msm_cdc_pinctrl_set_wakeup_capable: Set a pinctrl to wakeup capable
@@ -214,7 +214,7 @@ int msm_cdc_pinctrl_set_wakeup_capable(struct device_node *np, bool enable)
 exit:
 	return ret;
 }
-EXPORT_SYMBOL(msm_cdc_pinctrl_set_wakeup_capable);
+EXPORT_SYMBOL_GPL(msm_cdc_pinctrl_set_wakeup_capable);
 
 static int msm_cdc_pinctrl_probe(struct platform_device *pdev)
 {

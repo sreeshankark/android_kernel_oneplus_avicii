@@ -143,7 +143,7 @@ int bolero_rsc_clk_reset(struct device *dev, int clk_id)
 	mutex_unlock(&priv->rsc_clk_lock);
 	return 0;
 }
-EXPORT_SYMBOL(bolero_rsc_clk_reset);
+EXPORT_SYMBOL_GPL(bolero_rsc_clk_reset);
 
 void bolero_clk_rsc_enable_all_clocks(struct device *dev, bool enable)
 {
@@ -186,7 +186,7 @@ void bolero_clk_rsc_enable_all_clocks(struct device *dev, bool enable)
 	mutex_unlock(&priv->rsc_clk_lock);
 	return;
 }
-EXPORT_SYMBOL(bolero_clk_rsc_enable_all_clocks);
+EXPORT_SYMBOL_GPL(bolero_clk_rsc_enable_all_clocks);
 
 static int bolero_clk_rsc_mux0_clk_request(struct bolero_clk_rsc *priv,
 					   int clk_id,
@@ -499,7 +499,7 @@ void bolero_clk_rsc_fs_gen_request(struct device *dev, bool enable)
 	}
 	mutex_unlock(&priv->fs_gen_lock);
 }
-EXPORT_SYMBOL(bolero_clk_rsc_fs_gen_request);
+EXPORT_SYMBOL_GPL(bolero_clk_rsc_fs_gen_request);
 
 /**
  * bolero_clk_rsc_request_clock - request for clock to
@@ -589,7 +589,7 @@ err:
 	mutex_unlock(&priv->rsc_clk_lock);
 	return ret;
 }
-EXPORT_SYMBOL(bolero_clk_rsc_request_clock);
+EXPORT_SYMBOL_GPL(bolero_clk_rsc_request_clock);
 
 
 static int bolero_clk_rsc_probe(struct platform_device *pdev)

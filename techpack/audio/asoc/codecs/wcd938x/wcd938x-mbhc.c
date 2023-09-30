@@ -921,7 +921,7 @@ int wcd938x_mbhc_get_impedance(struct wcd938x_mbhc *wcd938x_mbhc,
 
 	return wcd_mbhc_get_impedance(&wcd938x_mbhc->wcd_mbhc, zl, zr);
 }
-EXPORT_SYMBOL(wcd938x_mbhc_get_impedance);
+EXPORT_SYMBOL_GPL(wcd938x_mbhc_get_impedance);
 
 /*
  * wcd938x_mbhc_hs_detect: starts mbhc insertion/removal functionality
@@ -954,7 +954,7 @@ int wcd938x_mbhc_hs_detect(struct snd_soc_component *component,
 
 	return wcd_mbhc_start(&wcd938x_mbhc->wcd_mbhc, mbhc_cfg);
 }
-EXPORT_SYMBOL(wcd938x_mbhc_hs_detect);
+EXPORT_SYMBOL_GPL(wcd938x_mbhc_hs_detect);
 
 /*
  * wcd938x_mbhc_hs_detect_exit: stop mbhc insertion/removal functionality
@@ -983,7 +983,7 @@ void wcd938x_mbhc_hs_detect_exit(struct snd_soc_component *component)
 	}
 	wcd_mbhc_stop(&wcd938x_mbhc->wcd_mbhc);
 }
-EXPORT_SYMBOL(wcd938x_mbhc_hs_detect_exit);
+EXPORT_SYMBOL_GPL(wcd938x_mbhc_hs_detect_exit);
 
 /*
  * wcd938x_mbhc_ssr_down: stop mbhc during
@@ -1008,7 +1008,7 @@ void wcd938x_mbhc_ssr_down(struct wcd938x_mbhc *mbhc,
 	wcd938x_mbhc_hs_detect_exit(component);
 	wcd_mbhc_deinit(wcd_mbhc);
 }
-EXPORT_SYMBOL(wcd938x_mbhc_ssr_down);
+EXPORT_SYMBOL_GPL(wcd938x_mbhc_ssr_down);
 
 /*
  * wcd938x_mbhc_post_ssr_init: initialize mbhc for
@@ -1057,7 +1057,7 @@ int wcd938x_mbhc_post_ssr_init(struct wcd938x_mbhc *mbhc,
 done:
 	return ret;
 }
-EXPORT_SYMBOL(wcd938x_mbhc_post_ssr_init);
+EXPORT_SYMBOL_GPL(wcd938x_mbhc_post_ssr_init);
 
 /*
  * wcd938x_mbhc_init: initialize mbhc for wcd938x
@@ -1164,7 +1164,7 @@ err:
 	devm_kfree(component->dev, wcd938x_mbhc);
 	return ret;
 }
-EXPORT_SYMBOL(wcd938x_mbhc_init);
+EXPORT_SYMBOL_GPL(wcd938x_mbhc_init);
 
 /*
  * wcd938x_mbhc_deinit: deinitialize mbhc for wcd938x
@@ -1192,4 +1192,4 @@ void wcd938x_mbhc_deinit(struct snd_soc_component *component)
 		devm_kfree(component->dev, wcd938x_mbhc);
 	}
 }
-EXPORT_SYMBOL(wcd938x_mbhc_deinit);
+EXPORT_SYMBOL_GPL(wcd938x_mbhc_deinit);

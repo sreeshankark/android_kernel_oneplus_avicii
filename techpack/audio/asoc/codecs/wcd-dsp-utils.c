@@ -114,7 +114,7 @@ void wdsp_flush_segment_list(struct list_head *seg_list)
 		kfree(seg);
 	}
 }
-EXPORT_SYMBOL(wdsp_flush_segment_list);
+EXPORT_SYMBOL_GPL(wdsp_flush_segment_list);
 
 /*
  * wdsp_get_segment_list: Get the list of requested segments
@@ -221,4 +221,4 @@ bad_elf:
 done:
 	return ret;
 }
-EXPORT_SYMBOL(wdsp_get_segment_list);
+EXPORT_SYMBOL_GPL(wdsp_get_segment_list);

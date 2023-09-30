@@ -922,7 +922,7 @@ int msm_ext_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
 	}
 	return rc;
 }
-EXPORT_SYMBOL(msm_ext_be_hw_params_fixup);
+EXPORT_SYMBOL_GPL(msm_ext_be_hw_params_fixup);
 
 /**
  * msm_snd_hw_params - hw params ops of backend dailink.
@@ -1013,7 +1013,7 @@ int msm_snd_hw_params(struct snd_pcm_substream *substream,
 err_ch_map:
 	return ret;
 }
-EXPORT_SYMBOL(msm_snd_hw_params);
+EXPORT_SYMBOL_GPL(msm_snd_hw_params);
 
 /**
  * msm_ext_slimbus_2_hw_params - hw params ops of slimbus_2 BE.
@@ -1075,7 +1075,7 @@ int msm_ext_slimbus_2_hw_params(struct snd_pcm_substream *substream,
 end:
 	return ret;
 }
-EXPORT_SYMBOL(msm_ext_slimbus_2_hw_params);
+EXPORT_SYMBOL_GPL(msm_ext_slimbus_2_hw_params);
 
 /**
  * msm_snd_cpe_hw_params - hw params ops of CPE backend.
@@ -1126,7 +1126,7 @@ int msm_snd_cpe_hw_params(struct snd_pcm_substream *substream,
 end:
 	return ret;
 }
-EXPORT_SYMBOL(msm_snd_cpe_hw_params);
+EXPORT_SYMBOL_GPL(msm_snd_cpe_hw_params);
 
 static int msm_afe_set_config(struct snd_soc_component *component)
 {
@@ -1873,7 +1873,7 @@ done:
 err_afe_cfg:
 	return ret;
 }
-EXPORT_SYMBOL(msm_audrx_init);
+EXPORT_SYMBOL_GPL(msm_audrx_init);
 
 /**
  * msm_ext_register_audio_notifier - register SSR notifier.
@@ -1890,7 +1890,7 @@ void msm_ext_register_audio_notifier(struct platform_device *pdev)
 		pr_err("%s: Audio notifier register failed ret = %d\n",
 			__func__, ret);
 }
-EXPORT_SYMBOL(msm_ext_register_audio_notifier);
+EXPORT_SYMBOL_GPL(msm_ext_register_audio_notifier);
 
 /**
  * msm_ext_cdc_init - external codec machine specific init.
@@ -1963,7 +1963,7 @@ int msm_ext_cdc_init(struct platform_device *pdev,
 err:
 	return ret;
 }
-EXPORT_SYMBOL(msm_ext_cdc_init);
+EXPORT_SYMBOL_GPL(msm_ext_cdc_init);
 
 /**
  * msm_ext_cdc_deinit - external codec machine specific deinit.
@@ -1981,4 +1981,4 @@ void msm_ext_cdc_deinit(struct msm_asoc_mach_data *pdata)
 	if (pdata->msm_snd_intr_lpi.lpi_gpio_inout)
 		iounmap(pdata->msm_snd_intr_lpi.lpi_gpio_inout);
 }
-EXPORT_SYMBOL(msm_ext_cdc_deinit);
+EXPORT_SYMBOL_GPL(msm_ext_cdc_deinit);

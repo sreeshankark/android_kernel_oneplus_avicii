@@ -16,7 +16,7 @@ int msm_aud_evt_register_client(struct notifier_block *nb)
 {
 	return atomic_notifier_chain_register(&msm_aud_evt_notifier_list, nb);
 }
-EXPORT_SYMBOL(msm_aud_evt_register_client);
+EXPORT_SYMBOL_GPL(msm_aud_evt_register_client);
 
 /**
  *	msm_aud_evt_unregister_client - unregister a client notifier
@@ -26,7 +26,7 @@ int msm_aud_evt_unregister_client(struct notifier_block *nb)
 {
 	return atomic_notifier_chain_unregister(&msm_aud_evt_notifier_list, nb);
 }
-EXPORT_SYMBOL(msm_aud_evt_unregister_client);
+EXPORT_SYMBOL_GPL(msm_aud_evt_unregister_client);
 
 /**
  * msm_aud_evt_notifier_call_chain - notify clients of fb_events
@@ -47,7 +47,7 @@ int msm_aud_evt_blocking_register_client(struct notifier_block *nb)
 	return blocking_notifier_chain_register(
 			&msm_aud_evt_blocking_notifier_list, nb);
 }
-EXPORT_SYMBOL(msm_aud_evt_blocking_register_client);
+EXPORT_SYMBOL_GPL(msm_aud_evt_blocking_register_client);
 
 /**
  *	msm_aud_evt_unregister_client - unregister a client notifier
@@ -58,7 +58,7 @@ int msm_aud_evt_blocking_unregister_client(struct notifier_block *nb)
 	return blocking_notifier_chain_unregister(
 			&msm_aud_evt_blocking_notifier_list, nb);
 }
-EXPORT_SYMBOL(msm_aud_evt_blocking_unregister_client);
+EXPORT_SYMBOL_GPL(msm_aud_evt_blocking_unregister_client);
 
 /**
  * msm_aud_evt_notifier_call_chain - notify clients of fb_events

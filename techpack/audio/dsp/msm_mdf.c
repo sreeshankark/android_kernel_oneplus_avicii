@@ -468,7 +468,7 @@ int msm_mdf_mem_init(void)
 err:
 	return rc;
 }
-EXPORT_SYMBOL(msm_mdf_mem_init);
+EXPORT_SYMBOL_GPL(msm_mdf_mem_init);
 
 int msm_mdf_mem_deinit(void)
 {
@@ -498,7 +498,7 @@ int msm_mdf_mem_deinit(void)
 
 	return 0;
 }
-EXPORT_SYMBOL(msm_mdf_mem_deinit);
+EXPORT_SYMBOL_GPL(msm_mdf_mem_deinit);
 
 static int msm_mdf_restart_notifier_cb(struct notifier_block *this,
 				unsigned long code,

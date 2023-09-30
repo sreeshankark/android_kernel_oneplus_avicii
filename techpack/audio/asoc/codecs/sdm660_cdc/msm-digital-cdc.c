@@ -329,7 +329,7 @@ void msm_dig_cdc_hph_comp_cb(
 	pr_debug("%s: Enter\n", __func__);
 	dig_cdc->codec_hph_comp_gpio = codec_hph_comp_gpio;
 }
-EXPORT_SYMBOL(msm_dig_cdc_hph_comp_cb);
+EXPORT_SYMBOL_GPL(msm_dig_cdc_hph_comp_cb);
 
 static int msm_dig_cdc_codec_enable_interpolator(struct snd_soc_dapm_widget *w,
 						 struct snd_kcontrol *kcontrol,
@@ -1259,7 +1259,7 @@ int msm_dig_codec_info_create_codec_entry(struct snd_info_entry *codec_root,
 
 	return 0;
 }
-EXPORT_SYMBOL(msm_dig_codec_info_create_codec_entry);
+EXPORT_SYMBOL_GPL(msm_dig_codec_info_create_codec_entry);
 
 static void sdm660_tx_mute_update_callback(struct work_struct *work)
 {

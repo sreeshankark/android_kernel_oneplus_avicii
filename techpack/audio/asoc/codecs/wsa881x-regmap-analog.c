@@ -387,7 +387,7 @@ void wsa881x_update_reg_defaults_2_0(void)
 						wsa881x_rev_2_0_ana[i].def;
 	}
 }
-EXPORT_SYMBOL(wsa881x_update_reg_defaults_2_0);
+EXPORT_SYMBOL_GPL(wsa881x_update_reg_defaults_2_0);
 
 /**
  * wsa881x_update_regmap_2_0 - update regmap framework with new tables
@@ -419,7 +419,7 @@ void wsa881x_update_regmap_2_0(struct regmap *regmap, int flag)
 		pr_err("%s: Failed to update regmap defaults ret= %d\n",
 			__func__, ret);
 }
-EXPORT_SYMBOL(wsa881x_update_regmap_2_0);
+EXPORT_SYMBOL_GPL(wsa881x_update_regmap_2_0);
 
 static bool wsa881x_readable_register(struct device *dev, unsigned int reg)
 {

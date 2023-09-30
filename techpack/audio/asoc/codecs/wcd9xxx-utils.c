@@ -432,7 +432,7 @@ err_power_sup:
 	devm_kfree(dev, pdata);
 	return NULL;
 }
-EXPORT_SYMBOL(wcd9xxx_populate_dt_data);
+EXPORT_SYMBOL_GPL(wcd9xxx_populate_dt_data);
 
 static bool is_wcd9xxx_reg_power_down(struct wcd9xxx *wcd9xxx, u16 rreg)
 {
@@ -517,7 +517,7 @@ int wcd9xxx_page_write(struct wcd9xxx *wcd9xxx, unsigned short *reg)
 	*reg = reg_addr;
 	return ret;
 }
-EXPORT_SYMBOL(wcd9xxx_page_write);
+EXPORT_SYMBOL_GPL(wcd9xxx_page_write);
 
 static int regmap_bus_read(void *context, const void *reg, size_t reg_size,
 			   void *val, size_t val_size)
@@ -666,7 +666,7 @@ struct regmap *wcd9xxx_regmap_init(struct device *dev,
 {
 	return devm_regmap_init(dev, &regmap_bus_config, dev, config);
 }
-EXPORT_SYMBOL(wcd9xxx_regmap_init);
+EXPORT_SYMBOL_GPL(wcd9xxx_regmap_init);
 
 /*
  * wcd9xxx_reset:
@@ -721,7 +721,7 @@ int wcd9xxx_reset(struct device *dev)
 
 	return rc;
 }
-EXPORT_SYMBOL(wcd9xxx_reset);
+EXPORT_SYMBOL_GPL(wcd9xxx_reset);
 
 /*
  * wcd9xxx_reset_low:
@@ -761,7 +761,7 @@ int wcd9xxx_reset_low(struct device *dev)
 
 	return rc;
 }
-EXPORT_SYMBOL(wcd9xxx_reset_low);
+EXPORT_SYMBOL_GPL(wcd9xxx_reset_low);
 
 /*
  * wcd9xxx_bringup:
@@ -797,7 +797,7 @@ int wcd9xxx_bringup(struct device *dev)
 
 	return rc;
 }
-EXPORT_SYMBOL(wcd9xxx_bringup);
+EXPORT_SYMBOL_GPL(wcd9xxx_bringup);
 
 /*
  * wcd9xxx_bringup:
@@ -833,7 +833,7 @@ int wcd9xxx_bringdown(struct device *dev)
 
 	return rc;
 }
-EXPORT_SYMBOL(wcd9xxx_bringdown);
+EXPORT_SYMBOL_GPL(wcd9xxx_bringdown);
 
 /*
  * wcd9xxx_get_codec_info:
@@ -897,7 +897,7 @@ int wcd9xxx_get_codec_info(struct device *dev)
 
 	return rc;
 }
-EXPORT_SYMBOL(wcd9xxx_get_codec_info);
+EXPORT_SYMBOL_GPL(wcd9xxx_get_codec_info);
 
 /*
  * wcd9xxx_core_irq_init:
@@ -923,7 +923,7 @@ int wcd9xxx_core_irq_init(
 
 	return ret;
 }
-EXPORT_SYMBOL(wcd9xxx_core_irq_init);
+EXPORT_SYMBOL_GPL(wcd9xxx_core_irq_init);
 
 /*
  * wcd9xxx_assign_irq:
@@ -948,7 +948,7 @@ int wcd9xxx_assign_irq(
 
 	return 0;
 }
-EXPORT_SYMBOL(wcd9xxx_assign_irq);
+EXPORT_SYMBOL_GPL(wcd9xxx_assign_irq);
 
 /*
  * wcd9xxx_core_res_init:
@@ -986,7 +986,7 @@ int wcd9xxx_core_res_init(
 
 	return 0;
 }
-EXPORT_SYMBOL(wcd9xxx_core_res_init);
+EXPORT_SYMBOL_GPL(wcd9xxx_core_res_init);
 
 /*
  * wcd9xxx_core_res_deinit:
@@ -1002,7 +1002,7 @@ void wcd9xxx_core_res_deinit(struct wcd9xxx_core_resource *wcd9xxx_core_res)
 	pm_qos_remove_request(&wcd9xxx_core_res->pm_qos_req);
 	mutex_destroy(&wcd9xxx_core_res->pm_lock);
 }
-EXPORT_SYMBOL(wcd9xxx_core_res_deinit);
+EXPORT_SYMBOL_GPL(wcd9xxx_core_res_deinit);
 
 /*
  * wcd9xxx_pm_cmpxchg:
@@ -1033,7 +1033,7 @@ enum wcd9xxx_pm_state wcd9xxx_pm_cmpxchg(
 
 	return old;
 }
-EXPORT_SYMBOL(wcd9xxx_pm_cmpxchg);
+EXPORT_SYMBOL_GPL(wcd9xxx_pm_cmpxchg);
 
 /*
  * wcd9xxx_core_res_suspend:
@@ -1095,7 +1095,7 @@ int wcd9xxx_core_res_suspend(
 
 	return ret;
 }
-EXPORT_SYMBOL(wcd9xxx_core_res_suspend);
+EXPORT_SYMBOL_GPL(wcd9xxx_core_res_suspend);
 
 /*
  * wcd9xxx_core_res_resume:
@@ -1127,7 +1127,7 @@ int wcd9xxx_core_res_resume(
 
 	return ret;
 }
-EXPORT_SYMBOL(wcd9xxx_core_res_resume);
+EXPORT_SYMBOL_GPL(wcd9xxx_core_res_resume);
 
 /*
  * wcd9xxx_get_intf_type:
@@ -1139,7 +1139,7 @@ enum wcd9xxx_intf_status wcd9xxx_get_intf_type(void)
 {
 	return wcd9xxx_intf;
 }
-EXPORT_SYMBOL(wcd9xxx_get_intf_type);
+EXPORT_SYMBOL_GPL(wcd9xxx_get_intf_type);
 
 /*
  * wcd9xxx_set_intf_type:
@@ -1150,7 +1150,7 @@ void wcd9xxx_set_intf_type(enum wcd9xxx_intf_status intf_status)
 {
 	wcd9xxx_intf = intf_status;
 }
-EXPORT_SYMBOL(wcd9xxx_set_intf_type);
+EXPORT_SYMBOL_GPL(wcd9xxx_set_intf_type);
 
 /*
  * wcd9xxx_set_power_state: set power state for the region
@@ -1185,7 +1185,7 @@ int wcd9xxx_set_power_state(struct wcd9xxx *wcd9xxx,
 
 	return 0;
 }
-EXPORT_SYMBOL(wcd9xxx_set_power_state);
+EXPORT_SYMBOL_GPL(wcd9xxx_set_power_state);
 
 /*
  * wcd9xxx_get_current_power_state: Get power state of the region
@@ -1221,4 +1221,4 @@ int wcd9xxx_get_current_power_state(struct wcd9xxx *wcd9xxx,
 
 	return state;
 }
-EXPORT_SYMBOL(wcd9xxx_get_current_power_state);
+EXPORT_SYMBOL_GPL(wcd9xxx_get_current_power_state);

@@ -793,7 +793,7 @@ int wsa883x_codec_info_create_codec_entry(struct snd_info_entry *codec_root,
 
 	return 0;
 }
-EXPORT_SYMBOL(wsa883x_codec_info_create_codec_entry);
+EXPORT_SYMBOL_GPL(wsa883x_codec_info_create_codec_entry);
 
 /*
  * wsa883x_codec_get_dev_num - returns swr device number
@@ -817,7 +817,7 @@ int wsa883x_codec_get_dev_num(struct snd_soc_component *component)
 
 	return wsa883x->swr_slave->dev_num;
 }
-EXPORT_SYMBOL(wsa883x_codec_get_dev_num);
+EXPORT_SYMBOL_GPL(wsa883x_codec_get_dev_num);
 
 static int wsa883x_get_compander(struct snd_kcontrol *kcontrol,
 			       struct snd_ctl_elem_value *ucontrol)
@@ -1124,7 +1124,7 @@ int wsa883x_set_channel_map(struct snd_soc_component *component, u8 *port,
 
 	return 0;
 }
-EXPORT_SYMBOL(wsa883x_set_channel_map);
+EXPORT_SYMBOL_GPL(wsa883x_set_channel_map);
 
 static void wsa883x_codec_init(struct snd_soc_component *component)
 {

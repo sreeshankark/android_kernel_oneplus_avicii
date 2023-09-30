@@ -120,7 +120,7 @@ int wcd9xxx_init_slimslave(struct wcd9xxx *wcd9xxx, u8 wcd9xxx_pgd_la,
 err:
 	return ret;
 }
-EXPORT_SYMBOL(wcd9xxx_init_slimslave);
+EXPORT_SYMBOL_GPL(wcd9xxx_init_slimslave);
 
 int wcd9xxx_deinit_slimslave(struct wcd9xxx *wcd9xxx)
 {
@@ -314,7 +314,7 @@ err_close_slim_sch:
 err:
 	return ret;
 }
-EXPORT_SYMBOL(wcd9xxx_cfg_slim_sch_rx);
+EXPORT_SYMBOL_GPL(wcd9xxx_cfg_slim_sch_rx);
 
 /* Enable slimbus slave device for RX path */
 int wcd9xxx_cfg_slim_sch_tx(struct wcd9xxx *wcd9xxx,
@@ -421,7 +421,7 @@ err:
 	wcd9xxx_close_slim_sch_tx(wcd9xxx, wcd9xxx_ch_list, *grph);
 	return ret;
 }
-EXPORT_SYMBOL(wcd9xxx_cfg_slim_sch_tx);
+EXPORT_SYMBOL_GPL(wcd9xxx_cfg_slim_sch_tx);
 
 int wcd9xxx_close_slim_sch_rx(struct wcd9xxx *wcd9xxx,
 			      struct list_head *wcd9xxx_ch_list, u16 grph)
@@ -447,7 +447,7 @@ int wcd9xxx_close_slim_sch_rx(struct wcd9xxx *wcd9xxx,
 err:
 	return ret;
 }
-EXPORT_SYMBOL(wcd9xxx_close_slim_sch_rx);
+EXPORT_SYMBOL_GPL(wcd9xxx_close_slim_sch_rx);
 
 int wcd9xxx_close_slim_sch_tx(struct wcd9xxx *wcd9xxx,
 			      struct list_head *wcd9xxx_ch_list,
@@ -474,7 +474,7 @@ int wcd9xxx_close_slim_sch_tx(struct wcd9xxx *wcd9xxx,
 err:
 	return ret;
 }
-EXPORT_SYMBOL(wcd9xxx_close_slim_sch_tx);
+EXPORT_SYMBOL_GPL(wcd9xxx_close_slim_sch_tx);
 
 int wcd9xxx_get_slave_port(unsigned int ch_num)
 {
@@ -489,7 +489,7 @@ int wcd9xxx_get_slave_port(unsigned int ch_num)
 	}
 	return ret;
 }
-EXPORT_SYMBOL(wcd9xxx_get_slave_port);
+EXPORT_SYMBOL_GPL(wcd9xxx_get_slave_port);
 
 int wcd9xxx_disconnect_port(struct wcd9xxx *wcd9xxx,
 			    struct list_head *wcd9xxx_ch_list, u16 grph)
@@ -510,7 +510,7 @@ int wcd9xxx_disconnect_port(struct wcd9xxx *wcd9xxx,
 	}
 	return ret;
 }
-EXPORT_SYMBOL(wcd9xxx_disconnect_port);
+EXPORT_SYMBOL_GPL(wcd9xxx_disconnect_port);
 
 /* This function is called with mutex acquired */
 int wcd9xxx_rx_vport_validation(u32 port_id,
@@ -531,7 +531,7 @@ int wcd9xxx_rx_vport_validation(u32 port_id,
 	}
 	return ret;
 }
-EXPORT_SYMBOL(wcd9xxx_rx_vport_validation);
+EXPORT_SYMBOL_GPL(wcd9xxx_rx_vport_validation);
 
 
 /* This function is called with mutex acquired */
@@ -573,4 +573,4 @@ int wcd9xxx_tx_vport_validation(u32 table, u32 port_id,
 	}
 	return ret;
 }
-EXPORT_SYMBOL(wcd9xxx_tx_vport_validation);
+EXPORT_SYMBOL_GPL(wcd9xxx_tx_vport_validation);

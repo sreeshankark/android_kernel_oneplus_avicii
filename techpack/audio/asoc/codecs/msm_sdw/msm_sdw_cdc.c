@@ -123,7 +123,7 @@ int msm_sdw_set_spkr_gain_offset(struct snd_soc_component *component,
 	priv->spkr_gain_offset = offset;
 	return 0;
 }
-EXPORT_SYMBOL(msm_sdw_set_spkr_gain_offset);
+EXPORT_SYMBOL_GPL(msm_sdw_set_spkr_gain_offset);
 
 /**
  * msm_sdw_set_spkr_mode - Configures speaker compander and smartboost
@@ -167,7 +167,7 @@ int msm_sdw_set_spkr_mode(struct snd_soc_component *component, int mode)
 				    regs[i].mask, regs[i].val);
 	return 0;
 }
-EXPORT_SYMBOL(msm_sdw_set_spkr_mode);
+EXPORT_SYMBOL_GPL(msm_sdw_set_spkr_mode);
 
 static int msm_enable_sdw_npl_clk(struct msm_sdw_priv *msm_sdw, int enable)
 {
@@ -263,7 +263,7 @@ rtn:
 	mutex_unlock(&msm_sdw->cdc_int_mclk1_mutex);
 	return ret;
 }
-EXPORT_SYMBOL(msm_int_enable_sdw_cdc_clk);
+EXPORT_SYMBOL_GPL(msm_int_enable_sdw_cdc_clk);
 
 static void msm_disable_int_mclk1(struct work_struct *work)
 {
@@ -1133,7 +1133,7 @@ static int msm_sdw_mclk_enable(struct msm_sdw_priv *msm_sdw,
 	}
 	return 0;
 }
-EXPORT_SYMBOL(msm_sdw_mclk_enable);
+EXPORT_SYMBOL_GPL(msm_sdw_mclk_enable);
 
 static int msm_sdw_swrm_read(void *handle, int reg)
 {
@@ -1538,7 +1538,7 @@ int msm_sdw_codec_info_create_codec_entry(struct snd_info_entry *codec_root,
 
 	return 0;
 }
-EXPORT_SYMBOL(msm_sdw_codec_info_create_codec_entry);
+EXPORT_SYMBOL_GPL(msm_sdw_codec_info_create_codec_entry);
 
 static struct snd_soc_dai_ops msm_sdw_dai_ops = {
 	.startup = msm_sdw_startup,

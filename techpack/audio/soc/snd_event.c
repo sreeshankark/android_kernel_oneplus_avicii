@@ -212,7 +212,7 @@ exit:
 	mutex_unlock(&snd_event_mutex);
 	return 0;
 }
-EXPORT_SYMBOL(snd_event_client_register);
+EXPORT_SYMBOL_GPL(snd_event_client_register);
 
 /*
  * snd_event_client_deregister - Remove a client from the SND event FW
@@ -271,7 +271,7 @@ exit:
 	mutex_unlock(&snd_event_mutex);
 	return ret;
 }
-EXPORT_SYMBOL(snd_event_client_deregister);
+EXPORT_SYMBOL_GPL(snd_event_client_deregister);
 
 /*
  * snd_event_mstr_add_client - Add a client to the master's list of clients
@@ -324,7 +324,7 @@ void snd_event_mstr_add_client(struct snd_event_clients **snd_clients,
 	client->cl_arr[client->num_clients].compare = compare;
 	client->num_clients++;
 }
-EXPORT_SYMBOL(snd_event_mstr_add_client);
+EXPORT_SYMBOL_GPL(snd_event_mstr_add_client);
 
 /*
  * snd_event_master_register - Register a master with the SND event FW
@@ -398,7 +398,7 @@ exit:
 	mutex_unlock(&snd_event_mutex);
 	return ret;
 }
-EXPORT_SYMBOL(snd_event_master_register);
+EXPORT_SYMBOL_GPL(snd_event_master_register);
 
 /*
  * snd_event_master_deregister - Remove a master from the SND event FW
@@ -442,7 +442,7 @@ exit:
 	mutex_unlock(&snd_event_mutex);
 	return ret;
 }
-EXPORT_SYMBOL(snd_event_master_deregister);
+EXPORT_SYMBOL_GPL(snd_event_master_deregister);
 
 /*
  * snd_event_notify - Update the state of the Master/client in the SND event FW
@@ -488,7 +488,7 @@ exit:
 	mutex_unlock(&snd_event_mutex);
 	return ret;
 }
-EXPORT_SYMBOL(snd_event_notify);
+EXPORT_SYMBOL_GPL(snd_event_notify);
 
 MODULE_LICENSE("GPL v2");
 MODULE_DESCRIPTION("SND event module");

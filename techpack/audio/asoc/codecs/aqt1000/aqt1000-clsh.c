@@ -211,7 +211,7 @@ void aqt_clsh_imped_config(struct snd_soc_component *component,
 				imped_table_ptr[index][i].mask,
 				imped_table_ptr[index][i].val);
 }
-EXPORT_SYMBOL(aqt_clsh_imped_config);
+EXPORT_SYMBOL_GPL(aqt_clsh_imped_config);
 
 static const char *mode_to_str(int mode)
 {
@@ -791,7 +791,7 @@ void aqt_clsh_fsm(struct snd_soc_component *component,
 		break;
 	};
 }
-EXPORT_SYMBOL(aqt_clsh_fsm);
+EXPORT_SYMBOL_GPL(aqt_clsh_fsm);
 
 /*
  * Function: aqt_clsh_get_clsh_state
@@ -803,7 +803,7 @@ int aqt_clsh_get_clsh_state(struct aqt_clsh_cdc_data *clsh)
 {
 	return clsh->state;
 }
-EXPORT_SYMBOL(aqt_clsh_get_clsh_state);
+EXPORT_SYMBOL_GPL(aqt_clsh_get_clsh_state);
 
 /*
  * Function: aqt_clsh_init
@@ -830,4 +830,4 @@ void aqt_clsh_init(struct aqt_clsh_cdc_data *clsh)
 	clsh->buck_users = 0;
 	clsh->clsh_users = 0;
 }
-EXPORT_SYMBOL(aqt_clsh_init);
+EXPORT_SYMBOL_GPL(aqt_clsh_init);

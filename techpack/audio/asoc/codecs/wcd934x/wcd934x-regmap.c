@@ -1836,7 +1836,7 @@ int wcd934x_regmap_register_patch(struct regmap *regmap, int revision)
 
 	return rc;
 }
-EXPORT_SYMBOL(wcd934x_regmap_register_patch);
+EXPORT_SYMBOL_GPL(wcd934x_regmap_register_patch);
 
 static bool wcd934x_is_readable_register(struct device *dev, unsigned int reg)
 {

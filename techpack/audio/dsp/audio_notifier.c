@@ -526,7 +526,7 @@ int audio_notifier_deregister(char *client_name)
 done:
 	return ret;
 }
-EXPORT_SYMBOL(audio_notifier_deregister);
+EXPORT_SYMBOL_GPL(audio_notifier_deregister);
 
 int audio_notifier_register(char *client_name, int domain,
 			    struct notifier_block *nb)
@@ -571,7 +571,7 @@ int audio_notifier_register(char *client_name, int domain,
 done:
 	return ret;
 }
-EXPORT_SYMBOL(audio_notifier_register);
+EXPORT_SYMBOL_GPL(audio_notifier_register);
 
 static int __init audio_notifier_subsys_init(void)
 {

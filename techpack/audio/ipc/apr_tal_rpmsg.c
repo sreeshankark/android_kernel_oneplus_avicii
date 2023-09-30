@@ -64,7 +64,7 @@ int apr_tal_write(struct apr_svc_ch_dev *apr_ch, void *data,
 
 	return rc;
 }
-EXPORT_SYMBOL(apr_tal_write);
+EXPORT_SYMBOL_GPL(apr_tal_write);
 
 /**
  * apr_tal_rx_intents_config() - Configure glink intents for remote processor
@@ -80,7 +80,7 @@ int apr_tal_rx_intents_config(struct apr_svc_ch_dev *apr_ch,
 	pr_debug("%s: NO-OP\n", __func__);
 	return 0;
 }
-EXPORT_SYMBOL(apr_tal_rx_intents_config);
+EXPORT_SYMBOL_GPL(apr_tal_rx_intents_config);
 
 /**
  * apr_tal_start_rx_rt() - Set RT thread priority for APR RX transfer
@@ -94,7 +94,7 @@ int apr_tal_start_rx_rt(struct apr_svc_ch_dev *apr_ch)
 	pr_debug("%s: NO-OP\n", __func__);
 	return 0;
 }
-EXPORT_SYMBOL(apr_tal_start_rx_rt);
+EXPORT_SYMBOL_GPL(apr_tal_start_rx_rt);
 
 /**
  * apr_tal_end_rx_rt() - Remove RT thread priority for APR RX transfer
@@ -107,7 +107,7 @@ int apr_tal_end_rx_rt(struct apr_svc_ch_dev *apr_ch)
 	pr_debug("%s: NO-OP\n", __func__);
 	return 0;
 }
-EXPORT_SYMBOL(apr_tal_end_rx_rt);
+EXPORT_SYMBOL_GPL(apr_tal_end_rx_rt);
 
 /**
  * apr_tal_open() - Open a transport channel for data transfer
@@ -155,7 +155,7 @@ unlock:
 	mutex_unlock(&apr_ch->m_lock);
 	return rc ? NULL : apr_ch;
 }
-EXPORT_SYMBOL(apr_tal_open);
+EXPORT_SYMBOL_GPL(apr_tal_open);
 
 /**
  * apr_tal_close() - Close transport channel on remote processor.
@@ -180,7 +180,7 @@ int apr_tal_close(struct apr_svc_ch_dev *apr_ch)
 exit:
 	return rc;
 }
-EXPORT_SYMBOL(apr_tal_close);
+EXPORT_SYMBOL_GPL(apr_tal_close);
 
 static int apr_tal_rpmsg_callback(struct rpmsg_device *rpdev,
 				  void *data, int len, void *priv, u32 addr)
@@ -304,7 +304,7 @@ int apr_tal_init(void)
 	ret = register_rpmsg_driver(&apr_tal_rpmsg_driver);
 	return ret;
 }
-EXPORT_SYMBOL(apr_tal_init);
+EXPORT_SYMBOL_GPL(apr_tal_init);
 
 /**
  * apr_tal_exit() - De-register rpmsg driver with rpmsg framework.
@@ -313,5 +313,5 @@ void apr_tal_exit(void)
 {
 	unregister_rpmsg_driver(&apr_tal_rpmsg_driver);
 }
-EXPORT_SYMBOL(apr_tal_exit);
+EXPORT_SYMBOL_GPL(apr_tal_exit);
 

@@ -515,7 +515,7 @@ int msm_qti_pp_send_chmix_cfg_cmd(int port_id, int copp_idx,
 	kfree(params_value);
 	return 0;
 }
-EXPORT_SYMBOL(msm_qti_pp_send_chmix_cfg_cmd);
+EXPORT_SYMBOL_GPL(msm_qti_pp_send_chmix_cfg_cmd);
 #endif /* CONFIG_QTI_PP */
 
 /* RMS */

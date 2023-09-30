@@ -547,7 +547,7 @@ struct wcd938x_mbhc *wcd938x_soc_get_mbhc(struct snd_soc_component *component)
 
 	return wcd938x->mbhc;
 }
-EXPORT_SYMBOL(wcd938x_soc_get_mbhc);
+EXPORT_SYMBOL_GPL(wcd938x_soc_get_mbhc);
 
 static int wcd938x_codec_hphl_dac_event(struct snd_soc_dapm_widget *w,
 					struct snd_kcontrol *kcontrol,
@@ -1438,7 +1438,7 @@ int wcd938x_get_micb_vout_ctl_val(u32 micb_mv)
 
 	return (micb_mv - 1000) / 50;
 }
-EXPORT_SYMBOL(wcd938x_get_micb_vout_ctl_val);
+EXPORT_SYMBOL_GPL(wcd938x_get_micb_vout_ctl_val);
 
 /*
  * wcd938x_mbhc_micb_adjust_voltage: adjust specific micbias voltage
@@ -1517,7 +1517,7 @@ exit:
 	mutex_unlock(&wcd938x->micb_lock);
 	return ret;
 }
-EXPORT_SYMBOL(wcd938x_mbhc_micb_adjust_voltage);
+EXPORT_SYMBOL_GPL(wcd938x_mbhc_micb_adjust_voltage);
 
 static int wcd938x_tx_swr_ctrl(struct snd_soc_dapm_widget *w,
 				    struct snd_kcontrol *kcontrol,
@@ -2004,7 +2004,7 @@ done:
 	mutex_unlock(&wcd938x->micb_lock);
 	return ret;
 }
-EXPORT_SYMBOL(wcd938x_micbias_control);
+EXPORT_SYMBOL_GPL(wcd938x_micbias_control);
 
 static int wcd938x_get_logical_addr(struct swr_device *swr_dev)
 {
@@ -3194,7 +3194,7 @@ int wcd938x_get_codec_variant(struct snd_soc_component *component)
 
 	return priv->variant;
 }
-EXPORT_SYMBOL(wcd938x_get_codec_variant);
+EXPORT_SYMBOL_GPL(wcd938x_get_codec_variant);
 
 /*
  * wcd938x_info_create_codec_entry - creates wcd938x module
@@ -3273,7 +3273,7 @@ int wcd938x_info_create_codec_entry(struct snd_info_entry *codec_root,
 
 	return 0;
 }
-EXPORT_SYMBOL(wcd938x_info_create_codec_entry);
+EXPORT_SYMBOL_GPL(wcd938x_info_create_codec_entry);
 
 static int wcd938x_set_micbias_data(struct wcd938x_priv *wcd938x,
 			      struct wcd938x_pdata *pdata)

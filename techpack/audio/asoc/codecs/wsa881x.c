@@ -372,7 +372,7 @@ int wsa881x_codec_info_create_codec_entry(struct snd_info_entry *codec_root,
 
 	return 0;
 }
-EXPORT_SYMBOL(wsa881x_codec_info_create_codec_entry);
+EXPORT_SYMBOL_GPL(wsa881x_codec_info_create_codec_entry);
 
 static bool is_swr_slv_reg_readable(int reg)
 {
@@ -1190,7 +1190,7 @@ int wsa881x_set_channel_map(struct snd_soc_component *component, u8 *port,
 	}
 	return 0;
 }
-EXPORT_SYMBOL(wsa881x_set_channel_map);
+EXPORT_SYMBOL_GPL(wsa881x_set_channel_map);
 
 static void wsa881x_init(struct snd_soc_component *component)
 {

@@ -170,7 +170,7 @@ bool msm_cdc_is_ondemand_supply(struct device *dev,
 
 	return rc;
 }
-EXPORT_SYMBOL(msm_cdc_is_ondemand_supply);
+EXPORT_SYMBOL_GPL(msm_cdc_is_ondemand_supply);
 
 /*
  * msm_cdc_set_supply_min_voltage:
@@ -216,7 +216,7 @@ int msm_cdc_set_supply_min_voltage(struct device *dev,
 
 	return rc;
 }
-EXPORT_SYMBOL(msm_cdc_set_supply_min_voltage);
+EXPORT_SYMBOL_GPL(msm_cdc_set_supply_min_voltage);
 
 /*
  * msm_cdc_disable_ondemand_supply:
@@ -266,7 +266,7 @@ int msm_cdc_disable_ondemand_supply(struct device *dev,
 
 	return rc;
 }
-EXPORT_SYMBOL(msm_cdc_disable_ondemand_supply);
+EXPORT_SYMBOL_GPL(msm_cdc_disable_ondemand_supply);
 
 /*
  * msm_cdc_enable_ondemand_supply:
@@ -316,7 +316,7 @@ int msm_cdc_enable_ondemand_supply(struct device *dev,
 
 	return rc;
 }
-EXPORT_SYMBOL(msm_cdc_enable_ondemand_supply);
+EXPORT_SYMBOL_GPL(msm_cdc_enable_ondemand_supply);
 
 /*
  * msm_cdc_set_supplies_lpm_mode:
@@ -369,7 +369,7 @@ int msm_cdc_set_supplies_lpm_mode(struct device *dev,
 
 	return rc;
 }
-EXPORT_SYMBOL(msm_cdc_set_supplies_lpm_mode);
+EXPORT_SYMBOL_GPL(msm_cdc_set_supplies_lpm_mode);
 
 /*
  * msm_cdc_disable_static_supplies:
@@ -414,7 +414,7 @@ int msm_cdc_disable_static_supplies(struct device *dev,
 
 	return rc;
 }
-EXPORT_SYMBOL(msm_cdc_disable_static_supplies);
+EXPORT_SYMBOL_GPL(msm_cdc_disable_static_supplies);
 
 /*
  * msm_cdc_release_supplies:
@@ -458,7 +458,7 @@ int msm_cdc_release_supplies(struct device *dev,
 
 	return rc;
 }
-EXPORT_SYMBOL(msm_cdc_release_supplies);
+EXPORT_SYMBOL_GPL(msm_cdc_release_supplies);
 
 /*
  * msm_cdc_enable_static_supplies:
@@ -506,7 +506,7 @@ int msm_cdc_enable_static_supplies(struct device *dev,
 
 	return rc;
 }
-EXPORT_SYMBOL(msm_cdc_enable_static_supplies);
+EXPORT_SYMBOL_GPL(msm_cdc_enable_static_supplies);
 
 /*
  * msm_cdc_init_supplies:
@@ -527,7 +527,7 @@ int msm_cdc_init_supplies(struct device *dev,
 	return msm_cdc_init_supplies_v2(dev, supplies, cdc_vreg,
 					num_supplies, false);
 }
-EXPORT_SYMBOL(msm_cdc_init_supplies);
+EXPORT_SYMBOL_GPL(msm_cdc_init_supplies);
 
 /*
  * msm_cdc_init_supplies_v2:
@@ -616,7 +616,7 @@ int msm_cdc_init_supplies_v2(struct device *dev,
 err_supply:
 	return rc;
 }
-EXPORT_SYMBOL(msm_cdc_init_supplies_v2);
+EXPORT_SYMBOL_GPL(msm_cdc_init_supplies_v2);
 
 /*
  * msm_cdc_get_power_supplies:
@@ -716,4 +716,4 @@ err_supply_cnt:
 err_mem_alloc:
 	return rc;
 }
-EXPORT_SYMBOL(msm_cdc_get_power_supplies);
+EXPORT_SYMBOL_GPL(msm_cdc_get_power_supplies);

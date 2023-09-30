@@ -46,7 +46,7 @@ int wcd_request_irq(struct wcd_irq_info *irq_info, int irq, const char *name,
 				    IRQF_ONESHOT | IRQF_TRIGGER_RISING,
 				    name, data);
 }
-EXPORT_SYMBOL(wcd_request_irq);
+EXPORT_SYMBOL_GPL(wcd_request_irq);
 
 /**
  * wcd_free_irq: Free the IRQ resources allocated during request_irq
@@ -67,7 +67,7 @@ void wcd_free_irq(struct wcd_irq_info *irq_info, int irq, void *data)
 
 	free_irq(irq, data);
 }
-EXPORT_SYMBOL(wcd_free_irq);
+EXPORT_SYMBOL_GPL(wcd_free_irq);
 
 /**
  * wcd_enable_irq: Enable the given IRQ
@@ -81,7 +81,7 @@ void wcd_enable_irq(struct wcd_irq_info *irq_info, int irq)
 	else
 		enable_irq(wcd_map_irq(irq_info, irq));
 }
-EXPORT_SYMBOL(wcd_enable_irq);
+EXPORT_SYMBOL_GPL(wcd_enable_irq);
 
 /**
  * wcd_disable_irq: Disable the given IRQ
@@ -95,7 +95,7 @@ void wcd_disable_irq(struct wcd_irq_info *irq_info, int irq)
 	else
 		disable_irq_nosync(wcd_map_irq(irq_info, irq));
 }
-EXPORT_SYMBOL(wcd_disable_irq);
+EXPORT_SYMBOL_GPL(wcd_disable_irq);
 
 static void wcd_irq_chip_disable(struct irq_data *data)
 {
@@ -163,7 +163,7 @@ int wcd_irq_init(struct wcd_irq_info *irq_info, struct irq_domain **virq)
 
 	return ret;
 }
-EXPORT_SYMBOL(wcd_irq_init);
+EXPORT_SYMBOL_GPL(wcd_irq_init);
 
 /**
  * wcd_irq_exit: Uninitialize regmap IRQ and free IRQ resources
@@ -183,4 +183,4 @@ int wcd_irq_exit(struct wcd_irq_info *irq_info, struct irq_domain *virq)
 
 	return 0;
 }
-EXPORT_SYMBOL(wcd_irq_exit);
+EXPORT_SYMBOL_GPL(wcd_irq_exit);

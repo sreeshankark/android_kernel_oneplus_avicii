@@ -403,7 +403,7 @@ int msm_audio_ion_alloc(struct dma_buf **dma_buf, size_t bufsz,
 err:
 	return rc;
 }
-EXPORT_SYMBOL(msm_audio_ion_alloc);
+EXPORT_SYMBOL_GPL(msm_audio_ion_alloc);
 
 /**
  * msm_audio_ion_dma_map -
@@ -440,7 +440,7 @@ int msm_audio_ion_dma_map(dma_addr_t *phys_addr, dma_addr_t *iova_base,
 
 	return 0;
 }
-EXPORT_SYMBOL(msm_audio_ion_dma_map);
+EXPORT_SYMBOL_GPL(msm_audio_ion_dma_map);
 
 /**
  * msm_audio_ion_import-
@@ -506,7 +506,7 @@ err:
 	*dma_buf = NULL;
 	return rc;
 }
-EXPORT_SYMBOL(msm_audio_ion_import);
+EXPORT_SYMBOL_GPL(msm_audio_ion_import);
 
 /**
  * msm_audio_ion_free -
@@ -533,7 +533,7 @@ int msm_audio_ion_free(struct dma_buf *dma_buf)
 
 	return 0;
 }
-EXPORT_SYMBOL(msm_audio_ion_free);
+EXPORT_SYMBOL_GPL(msm_audio_ion_free);
 
 /**
  * msm_audio_ion_mmap -
@@ -619,7 +619,7 @@ int msm_audio_ion_mmap(struct audio_buffer *abuff,
 
 	return ret;
 }
-EXPORT_SYMBOL(msm_audio_ion_mmap);
+EXPORT_SYMBOL_GPL(msm_audio_ion_mmap);
 
 /**
  * msm_audio_ion_cache_operations-
@@ -669,7 +669,7 @@ int msm_audio_ion_cache_operations(struct audio_buffer *abuff, int cache_op)
 cache_op_failed:
 	return rc;
 }
-EXPORT_SYMBOL(msm_audio_ion_cache_operations);
+EXPORT_SYMBOL_GPL(msm_audio_ion_cache_operations);
 
 /**
  * msm_audio_populate_upper_32_bits -
@@ -685,7 +685,7 @@ u32 msm_audio_populate_upper_32_bits(dma_addr_t pa)
 	else
 		return upper_32_bits(pa);
 }
-EXPORT_SYMBOL(msm_audio_populate_upper_32_bits);
+EXPORT_SYMBOL_GPL(msm_audio_populate_upper_32_bits);
 
 static int msm_audio_smmu_init(struct device *dev)
 {

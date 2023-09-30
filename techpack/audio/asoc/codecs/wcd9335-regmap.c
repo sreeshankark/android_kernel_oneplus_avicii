@@ -1466,7 +1466,7 @@ int wcd9335_regmap_register_patch(struct regmap *regmap, int version)
 
 	return rc;
 }
-EXPORT_SYMBOL(wcd9335_regmap_register_patch);
+EXPORT_SYMBOL_GPL(wcd9335_regmap_register_patch);
 
 static bool wcd9335_is_readable_register(struct device *dev, unsigned int reg)
 {

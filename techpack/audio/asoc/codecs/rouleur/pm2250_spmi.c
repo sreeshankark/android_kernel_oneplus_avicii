@@ -51,7 +51,7 @@ int pm2250_spmi_write(struct device *dev, int reg, int value)
 
 	return rc;
 }
-EXPORT_SYMBOL(pm2250_spmi_write);
+EXPORT_SYMBOL_GPL(pm2250_spmi_write);
 
 /**
  * pm2250_spmi_read: Function to read PMIC register
@@ -79,7 +79,7 @@ int pm2250_spmi_read(struct device *dev, int reg, int *value)
 
 	return rc;
 }
-EXPORT_SYMBOL(pm2250_spmi_read);
+EXPORT_SYMBOL_GPL(pm2250_spmi_read);
 
 static int pm2250_spmi_probe(struct platform_device *pdev)
 {

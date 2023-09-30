@@ -64,7 +64,7 @@ int msm_sdw_page_write(struct msm_sdw_priv *msm_sdw, unsigned short reg)
 	}
 	return ret;
 }
-EXPORT_SYMBOL(msm_sdw_page_write);
+EXPORT_SYMBOL_GPL(msm_sdw_page_write);
 
 static int regmap_bus_read(void *context, const void *reg, size_t reg_size,
 			   void *val, size_t val_size)
@@ -201,4 +201,4 @@ struct regmap *msm_sdw_regmap_init(struct device *dev,
 {
 	return devm_regmap_init(dev, &regmap_bus_config, dev, config);
 }
-EXPORT_SYMBOL(msm_sdw_regmap_init);
+EXPORT_SYMBOL_GPL(msm_sdw_regmap_init);

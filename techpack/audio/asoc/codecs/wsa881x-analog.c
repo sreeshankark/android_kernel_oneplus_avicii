@@ -1260,19 +1260,19 @@ int wsa881x_get_client_index(void)
 {
 	return wsa881x_i2c_addr;
 }
-EXPORT_SYMBOL(wsa881x_get_client_index);
+EXPORT_SYMBOL_GPL(wsa881x_get_client_index);
 
 int wsa881x_get_probing_count(void)
 {
 	return wsa881x_probing_count;
 }
-EXPORT_SYMBOL(wsa881x_get_probing_count);
+EXPORT_SYMBOL_GPL(wsa881x_get_probing_count);
 
 int wsa881x_get_presence_count(void)
 {
 	return wsa881x_presence_count;
 }
-EXPORT_SYMBOL(wsa881x_get_presence_count);
+EXPORT_SYMBOL_GPL(wsa881x_get_presence_count);
 
 static int check_wsa881x_presence(struct i2c_client *client)
 {

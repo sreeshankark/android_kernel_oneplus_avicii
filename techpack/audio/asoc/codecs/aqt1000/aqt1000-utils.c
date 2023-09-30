@@ -188,4 +188,4 @@ struct regmap *aqt1000_regmap_init(struct device *dev,
 {
 	return devm_regmap_init(dev, &regmap_bus_config, dev, config);
 }
-EXPORT_SYMBOL(aqt1000_regmap_init);
+EXPORT_SYMBOL_GPL(aqt1000_regmap_init);

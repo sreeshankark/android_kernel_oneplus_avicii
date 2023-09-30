@@ -73,7 +73,7 @@ int aqt_request_irq(struct aqt1000 *aqt, int irq, const char *name,
 				    IRQF_ONESHOT | IRQF_TRIGGER_RISING,
 				    name, data);
 }
-EXPORT_SYMBOL(aqt_request_irq);
+EXPORT_SYMBOL_GPL(aqt_request_irq);
 
 /**
  * aqt_free_irq: Free the IRQ resources allocated during request_irq
@@ -89,7 +89,7 @@ void aqt_free_irq(struct aqt1000 *aqt, int irq, void *data)
 
 	free_irq(irq, data);
 }
-EXPORT_SYMBOL(aqt_free_irq);
+EXPORT_SYMBOL_GPL(aqt_free_irq);
 
 /**
  * aqt_enable_irq: Enable the given IRQ
@@ -101,7 +101,7 @@ void aqt_enable_irq(struct aqt1000 *aqt, int irq)
 	if (aqt)
 		enable_irq(aqt_map_irq(aqt, irq));
 }
-EXPORT_SYMBOL(aqt_enable_irq);
+EXPORT_SYMBOL_GPL(aqt_enable_irq);
 
 /**
  * aqt_disable_irq: Disable the given IRQ
@@ -113,7 +113,7 @@ void aqt_disable_irq(struct aqt1000 *aqt, int irq)
 	if (aqt)
 		disable_irq(aqt_map_irq(aqt, irq));
 }
-EXPORT_SYMBOL(aqt_disable_irq);
+EXPORT_SYMBOL_GPL(aqt_disable_irq);
 
 static irqreturn_t aqt_irq_thread(int irq, void *data)
 {
@@ -261,7 +261,7 @@ err_irq:
 err:
 	return ret;
 }
-EXPORT_SYMBOL(aqt_irq_init);
+EXPORT_SYMBOL_GPL(aqt_irq_init);
 
 /**
  * aqt_irq_exit: Uninitialize regmap IRQ and free IRQ resources
@@ -280,4 +280,4 @@ int aqt_irq_exit(struct aqt1000 *aqt)
 
 	return 0;
 }
-EXPORT_SYMBOL(aqt_irq_exit);
+EXPORT_SYMBOL_GPL(aqt_irq_exit);

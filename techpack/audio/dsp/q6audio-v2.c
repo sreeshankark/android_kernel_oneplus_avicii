@@ -1221,4 +1221,4 @@ int q6audio_validate_port(u16 port_id)
 
 	return ret;
 }
-EXPORT_SYMBOL(q6audio_validate_port);
+EXPORT_SYMBOL_GPL(q6audio_validate_port);

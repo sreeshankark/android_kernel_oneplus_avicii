@@ -652,7 +652,7 @@ int msm_audio_ion_alloc(void **handle, size_t bufsz,
 err:
 	return rc;
 }
-EXPORT_SYMBOL(msm_audio_ion_alloc);
+EXPORT_SYMBOL_GPL(msm_audio_ion_alloc);
 
 int msm_audio_ion_phys_free(void *handle,
 			   dma_addr_t *paddr,
@@ -664,7 +664,7 @@ int msm_audio_ion_phys_free(void *handle,
 	handle = NULL;
 	return 0;
 }
-EXPORT_SYMBOL(msm_audio_ion_phys_free);
+EXPORT_SYMBOL_GPL(msm_audio_ion_phys_free);
 
 int msm_audio_ion_phys_assign(void **handle, int fd,
 		dma_addr_t *paddr, size_t *pa_len, u8 assign_type, int id)
@@ -672,13 +672,13 @@ int msm_audio_ion_phys_assign(void **handle, int fd,
 	*handle = NULL;
 	return 0;
 }
-EXPORT_SYMBOL(msm_audio_ion_phys_assign);
+EXPORT_SYMBOL_GPL(msm_audio_ion_phys_assign);
 
 bool msm_audio_is_hypervisor_supported(void)
 {
 	return false;
 }
-EXPORT_SYMBOL(msm_audio_is_hypervisor_supported);
+EXPORT_SYMBOL_GPL(msm_audio_is_hypervisor_supported);
 /**
  * msm_audio_ion_import-
  *        Import ION buffer with given file descriptor
@@ -744,7 +744,7 @@ err:
 	*handle = NULL;
 	return rc;
 }
-EXPORT_SYMBOL(msm_audio_ion_import);
+EXPORT_SYMBOL_GPL(msm_audio_ion_import);
 
 /**
  * msm_audio_ion_free -
@@ -775,7 +775,7 @@ int msm_audio_ion_free(void *handle)
 
 	return 0;
 }
-EXPORT_SYMBOL(msm_audio_ion_free);
+EXPORT_SYMBOL_GPL(msm_audio_ion_free);
 
 /**
  * msm_audio_ion_mmap -
@@ -861,7 +861,7 @@ int msm_audio_ion_mmap(struct audio_buffer *abuff,
 
 	return ret;
 }
-EXPORT_SYMBOL(msm_audio_ion_mmap);
+EXPORT_SYMBOL_GPL(msm_audio_ion_mmap);
 
 /**
  * msm_audio_populate_upper_32_bits -
@@ -874,7 +874,7 @@ u32 msm_audio_populate_upper_32_bits(dma_addr_t pa)
 {
 	return upper_32_bits(pa);
 }
-EXPORT_SYMBOL(msm_audio_populate_upper_32_bits);
+EXPORT_SYMBOL_GPL(msm_audio_populate_upper_32_bits);
 
 static const struct of_device_id msm_audio_ion_dt_match[] = {
 	{ .compatible = "qcom,msm-audio-ion" },

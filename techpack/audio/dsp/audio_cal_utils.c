@@ -436,7 +436,7 @@ int cal_utils_create_cal_types(int num_cal_types,
 done:
 	return ret;
 }
-EXPORT_SYMBOL(cal_utils_create_cal_types);
+EXPORT_SYMBOL_GPL(cal_utils_create_cal_types);
 
 static void delete_cal_block(struct cal_block_data *cal_block)
 {
@@ -528,7 +528,7 @@ void cal_utils_destroy_cal_types(int num_cal_types,
 done:
 	return;
 }
-EXPORT_SYMBOL(cal_utils_destroy_cal_types);
+EXPORT_SYMBOL_GPL(cal_utils_destroy_cal_types);
 
 /**
  * cal_utils_get_only_cal_block
@@ -556,7 +556,7 @@ struct cal_block_data *cal_utils_get_only_cal_block(
 done:
 	return cal_block;
 }
-EXPORT_SYMBOL(cal_utils_get_only_cal_block);
+EXPORT_SYMBOL_GPL(cal_utils_get_only_cal_block);
 
 /**
  * cal_utils_get_only_cal_block
@@ -577,7 +577,7 @@ bool cal_utils_match_buf_num(struct cal_block_data *cal_block,
 
 	return ret;
 }
-EXPORT_SYMBOL(cal_utils_match_buf_num);
+EXPORT_SYMBOL_GPL(cal_utils_match_buf_num);
 
 static struct cal_block_data *get_matching_cal_block(
 					struct cal_type_data *cal_type,
@@ -884,7 +884,7 @@ err:
 done:
 	return ret;
 }
-EXPORT_SYMBOL(cal_utils_alloc_cal);
+EXPORT_SYMBOL_GPL(cal_utils_alloc_cal);
 
 /**
  * cal_utils_dealloc_cal
@@ -956,7 +956,7 @@ err:
 done:
 	return ret;
 }
-EXPORT_SYMBOL(cal_utils_dealloc_cal);
+EXPORT_SYMBOL_GPL(cal_utils_dealloc_cal);
 
 /**
  * cal_utils_set_cal
@@ -1051,7 +1051,7 @@ err:
 done:
 	return ret;
 }
-EXPORT_SYMBOL(cal_utils_set_cal);
+EXPORT_SYMBOL_GPL(cal_utils_set_cal);
 
 /**
  * cal_utils_mark_cal_used
@@ -1063,7 +1063,7 @@ void cal_utils_mark_cal_used(struct cal_block_data *cal_block)
 	if (cal_block)
 		cal_block->cal_stale = true;
 }
-EXPORT_SYMBOL(cal_utils_mark_cal_used);
+EXPORT_SYMBOL_GPL(cal_utils_mark_cal_used);
 
 int __init cal_utils_init(void)
 {
@@ -1094,4 +1094,4 @@ unlock:
 	mutex_unlock(&cal_lock);
 	return ret;
 }
-EXPORT_SYMBOL(cal_utils_is_cal_stale);
+EXPORT_SYMBOL_GPL(cal_utils_is_cal_stale);

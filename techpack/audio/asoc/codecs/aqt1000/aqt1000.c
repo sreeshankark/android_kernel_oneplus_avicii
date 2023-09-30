@@ -780,7 +780,7 @@ exit:
 
 	return ret;
 }
-EXPORT_SYMBOL(aqt_mbhc_micb_adjust_voltage);
+EXPORT_SYMBOL_GPL(aqt_mbhc_micb_adjust_voltage);
 
 /*
  * aqt_micbias_control: enable/disable micbias
@@ -890,7 +890,7 @@ int aqt_micbias_control(struct snd_soc_component *component,
 
 	return ret;
 }
-EXPORT_SYMBOL(aqt_micbias_control);
+EXPORT_SYMBOL_GPL(aqt_micbias_control);
 
 static int __aqt_codec_enable_micbias(struct snd_soc_dapm_widget *w,
 					int event)
@@ -3291,7 +3291,7 @@ int aqt_cdc_mclk_enable(struct snd_soc_component *component, bool enable)
 
 	return __aqt_cdc_mclk_enable(aqt, enable);
 }
-EXPORT_SYMBOL(aqt_cdc_mclk_enable);
+EXPORT_SYMBOL_GPL(aqt_cdc_mclk_enable);
 
 /*
  * aqt_get_micb_vout_ctl_val: converts micbias from volts to register value
@@ -3309,7 +3309,7 @@ int aqt_get_micb_vout_ctl_val(u32 micb_mv)
 
 	return (micb_mv - 1000) / 50;
 }
-EXPORT_SYMBOL(aqt_get_micb_vout_ctl_val);
+EXPORT_SYMBOL_GPL(aqt_get_micb_vout_ctl_val);
 
 static int aqt_set_micbias(struct aqt1000 *aqt,
 			   struct aqt1000_pdata *pdata)
@@ -3407,7 +3407,7 @@ int aqt_codec_info_create_codec_entry(struct snd_info_entry *codec_root,
 
 	return 0;
 }
-EXPORT_SYMBOL(aqt_codec_info_create_codec_entry);
+EXPORT_SYMBOL_GPL(aqt_codec_info_create_codec_entry);
 
 static const struct aqt_reg_mask_val aqt_codec_reg_init[] = {
 	{AQT1000_CHIP_CFG0_EFUSE_CTL, 0x01, 0x01},
@@ -3609,4 +3609,4 @@ int aqt_register_codec(struct device *dev)
 	return snd_soc_register_component(dev, &snd_cdc_dev_aqt, aqt_dai,
 					ARRAY_SIZE(aqt_dai));
 }
-EXPORT_SYMBOL(aqt_register_codec);
+EXPORT_SYMBOL_GPL(aqt_register_codec);

@@ -168,7 +168,7 @@ int q6core_init_uevent_data(struct audio_uevent_data *uevent_data, char *name)
 
 	return ret;
 }
-EXPORT_SYMBOL(q6core_init_uevent_data);
+EXPORT_SYMBOL_GPL(q6core_init_uevent_data);
 
 /**
  * q6core_destroy_uevent_data - destroy kernel object.
@@ -180,7 +180,7 @@ void q6core_destroy_uevent_data(struct audio_uevent_data *uevent_data)
 	if (uevent_data)
 		kobject_put(&uevent_data->kobj);
 }
-EXPORT_SYMBOL(q6core_destroy_uevent_data);
+EXPORT_SYMBOL_GPL(q6core_destroy_uevent_data);
 
 /**
  * q6core_send_uevent - send uevent to userspace.
@@ -199,7 +199,7 @@ int q6core_send_uevent(struct audio_uevent_data *uevent_data, char *event)
 
 	return kobject_uevent_env(&uevent_data->kobj, KOBJ_CHANGE, env);
 }
-EXPORT_SYMBOL(q6core_send_uevent);
+EXPORT_SYMBOL_GPL(q6core_send_uevent);
 
 static int parse_fwk_version_info(uint32_t *payload, uint16_t payload_size)
 {
@@ -637,7 +637,7 @@ int q6core_get_service_version(uint32_t service_id,
 	pr_err("%s: No service matching service ID %d\n", __func__, service_id);
 	return -EINVAL;
 }
-EXPORT_SYMBOL(q6core_get_service_version);
+EXPORT_SYMBOL_GPL(q6core_get_service_version);
 
 static int q6core_get_avcs_fwk_version(void)
 {
@@ -701,7 +701,7 @@ size_t q6core_get_fwk_version_size(uint32_t service_id)
 done:
 	return ret;
 }
-EXPORT_SYMBOL(q6core_get_fwk_version_size);
+EXPORT_SYMBOL_GPL(q6core_get_fwk_version_size);
 
 /**
  * q6core_get_avcs_version_per_service -
@@ -737,7 +737,7 @@ int q6core_get_avcs_api_version_per_service(uint32_t service_id)
 	pr_err("%s: No service matching service ID %d\n", __func__, service_id);
 	return -EINVAL;
 }
-EXPORT_SYMBOL(q6core_get_avcs_api_version_per_service);
+EXPORT_SYMBOL_GPL(q6core_get_avcs_api_version_per_service);
 
 /**
  * core_set_license -
@@ -822,7 +822,7 @@ cmd_unlock:
 
 	return rc;
 }
-EXPORT_SYMBOL(core_set_license);
+EXPORT_SYMBOL_GPL(core_set_license);
 
 /**
  * core_get_license_status -
@@ -888,7 +888,7 @@ fail_cmd:
 				__func__, ret, module_id);
 	return ret;
 }
-EXPORT_SYMBOL(core_get_license_status);
+EXPORT_SYMBOL_GPL(core_get_license_status);
 
 /**
  * core_set_dolby_manufacturer_id -
@@ -928,7 +928,7 @@ uint32_t core_set_dolby_manufacturer_id(int manufacturer_id)
 	mutex_unlock(&(q6core_lcl.cmd_lock));
 	return rc;
 }
-EXPORT_SYMBOL(core_set_dolby_manufacturer_id);
+EXPORT_SYMBOL_GPL(core_set_dolby_manufacturer_id);
 
 int32_t q6core_avcs_load_unload_modules(struct avcs_load_unload_modules_payload
 				 *payload, uint32_t preload_type)
@@ -1055,7 +1055,7 @@ done:
 	mutex_unlock(&(q6core_lcl.cmd_lock));
 	return ret;
 }
-EXPORT_SYMBOL(q6core_avcs_load_unload_modules);
+EXPORT_SYMBOL_GPL(q6core_avcs_load_unload_modules);
 
 int32_t q6core_load_unload_topo_modules(uint32_t topo_id,
 			bool preload_type)
@@ -1102,7 +1102,7 @@ done:
 
 	return ret;
 }
-EXPORT_SYMBOL(q6core_load_unload_topo_modules);
+EXPORT_SYMBOL_GPL(q6core_load_unload_topo_modules);
 
 /**
  * q6core_is_adsp_ready - check adsp ready status
@@ -1147,7 +1147,7 @@ bail:
 	mutex_unlock(&(q6core_lcl.cmd_lock));
 	return ret;
 }
-EXPORT_SYMBOL(q6core_is_adsp_ready);
+EXPORT_SYMBOL_GPL(q6core_is_adsp_ready);
 
 int q6core_create_lpass_npa_client(uint32_t node_id, char *client_name,
 				   uint32_t *client_handle)
@@ -1219,7 +1219,7 @@ done:
 	mutex_unlock(&q6core_lcl.cmd_lock);
 	return ret;
 }
-EXPORT_SYMBOL(q6core_create_lpass_npa_client);
+EXPORT_SYMBOL_GPL(q6core_create_lpass_npa_client);
 
 int q6core_destroy_lpass_npa_client(uint32_t client_handle)
 {
@@ -1277,7 +1277,7 @@ done:
 	mutex_unlock(&q6core_lcl.cmd_lock);
 	return ret;
 }
-EXPORT_SYMBOL(q6core_destroy_lpass_npa_client);
+EXPORT_SYMBOL_GPL(q6core_destroy_lpass_npa_client);
 
 int q6core_request_island_transition(uint32_t client_handle,
 				     uint32_t island_allow_mode)
@@ -1342,7 +1342,7 @@ done:
 	mutex_unlock(&q6core_lcl.cmd_lock);
 	return ret;
 }
-EXPORT_SYMBOL(q6core_request_island_transition);
+EXPORT_SYMBOL_GPL(q6core_request_island_transition);
 
 int q6core_map_memory_regions(phys_addr_t *buf_add, uint32_t mempool_id,
 			uint32_t *bufsz, uint32_t bufcnt, uint32_t *map_handle)
@@ -1523,7 +1523,7 @@ done:
 	mutex_unlock(&q6core_lcl.cmd_lock);
 	return ret;
 }
-EXPORT_SYMBOL(q6core_map_mdf_memory_regions);
+EXPORT_SYMBOL_GPL(q6core_map_mdf_memory_regions);
 
 int q6core_memory_unmap_regions(uint32_t mem_map_handle)
 {

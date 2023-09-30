@@ -22,7 +22,7 @@ void q6common_update_instance_id_support(bool supported)
 {
 	common.instance_id_supported = supported;
 }
-EXPORT_SYMBOL(q6common_update_instance_id_support);
+EXPORT_SYMBOL_GPL(q6common_update_instance_id_support);
 
 /**
  * q6common_is_instance_id_supported
@@ -33,7 +33,7 @@ bool q6common_is_instance_id_supported(void)
 {
 	return common.instance_id_supported;
 }
-EXPORT_SYMBOL(q6common_is_instance_id_supported);
+EXPORT_SYMBOL_GPL(q6common_is_instance_id_supported);
 
 /**
  * q6common_pack_pp_params
@@ -103,7 +103,7 @@ int q6common_pack_pp_params(u8 *dest, struct param_hdr_v3 *v3_hdr,
 
 	return 0;
 }
-EXPORT_SYMBOL(q6common_pack_pp_params);
+EXPORT_SYMBOL_GPL(q6common_pack_pp_params);
 
 /**
  * q6common_pack_pp_params_v2
@@ -174,4 +174,4 @@ int q6common_pack_pp_params_v2(u8 *dest, struct param_hdr_v3 *v3_hdr,
 
 	return 0;
 }
-EXPORT_SYMBOL(q6common_pack_pp_params_v2);
+EXPORT_SYMBOL_GPL(q6common_pack_pp_params_v2);

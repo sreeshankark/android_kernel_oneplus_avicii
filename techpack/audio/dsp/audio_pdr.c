@@ -72,7 +72,7 @@ int audio_pdr_register(struct notifier_block *nb)
 	}
 	return srcu_notifier_chain_register(&audio_pdr_cb_list, nb);
 }
-EXPORT_SYMBOL(audio_pdr_register);
+EXPORT_SYMBOL_GPL(audio_pdr_register);
 
 /**
  * audio_pdr_deregister -
@@ -90,7 +90,7 @@ int audio_pdr_deregister(struct notifier_block *nb)
 	}
 	return srcu_notifier_chain_unregister(&audio_pdr_cb_list, nb);
 }
-EXPORT_SYMBOL(audio_pdr_deregister);
+EXPORT_SYMBOL_GPL(audio_pdr_deregister);
 
 void *audio_pdr_service_register(int domain_id,
 				 struct notifier_block *nb, int *curr_state)
@@ -116,7 +116,7 @@ void *audio_pdr_service_register(int domain_id,
 	}
 	return handle;
 }
-EXPORT_SYMBOL(audio_pdr_service_register);
+EXPORT_SYMBOL_GPL(audio_pdr_service_register);
 
 int audio_pdr_service_deregister(void *service_handle,
 	struct notifier_block *nb)
@@ -137,7 +137,7 @@ int audio_pdr_service_deregister(void *service_handle,
 done:
 	return ret;
 }
-EXPORT_SYMBOL(audio_pdr_service_deregister);
+EXPORT_SYMBOL_GPL(audio_pdr_service_deregister);
 
 static int __init audio_pdr_subsys_init(void)
 {

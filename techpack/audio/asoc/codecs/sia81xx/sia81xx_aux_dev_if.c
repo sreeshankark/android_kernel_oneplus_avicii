@@ -69,14 +69,14 @@ unsigned int soc_sia81xx_get_aux_num(
 
 	return (unsigned int)dev_num;
 }
-EXPORT_SYMBOL(soc_sia81xx_get_aux_num);
+EXPORT_SYMBOL_GPL(soc_sia81xx_get_aux_num);
 
 unsigned int soc_sia81xx_get_codec_conf_num(
 	struct platform_device *pdev)
 {
 	return soc_sia81xx_get_aux_num(pdev);
 }
-EXPORT_SYMBOL(soc_sia81xx_get_codec_conf_num);
+EXPORT_SYMBOL_GPL(soc_sia81xx_get_codec_conf_num);
 
 int soc_sia81xx_init(
 	struct platform_device *pdev,
@@ -157,7 +157,7 @@ int soc_sia81xx_init(
 
 	return 0;
 }
-EXPORT_SYMBOL(soc_sia81xx_init);
+EXPORT_SYMBOL_GPL(soc_sia81xx_init);
 
 int soc_aux_init_only_sia81xx(
 	struct platform_device *pdev,
@@ -205,7 +205,7 @@ int soc_aux_init_only_sia81xx(
 
 	return 0;
 }
-EXPORT_SYMBOL(soc_aux_init_only_sia81xx);
+EXPORT_SYMBOL_GPL(soc_aux_init_only_sia81xx);
 
 
 

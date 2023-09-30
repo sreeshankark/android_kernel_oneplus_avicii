@@ -1003,7 +1003,7 @@ int tavil_mbhc_get_impedance(struct wcd934x_mbhc *wcd934x_mbhc,
 
 	return wcd_mbhc_get_impedance(&wcd934x_mbhc->wcd_mbhc, zl, zr);
 }
-EXPORT_SYMBOL(tavil_mbhc_get_impedance);
+EXPORT_SYMBOL_GPL(tavil_mbhc_get_impedance);
 
 /*
  * tavil_mbhc_hs_detect: starts mbhc insertion/removal functionality
@@ -1024,7 +1024,7 @@ int tavil_mbhc_hs_detect(struct snd_soc_component *component,
 
 	return wcd_mbhc_start(&wcd934x_mbhc->wcd_mbhc, mbhc_cfg);
 }
-EXPORT_SYMBOL(tavil_mbhc_hs_detect);
+EXPORT_SYMBOL_GPL(tavil_mbhc_hs_detect);
 
 /*
  * tavil_mbhc_hs_detect_exit: stop mbhc insertion/removal functionality
@@ -1041,7 +1041,7 @@ void tavil_mbhc_hs_detect_exit(struct snd_soc_component *component)
 	}
 	wcd_mbhc_stop(&wcd934x_mbhc->wcd_mbhc);
 }
-EXPORT_SYMBOL(tavil_mbhc_hs_detect_exit);
+EXPORT_SYMBOL_GPL(tavil_mbhc_hs_detect_exit);
 
 /*
  * tavil_mbhc_post_ssr_init: initialize mbhc for tavil post subsystem restart
@@ -1084,7 +1084,7 @@ int tavil_mbhc_post_ssr_init(struct wcd934x_mbhc *mbhc,
 done:
 	return ret;
 }
-EXPORT_SYMBOL(tavil_mbhc_post_ssr_init);
+EXPORT_SYMBOL_GPL(tavil_mbhc_post_ssr_init);
 
 /*
  * tavil_mbhc_init: initialize mbhc for tavil
@@ -1169,7 +1169,7 @@ err:
 	devm_kfree(component->dev, wcd934x_mbhc);
 	return ret;
 }
-EXPORT_SYMBOL(tavil_mbhc_init);
+EXPORT_SYMBOL_GPL(tavil_mbhc_init);
 
 /*
  * tavil_mbhc_deinit: deinitialize mbhc for tavil
@@ -1184,4 +1184,4 @@ void tavil_mbhc_deinit(struct snd_soc_component *component)
 		devm_kfree(component->dev, wcd934x_mbhc);
 	}
 }
-EXPORT_SYMBOL(tavil_mbhc_deinit);
+EXPORT_SYMBOL_GPL(tavil_mbhc_deinit);

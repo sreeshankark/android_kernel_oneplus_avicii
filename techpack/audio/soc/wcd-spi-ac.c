@@ -494,7 +494,7 @@ int wcd_spi_access_ctl(struct device *dev,
 
 	return ret;
 }
-EXPORT_SYMBOL(wcd_spi_access_ctl);
+EXPORT_SYMBOL_GPL(wcd_spi_access_ctl);
 
 static int wcd_spi_ac_cdev_open(struct inode *inode,
 				struct file *file)

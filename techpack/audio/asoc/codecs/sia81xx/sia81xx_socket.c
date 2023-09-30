@@ -621,7 +621,7 @@ err :
 
 	return ret;
 }
-//EXPORT_SYMBOL(sia81xx_open_sock_server);
+//EXPORT_SYMBOL_GPL(sia81xx_open_sock_server);
 
 int sia81xx_close_sock_server(void)
 {
@@ -646,7 +646,7 @@ int sia81xx_close_sock_server(void)
 
 	return ret;
 }
-//EXPORT_SYMBOL(sia81xx_close_sock_server);
+//EXPORT_SYMBOL_GPL(sia81xx_close_sock_server);
 
 int sia81xx_sock_init(void)
 {
@@ -662,7 +662,7 @@ int sia81xx_sock_init(void)
 
 	return ret;
 }
-//EXPORT_SYMBOL(sia81xx_sock_init);
+//EXPORT_SYMBOL_GPL(sia81xx_sock_init);
 
 void sia81xx_sock_exit(void)
 {
@@ -674,7 +674,7 @@ void sia81xx_sock_exit(void)
 
 	memset(cal_map_table, 0, sizeof(cal_map_table));
 }
-//EXPORT_SYMBOL(sia81xx_sock_exit);
+//EXPORT_SYMBOL_GPL(sia81xx_sock_exit);
 
 
 

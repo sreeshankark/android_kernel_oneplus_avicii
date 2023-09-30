@@ -127,7 +127,7 @@ int tavil_dsd_set_mixer_value(struct tavil_dsd_config *dsd_conf,
 
 	return 0;
 }
-EXPORT_SYMBOL(tavil_dsd_set_mixer_value);
+EXPORT_SYMBOL_GPL(tavil_dsd_set_mixer_value);
 
 /**
  * tavil_dsd_get_current_mixer_value - Get DSD HPH/LO mixer value
@@ -148,7 +148,7 @@ int tavil_dsd_get_current_mixer_value(struct tavil_dsd_config *dsd_conf,
 
 	return dsd_conf->dsd_interp_mixer[interp_num];
 }
-EXPORT_SYMBOL(tavil_dsd_get_current_mixer_value);
+EXPORT_SYMBOL_GPL(tavil_dsd_get_current_mixer_value);
 
 /**
  * tavil_dsd_set_out_select - DSD0/1 out select to HPH or LO
@@ -200,7 +200,7 @@ int tavil_dsd_set_out_select(struct tavil_dsd_config *dsd_conf,
 
 	return 0;
 }
-EXPORT_SYMBOL(tavil_dsd_set_out_select);
+EXPORT_SYMBOL_GPL(tavil_dsd_set_out_select);
 
 /**
  * tavil_dsd_reset - Reset DSD block
@@ -226,7 +226,7 @@ void tavil_dsd_reset(struct tavil_dsd_config *dsd_conf)
 			WCD934X_CDC_DSD1_PATH_CTL,
 			0x01, 0x00);
 }
-EXPORT_SYMBOL(tavil_dsd_reset);
+EXPORT_SYMBOL_GPL(tavil_dsd_reset);
 
 /**
  * tavil_dsd_set_interp_rate - Set interpolator rate for DSD
@@ -283,7 +283,7 @@ void tavil_dsd_set_interp_rate(struct tavil_dsd_config *dsd_conf, u16 rx_port,
 		}
 	}
 }
-EXPORT_SYMBOL(tavil_dsd_set_interp_rate);
+EXPORT_SYMBOL_GPL(tavil_dsd_set_interp_rate);
 
 static int tavil_set_dsd_mode(struct snd_soc_component *component, int dsd_num,
 			      u8 *pcm_rate_val)
@@ -712,7 +712,7 @@ int tavil_dsd_post_ssr_init(struct tavil_dsd_config *dsd_conf)
 
 	return 0;
 }
-EXPORT_SYMBOL(tavil_dsd_post_ssr_init);
+EXPORT_SYMBOL_GPL(tavil_dsd_post_ssr_init);
 
 /**
  * tavil_dsd_init - DSD intialization
@@ -802,7 +802,7 @@ struct tavil_dsd_config *tavil_dsd_init(struct snd_soc_component *component)
 
 	return dsd_conf;
 }
-EXPORT_SYMBOL(tavil_dsd_init);
+EXPORT_SYMBOL_GPL(tavil_dsd_init);
 
 /**
  * tavil_dsd_deinit - DSD de-intialization
@@ -826,4 +826,4 @@ void tavil_dsd_deinit(struct tavil_dsd_config *dsd_conf)
 
 	devm_kfree(component->dev, dsd_conf);
 }
-EXPORT_SYMBOL(tavil_dsd_deinit);
+EXPORT_SYMBOL_GPL(tavil_dsd_deinit);

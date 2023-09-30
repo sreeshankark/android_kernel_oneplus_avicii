@@ -215,7 +215,7 @@ int adm_validate_and_get_port_index(int port_id)
 	pr_debug("%s: port_idx- %d\n", __func__, index);
 	return index;
 }
-EXPORT_SYMBOL(adm_validate_and_get_port_index);
+EXPORT_SYMBOL_GPL(adm_validate_and_get_port_index);
 
 /**
  * adm_get_default_copp_idx -
@@ -241,7 +241,7 @@ int adm_get_default_copp_idx(int port_id)
 	}
 	return -EINVAL;
 }
-EXPORT_SYMBOL(adm_get_default_copp_idx);
+EXPORT_SYMBOL_GPL(adm_get_default_copp_idx);
 
 #ifdef OPLUS_FEATURE_AUDIODETECT
 #define SESSION_TYPE_RX 0
@@ -289,7 +289,7 @@ int adm_set_auddet_enable_param(int port_id, uint8_t val)
 
 	return rc;
 }
-EXPORT_SYMBOL(adm_set_auddet_enable_param);
+EXPORT_SYMBOL_GPL(adm_set_auddet_enable_param);
 
 int adm_get_all_mute_pp_param_from_port(int port_id)
 {
@@ -372,7 +372,7 @@ int adm_get_all_mute_pp_param_from_port(int port_id)
 	kfree(param_value);
 	return 0;
 }
-EXPORT_SYMBOL(adm_get_all_mute_pp_param_from_port);
+EXPORT_SYMBOL_GPL(adm_get_all_mute_pp_param_from_port);
 #endif /* OPLUS_FEATURE_AUDIODETECT */
 
 int adm_get_topology_for_port_from_copp_id(int port_id, int copp_id)
@@ -412,7 +412,7 @@ int adm_get_topology_for_port_copp_idx(int port_id, int copp_idx)
 	}
 	return atomic_read(&this_adm.copp.topology[port_idx][copp_idx]);
 }
-EXPORT_SYMBOL(adm_get_topology_for_port_copp_idx);
+EXPORT_SYMBOL_GPL(adm_get_topology_for_port_copp_idx);
 
 int adm_get_indexes_from_copp_id(int copp_id, int *copp_idx, int *port_idx)
 {
@@ -604,7 +604,7 @@ int srs_trumedia_open(int port_id, int copp_idx, __s32 srs_tech_id,
 fail_cmd:
 	return ret;
 }
-EXPORT_SYMBOL(srs_trumedia_open);
+EXPORT_SYMBOL_GPL(srs_trumedia_open);
 
 static int adm_populate_channel_weight(u16 *ptr,
 					struct msm_pcm_channel_mixer *ch_mixer,
@@ -831,7 +831,7 @@ fail_cmd:
 
 	return ret;
 }
-EXPORT_SYMBOL(adm_programable_channel_mixer);
+EXPORT_SYMBOL_GPL(adm_programable_channel_mixer);
 
 /**
  * adm_set_stereo_to_custom_stereo -
@@ -930,7 +930,7 @@ set_stereo_to_custom_stereo_return:
 	kfree(adm_params);
 	return rc;
 }
-EXPORT_SYMBOL(adm_set_stereo_to_custom_stereo);
+EXPORT_SYMBOL_GPL(adm_set_stereo_to_custom_stereo);
 
 /*
  * adm_set_custom_chmix_cfg:
@@ -1030,7 +1030,7 @@ exit:
 	kfree(adm_params);
 	return rc;
 }
-EXPORT_SYMBOL(adm_set_custom_chmix_cfg);
+EXPORT_SYMBOL_GPL(adm_set_custom_chmix_cfg);
 
 /*
  * adm_apr_send_pkt : returns 0 on success, negative otherwise.
@@ -1172,7 +1172,7 @@ done:
 	kfree(adm_set_params);
 	return ret;
 }
-EXPORT_SYMBOL(adm_set_pp_params);
+EXPORT_SYMBOL_GPL(adm_set_pp_params);
 
 int adm_pack_and_set_one_pp_param(int port_id, int copp_idx,
 				  struct param_hdr_v3 param_hdr, u8 *param_data)
@@ -1203,7 +1203,7 @@ done:
 	kfree(packed_data);
 	return ret;
 }
-EXPORT_SYMBOL(adm_pack_and_set_one_pp_param);
+EXPORT_SYMBOL_GPL(adm_pack_and_set_one_pp_param);
 
 /*
  * Only one parameter can be requested at a time. Therefore, packing and sending
@@ -1299,7 +1299,7 @@ int adm_get_pp_params(int port_id, int copp_idx, uint32_t client_id,
 	       returned_param_size_in_bytes);
 	return ret;
 }
-EXPORT_SYMBOL(adm_get_pp_params);
+EXPORT_SYMBOL_GPL(adm_get_pp_params);
 
 int adm_get_pp_topo_module_list_v2(int port_id, int copp_idx,
 				   int32_t param_length,
@@ -1417,7 +1417,7 @@ int adm_get_pp_topo_module_list_v2(int port_id, int copp_idx,
 done:
 	return ret;
 }
-EXPORT_SYMBOL(adm_get_pp_topo_module_list_v2);
+EXPORT_SYMBOL_GPL(adm_get_pp_topo_module_list_v2);
 
 static void adm_callback_debug_print(struct apr_client_data *data)
 {
@@ -1466,7 +1466,7 @@ int adm_set_multi_ch_map(char *channel_map, int path)
 
 	return 0;
 }
-EXPORT_SYMBOL(adm_set_multi_ch_map);
+EXPORT_SYMBOL_GPL(adm_set_multi_ch_map);
 
 /**
  * adm_get_multi_ch_map -
@@ -1497,7 +1497,7 @@ int adm_get_multi_ch_map(char *channel_map, int path)
 
 	return 0;
 }
-EXPORT_SYMBOL(adm_get_multi_ch_map);
+EXPORT_SYMBOL_GPL(adm_get_multi_ch_map);
 
 /**
  * adm_set_port_multi_ch_map -
@@ -1522,7 +1522,7 @@ void adm_set_port_multi_ch_map(char *channel_map, int port_id)
 			PCM_FORMAT_MAX_NUM_CHANNEL_V8);
 	port_channel_map[port_idx].set_channel_map = true;
 }
-EXPORT_SYMBOL(adm_set_port_multi_ch_map);
+EXPORT_SYMBOL_GPL(adm_set_port_multi_ch_map);
 
 static int adm_process_get_param_response(u32 opcode, u32 idx, u32 *payload,
 					  u32 payload_size)
@@ -2617,7 +2617,7 @@ fail_cmd:
 
 	return ret;
 }
-EXPORT_SYMBOL(adm_connect_afe_port);
+EXPORT_SYMBOL_GPL(adm_connect_afe_port);
 
 int adm_arrange_mch_map(struct adm_cmd_device_open_v5 *open, int path,
 			 int channel_mode, int port_idx)
@@ -3614,7 +3614,7 @@ int adm_open(int port_id, int path, int rate, int channel_mode, int topology,
 
 	return copp_idx;
 }
-EXPORT_SYMBOL(adm_open);
+EXPORT_SYMBOL_GPL(adm_open);
 
 /**
  * adm_copp_mfc_cfg -
@@ -3690,7 +3690,7 @@ void adm_copp_mfc_cfg(int port_id, int copp_idx, int dst_sample_rate)
 fail_cmd:
 	return;
 }
-EXPORT_SYMBOL(adm_copp_mfc_cfg);
+EXPORT_SYMBOL_GPL(adm_copp_mfc_cfg);
 
 static void route_set_opcode_matrix_id(
 			struct adm_cmd_matrix_map_routings_v5 **route_addr,
@@ -3872,7 +3872,7 @@ fail_cmd:
 	kfree(matrix_map);
 	return ret;
 }
-EXPORT_SYMBOL(adm_matrix_map);
+EXPORT_SYMBOL_GPL(adm_matrix_map);
 
 /**
  * adm_ec_ref_rx_id -
@@ -3884,7 +3884,7 @@ void adm_ec_ref_rx_id(int port_id)
 	this_adm.ec_ref_rx = port_id;
 	pr_debug("%s: ec_ref_rx:%d\n", __func__, this_adm.ec_ref_rx);
 }
-EXPORT_SYMBOL(adm_ec_ref_rx_id);
+EXPORT_SYMBOL_GPL(adm_ec_ref_rx_id);
 
 /**
  * adm_num_ec_ref_rx_chans -
@@ -3897,7 +3897,7 @@ void adm_num_ec_ref_rx_chans(int num_chans)
 	pr_debug("%s: num_ec_ref_rx_chans:%d\n",
 		__func__, this_adm.num_ec_ref_rx_chans);
 }
-EXPORT_SYMBOL(adm_num_ec_ref_rx_chans);
+EXPORT_SYMBOL_GPL(adm_num_ec_ref_rx_chans);
 
 /**
  * adm_num_ec_rx_ref_chans_downmixed -
@@ -3910,7 +3910,7 @@ void adm_num_ec_ref_rx_chans_downmixed(int num_chans)
 	pr_debug("%s: num_ec_ref_rx_chans_downmixed:%d\n",
 		__func__, this_adm.num_ec_ref_rx_chans_downmixed);
 }
-EXPORT_SYMBOL(adm_num_ec_ref_rx_chans_downmixed);
+EXPORT_SYMBOL_GPL(adm_num_ec_ref_rx_chans_downmixed);
 
 /**
  * adm_ec_ref_chmixer_weights -
@@ -3943,7 +3943,7 @@ int adm_ec_ref_chmixer_weights(int out_channel_idx,
 
 	return 0;
 }
-EXPORT_SYMBOL(adm_ec_ref_chmixer_weights);
+EXPORT_SYMBOL_GPL(adm_ec_ref_chmixer_weights);
 
 /**
  * adm_ec_ref_rx_bit_width -
@@ -3956,7 +3956,7 @@ void adm_ec_ref_rx_bit_width(int bit_width)
 	pr_debug("%s: ec_ref_rx_bit_width:%d\n",
 		__func__, this_adm.ec_ref_rx_bit_width);
 }
-EXPORT_SYMBOL(adm_ec_ref_rx_bit_width);
+EXPORT_SYMBOL_GPL(adm_ec_ref_rx_bit_width);
 
 /**
  * adm_ec_ref_rx_sampling_rate -
@@ -3969,7 +3969,7 @@ void adm_ec_ref_rx_sampling_rate(int sampling_rate)
 	pr_debug("%s: ec_ref_rx_sampling_rate:%d\n",
 		__func__, this_adm.ec_ref_rx_sampling_rate);
 }
-EXPORT_SYMBOL(adm_ec_ref_rx_sampling_rate);
+EXPORT_SYMBOL_GPL(adm_ec_ref_rx_sampling_rate);
 
 /**
  * adm_set_native_mode -
@@ -3985,7 +3985,7 @@ void adm_set_native_mode(int mode)
 	pr_debug("%s: enable native_mode :%d\n",
 		__func__, this_adm.native_mode);
 }
-EXPORT_SYMBOL(adm_set_native_mode);
+EXPORT_SYMBOL_GPL(adm_set_native_mode);
 
 /**
  * adm_close -
@@ -4116,7 +4116,7 @@ int adm_close(int port_id, int perf_mode, int copp_idx)
 
 	return 0;
 }
-EXPORT_SYMBOL(adm_close);
+EXPORT_SYMBOL_GPL(adm_close);
 
 int send_rtac_audvol_cal(void)
 {
@@ -4599,7 +4599,7 @@ int adm_set_volume(int port_id, int copp_idx, int volume)
 
 	return rc;
 }
-EXPORT_SYMBOL(adm_set_volume);
+EXPORT_SYMBOL_GPL(adm_set_volume);
 
 #ifdef OPLUS_FEATURE_KTV
 int  adm_set_reverb_param(int port_id, int copp_idx, int32_t* params)
@@ -4645,7 +4645,7 @@ int  adm_set_reverb_param(int port_id, int copp_idx, int32_t* params)
 
 	return rc;
 }
-EXPORT_SYMBOL(adm_set_reverb_param);
+EXPORT_SYMBOL_GPL(adm_set_reverb_param);
 #endif /* OPLUS_FEATURE_KTV */
 
 /**
@@ -4691,7 +4691,7 @@ int adm_set_softvolume(int port_id, int copp_idx,
 
 	return rc;
 }
-EXPORT_SYMBOL(adm_set_softvolume);
+EXPORT_SYMBOL_GPL(adm_set_softvolume);
 
 /**
  * adm_set_mic_gain -
@@ -4728,7 +4728,7 @@ int adm_set_mic_gain(int port_id, int copp_idx, int volume)
 
 	return rc;
 }
-EXPORT_SYMBOL(adm_set_mic_gain);
+EXPORT_SYMBOL_GPL(adm_set_mic_gain);
 
 /**
  * adm_send_set_multichannel_ec_primary_mic_ch -
@@ -4768,7 +4768,7 @@ int adm_send_set_multichannel_ec_primary_mic_ch(int port_id, int copp_idx,
 
 	return rc;
 }
-EXPORT_SYMBOL(adm_send_set_multichannel_ec_primary_mic_ch);
+EXPORT_SYMBOL_GPL(adm_send_set_multichannel_ec_primary_mic_ch);
 
 /**
  * adm_set_ffecns_effect -
@@ -4810,7 +4810,7 @@ int adm_set_ffecns_effect(int effect)
 
 	return rc;
 }
-EXPORT_SYMBOL(adm_set_ffecns_effect);
+EXPORT_SYMBOL_GPL(adm_set_ffecns_effect);
 
 /**
  * adm_set_ffecns_freeze_event -
@@ -4853,7 +4853,7 @@ int adm_set_ffecns_freeze_event(bool ffecns_freeze_event)
 
 	return rc;
 }
-EXPORT_SYMBOL(adm_set_ffecns_freeze_event);
+EXPORT_SYMBOL_GPL(adm_set_ffecns_freeze_event);
 
 /**
  * adm_param_enable -
@@ -4876,7 +4876,7 @@ int adm_param_enable(int port_id, int copp_idx, int module_id,  int enable)
 
 	return adm_param_enable_v2(port_id, copp_idx, mod_inst_info, enable);
 }
-EXPORT_SYMBOL(adm_param_enable);
+EXPORT_SYMBOL_GPL(adm_param_enable);
 
 /**
  * adm_param_enable_v2 -
@@ -4923,7 +4923,7 @@ int adm_param_enable_v2(int port_id, int copp_idx,
 	return rc;
 
 }
-EXPORT_SYMBOL(adm_param_enable_v2);
+EXPORT_SYMBOL_GPL(adm_param_enable_v2);
 
 /**
  * adm_send_calibration -
@@ -4960,7 +4960,7 @@ int adm_send_calibration(int port_id, int copp_idx, int path, int perf_mode,
 end:
 	return rc;
 }
-EXPORT_SYMBOL(adm_send_calibration);
+EXPORT_SYMBOL_GPL(adm_send_calibration);
 
 /*
  * adm_update_wait_parameters must be called with routing driver locks.
@@ -4997,7 +4997,7 @@ end:
 	return ret;
 
 }
-EXPORT_SYMBOL(adm_set_wait_parameters);
+EXPORT_SYMBOL_GPL(adm_set_wait_parameters);
 
 /**
  * adm_reset_wait_parameters -
@@ -5033,7 +5033,7 @@ int adm_reset_wait_parameters(int port_id, int copp_idx)
 end:
 	return ret;
 }
-EXPORT_SYMBOL(adm_reset_wait_parameters);
+EXPORT_SYMBOL_GPL(adm_reset_wait_parameters);
 
 /**
  * adm_wait_timeout -
@@ -5075,7 +5075,7 @@ end:
 	pr_debug("%s: return %d--\n", __func__, ret);
 	return ret;
 }
-EXPORT_SYMBOL(adm_wait_timeout);
+EXPORT_SYMBOL_GPL(adm_wait_timeout);
 
 /**
  * adm_store_cal_data -
@@ -5189,7 +5189,7 @@ unlock:
 end:
 	return rc;
 }
-EXPORT_SYMBOL(adm_store_cal_data);
+EXPORT_SYMBOL_GPL(adm_store_cal_data);
 
 /**
  * adm_send_compressed_device_mute -
@@ -5223,7 +5223,7 @@ int adm_send_compressed_device_mute(int port_id, int copp_idx, bool mute_on)
 
 	return ret;
 }
-EXPORT_SYMBOL(adm_send_compressed_device_mute);
+EXPORT_SYMBOL_GPL(adm_send_compressed_device_mute);
 
 /**
  * adm_send_compressed_device_latency -
@@ -5264,7 +5264,7 @@ int adm_send_compressed_device_latency(int port_id, int copp_idx, int latency)
 
 	return ret;
 }
-EXPORT_SYMBOL(adm_send_compressed_device_latency);
+EXPORT_SYMBOL_GPL(adm_send_compressed_device_latency);
 
 /**
  * adm_swap_speaker_channels
@@ -5343,7 +5343,7 @@ int adm_swap_speaker_channels(int port_id, int copp_idx,
 	pr_debug("%s: mfc_cfg Set params returned success", __func__);
 	return 0;
 }
-EXPORT_SYMBOL(adm_swap_speaker_channels);
+EXPORT_SYMBOL_GPL(adm_swap_speaker_channels);
 
 /**
  * adm_set_sound_focus -
@@ -5397,7 +5397,7 @@ int adm_set_sound_focus(int port_id, int copp_idx,
 
 	return ret;
 }
-EXPORT_SYMBOL(adm_set_sound_focus);
+EXPORT_SYMBOL_GPL(adm_set_sound_focus);
 
 /**
  * adm_get_sound_focus -
@@ -5470,7 +5470,7 @@ done:
 	kfree(params_value);
 	return ret;
 }
-EXPORT_SYMBOL(adm_get_sound_focus);
+EXPORT_SYMBOL_GPL(adm_get_sound_focus);
 
 static int adm_source_tracking_alloc_map_memory(void)
 {
@@ -5635,7 +5635,7 @@ done:
 
 	return ret;
 }
-EXPORT_SYMBOL(adm_get_source_tracking);
+EXPORT_SYMBOL_GPL(adm_get_source_tracking);
 
 /**
  * adm_get_doa_tracking_mon -
@@ -5710,7 +5710,7 @@ done:
 	kfree(params_value);
 	return ret;
 }
-EXPORT_SYMBOL(adm_get_doa_tracking_mon);
+EXPORT_SYMBOL_GPL(adm_get_doa_tracking_mon);
 
 #ifdef OPLUS_FEATURE_AUDIODETECT
 static ssize_t pb_det_read(struct file *file,

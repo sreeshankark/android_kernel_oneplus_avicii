@@ -620,7 +620,7 @@ void csra66x0_hw_free_mute(struct snd_soc_component *component)
 	snd_soc_component_write(component, CSRA66X0_MISC_CONTROL_STATUS_1_FA,
 			val | 0x04);
 }
-EXPORT_SYMBOL(csra66x0_hw_free_mute);
+EXPORT_SYMBOL_GPL(csra66x0_hw_free_mute);
 
 static int csra66x0_wait_for_config_state(struct snd_soc_component *component)
 {

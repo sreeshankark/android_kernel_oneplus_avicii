@@ -678,7 +678,7 @@ int tavil_set_spkr_gain_offset(struct snd_soc_component *component, int offset)
 	priv->swr.spkr_gain_offset = offset;
 	return 0;
 }
-EXPORT_SYMBOL(tavil_set_spkr_gain_offset);
+EXPORT_SYMBOL_GPL(tavil_set_spkr_gain_offset);
 
 /**
  * tavil_set_spkr_mode - Configures speaker compander and smartboost
@@ -716,7 +716,7 @@ int tavil_set_spkr_mode(struct snd_soc_component *component, int mode)
 				    regs[i].mask, regs[i].val);
 	return 0;
 }
-EXPORT_SYMBOL(tavil_set_spkr_mode);
+EXPORT_SYMBOL_GPL(tavil_set_spkr_mode);
 
 /**
  * tavil_get_afe_config - returns specific codec configuration to afe to write
@@ -746,7 +746,7 @@ void *tavil_get_afe_config(struct snd_soc_component *component,
 		return NULL;
 	}
 }
-EXPORT_SYMBOL(tavil_get_afe_config);
+EXPORT_SYMBOL_GPL(tavil_get_afe_config);
 
 static bool is_tavil_playback_dai(int dai_id)
 {
@@ -3961,7 +3961,7 @@ int tavil_codec_enable_interp_clk(struct snd_soc_component *component,
 
 	return tavil->main_clk_users[interp_idx];
 }
-EXPORT_SYMBOL(tavil_codec_enable_interp_clk);
+EXPORT_SYMBOL_GPL(tavil_codec_enable_interp_clk);
 
 static int tavil_anc_out_switch_cb(struct snd_soc_dapm_widget *w,
 				   struct snd_kcontrol *kcontrol, int event)
@@ -4202,7 +4202,7 @@ struct tavil_dsd_config *tavil_get_dsd_config(
 
 	return tavil->dsd_config;
 }
-EXPORT_SYMBOL(tavil_get_dsd_config);
+EXPORT_SYMBOL_GPL(tavil_get_dsd_config);
 
 static int tavil_codec_enable_main_path(struct snd_soc_dapm_widget *w,
 					struct snd_kcontrol *kcontrol,
@@ -5050,7 +5050,7 @@ exit:
 	mutex_unlock(&tavil->micb_lock);
 	return ret;
 }
-EXPORT_SYMBOL(tavil_mbhc_micb_adjust_voltage);
+EXPORT_SYMBOL_GPL(tavil_mbhc_micb_adjust_voltage);
 
 /*
  * tavil_micbias_control: enable/disable micbias
@@ -5175,7 +5175,7 @@ int tavil_micbias_control(struct snd_soc_component *component,
 
 	return 0;
 }
-EXPORT_SYMBOL(tavil_micbias_control);
+EXPORT_SYMBOL_GPL(tavil_micbias_control);
 
 static int __tavil_codec_enable_micbias(struct snd_soc_dapm_widget *w,
 					int event)
@@ -5269,7 +5269,7 @@ int tavil_codec_enable_standalone_micbias(struct snd_soc_component *component,
 
 	return rc;
 }
-EXPORT_SYMBOL(tavil_codec_enable_standalone_micbias);
+EXPORT_SYMBOL_GPL(tavil_codec_enable_standalone_micbias);
 
 static int tavil_codec_force_enable_micbias(struct snd_soc_dapm_widget *w,
 					    struct snd_kcontrol *kcontrol,
@@ -9515,7 +9515,7 @@ int tavil_codec_info_create_codec_entry(struct snd_info_entry *codec_root,
 
 	return 0;
 }
-EXPORT_SYMBOL(tavil_codec_info_create_codec_entry);
+EXPORT_SYMBOL_GPL(tavil_codec_info_create_codec_entry);
 
 /**
  * tavil_cdc_mclk_enable - Enable/disable codec mclk
@@ -9531,7 +9531,7 @@ int tavil_cdc_mclk_enable(struct snd_soc_component *component, bool enable)
 
 	return __tavil_cdc_mclk_enable(tavil, enable);
 }
-EXPORT_SYMBOL(tavil_cdc_mclk_enable);
+EXPORT_SYMBOL_GPL(tavil_cdc_mclk_enable);
 
 static int __tavil_codec_internal_rco_ctrl(struct snd_soc_component *component,
 					   bool enable)
@@ -9633,7 +9633,7 @@ int tavil_cdc_mclk_tx_enable(struct snd_soc_component *component, bool enable)
 
 	return ret;
 }
-EXPORT_SYMBOL(tavil_cdc_mclk_tx_enable);
+EXPORT_SYMBOL_GPL(tavil_cdc_mclk_tx_enable);
 
 static const struct wcd_resmgr_cb tavil_resmgr_cb = {
 	.cdc_rco_ctrl = __tavil_codec_internal_rco_ctrl,
@@ -10058,7 +10058,7 @@ int wcd934x_get_micb_vout_ctl_val(u32 micb_mv)
 
 	return (micb_mv - 1000) / 50;
 }
-EXPORT_SYMBOL(wcd934x_get_micb_vout_ctl_val);
+EXPORT_SYMBOL_GPL(wcd934x_get_micb_vout_ctl_val);
 
 static int tavil_handle_pdata(struct tavil_priv *tavil,
 			      struct wcd9xxx_pdata *pdata)
@@ -10255,7 +10255,7 @@ struct wcd934x_mbhc *tavil_soc_get_mbhc(struct snd_soc_component *component)
 
 	return tavil->mbhc;
 }
-EXPORT_SYMBOL(tavil_soc_get_mbhc);
+EXPORT_SYMBOL_GPL(tavil_soc_get_mbhc);
 
 static void tavil_mclk2_reg_defaults(struct tavil_priv *tavil)
 {
@@ -11236,7 +11236,7 @@ struct wcd_dsp_cntl *tavil_get_wcd_dsp_cntl(struct device *dev)
 
 	return tavil->wdsp_cntl;
 }
-EXPORT_SYMBOL(tavil_get_wcd_dsp_cntl);
+EXPORT_SYMBOL_GPL(tavil_get_wcd_dsp_cntl);
 
 static void wcd934x_ssr_disable(struct device *dev, void *data)
 {

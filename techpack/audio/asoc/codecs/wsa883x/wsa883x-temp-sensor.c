@@ -124,7 +124,7 @@ temp_retry:
 		  __func__, temp_val, dmeas, d1, d2);
 	return ret;
 }
-EXPORT_SYMBOL(wsa883x_get_temp);
+EXPORT_SYMBOL_GPL(wsa883x_get_temp);
 
 static struct thermal_zone_device_ops wsa883x_thermal_ops = {
 	.get_temp = wsa883x_get_temp,
@@ -170,7 +170,7 @@ int wsa883x_init_thermal(struct wsa883x_tz_priv *tz_pdata)
 
 	return 0;
 }
-EXPORT_SYMBOL(wsa883x_init_thermal);
+EXPORT_SYMBOL_GPL(wsa883x_init_thermal);
 
 void wsa883x_deinit_thermal(struct thermal_zone_device *tz_dev)
 {
@@ -184,4 +184,4 @@ void wsa883x_deinit_thermal(struct thermal_zone_device *tz_dev)
 	if (tz_dev)
 		thermal_zone_device_unregister(tz_dev);
 }
-EXPORT_SYMBOL(wsa883x_deinit_thermal);
+EXPORT_SYMBOL_GPL(wsa883x_deinit_thermal);

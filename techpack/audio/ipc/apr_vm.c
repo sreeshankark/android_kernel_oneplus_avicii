@@ -293,7 +293,7 @@ enum apr_subsys_state apr_get_modem_state(void)
 {
 	return atomic_read(&q6.modem_state);
 }
-EXPORT_SYMBOL(apr_get_modem_state);
+EXPORT_SYMBOL_GPL(apr_get_modem_state);
 
 /**
  * apr_set_modem_state - Update modem load status.
@@ -305,7 +305,7 @@ void apr_set_modem_state(enum apr_subsys_state state)
 {
 	atomic_set(&q6.modem_state, state);
 }
-EXPORT_SYMBOL(apr_set_modem_state);
+EXPORT_SYMBOL_GPL(apr_set_modem_state);
 
 enum apr_subsys_state apr_cmpxchg_modem_state(enum apr_subsys_state prev,
 					      enum apr_subsys_state new)
@@ -331,7 +331,7 @@ enum apr_subsys_state apr_get_q6_state(void)
 {
 	return atomic_read(&q6.q6_state);
 }
-EXPORT_SYMBOL(apr_get_q6_state);
+EXPORT_SYMBOL_GPL(apr_get_q6_state);
 
 int apr_set_q6_state(enum apr_subsys_state state)
 {
@@ -341,7 +341,7 @@ int apr_set_q6_state(enum apr_subsys_state state)
 	atomic_set(&q6.q6_state, state);
 	return 0;
 }
-EXPORT_SYMBOL(apr_set_q6_state);
+EXPORT_SYMBOL_GPL(apr_set_q6_state);
 
 static void apr_ssr_disable(struct device *dev, void *data)
 {
@@ -924,7 +924,7 @@ done:
 	spin_unlock_irqrestore(&svc->w_lock, flags);
 	return ret;
 }
-EXPORT_SYMBOL(apr_send_pkt);
+EXPORT_SYMBOL_GPL(apr_send_pkt);
 
 /**
  * apr_register - Clients call to register
@@ -1051,7 +1051,7 @@ struct apr_svc *apr_register(char *dest, char *svc_name, apr_fn svc_fn,
 done:
 	return svc;
 }
-EXPORT_SYMBOL(apr_register);
+EXPORT_SYMBOL_GPL(apr_register);
 
 static void apr_reset_deregister(struct work_struct *work)
 {
@@ -1078,7 +1078,7 @@ int apr_start_rx_rt(void *handle)
 	int rc = 0;
 	return rc;
 }
-EXPORT_SYMBOL(apr_start_rx_rt);
+EXPORT_SYMBOL_GPL(apr_start_rx_rt);
 
 /**
  * apr_end_rx_rt - Clients call to unvote for thread
@@ -1094,7 +1094,7 @@ int apr_end_rx_rt(void *handle)
 	int rc = 0;
 	return rc;
 }
-EXPORT_SYMBOL(apr_end_rx_rt);
+EXPORT_SYMBOL_GPL(apr_end_rx_rt);
 
 
 /**
@@ -1153,7 +1153,7 @@ int apr_deregister(void *handle)
 
 	return 0;
 }
-EXPORT_SYMBOL(apr_deregister);
+EXPORT_SYMBOL_GPL(apr_deregister);
 
 /**
  * apr_reset - sets up workqueue to de-register
@@ -1187,7 +1187,7 @@ void apr_reset(void *handle)
 	INIT_WORK(&apr_reset_worker->work, apr_reset_deregister);
 	queue_work(apr_reset_workqueue, &apr_reset_worker->work);
 }
-EXPORT_SYMBOL(apr_reset);
+EXPORT_SYMBOL_GPL(apr_reset);
 
 /* Dispatch the Reset events to Modem and audio clients */
 static void dispatch_event(unsigned long code, uint16_t proc)

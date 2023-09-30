@@ -1027,4 +1027,4 @@ void wcd_mbhc_legacy_init(struct wcd_mbhc *mbhc)
 	mbhc->mbhc_fn = &mbhc_fn;
 	INIT_WORK(&mbhc->correct_plug_swch, wcd_correct_swch_plug);
 }
-EXPORT_SYMBOL(wcd_mbhc_legacy_init);
+EXPORT_SYMBOL_GPL(wcd_mbhc_legacy_init);

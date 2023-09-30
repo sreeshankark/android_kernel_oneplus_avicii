@@ -36,7 +36,7 @@ int digital_cdc_rsc_mgr_hw_vote_enable(struct clk* vote_handle)
 	trace_printk("%s: return %d\n", __func__, ret);
 	return ret;
 }
-EXPORT_SYMBOL(digital_cdc_rsc_mgr_hw_vote_enable);
+EXPORT_SYMBOL_GPL(digital_cdc_rsc_mgr_hw_vote_enable);
 
 /**
  * digital_cdc_rsc_mgr_hw_vote_disable - Disables hw vote in DSP
@@ -57,7 +57,7 @@ void digital_cdc_rsc_mgr_hw_vote_disable(struct clk* vote_handle)
 	mutex_unlock(&hw_vote_lock);
 	trace_printk("%s\n", __func__);
 }
-EXPORT_SYMBOL(digital_cdc_rsc_mgr_hw_vote_disable);
+EXPORT_SYMBOL_GPL(digital_cdc_rsc_mgr_hw_vote_disable);
 
 /**
  * digital_cdc_rsc_mgr_hw_vote_reset - Resets hw vote count
@@ -85,7 +85,7 @@ void digital_cdc_rsc_mgr_hw_vote_reset(struct clk* vote_handle)
 		clk_prepare_enable(vote_handle);
 	mutex_unlock(&hw_vote_lock);
 }
-EXPORT_SYMBOL(digital_cdc_rsc_mgr_hw_vote_reset);
+EXPORT_SYMBOL_GPL(digital_cdc_rsc_mgr_hw_vote_reset);
 
 void digital_cdc_rsc_mgr_init(void)
 {

@@ -193,7 +193,7 @@ struct regmap *__regmap_init_swr(struct swr_device *swr,
 	return __regmap_init(&swr->dev, &regmap_swr, &swr->dev, config,
 			   lock_key, lock_name);
 }
-EXPORT_SYMBOL(__regmap_init_swr);
+EXPORT_SYMBOL_GPL(__regmap_init_swr);
 
 struct regmap *__devm_regmap_init_swr(struct swr_device *swr,
 				      const struct regmap_config *config,
@@ -203,6 +203,6 @@ struct regmap *__devm_regmap_init_swr(struct swr_device *swr,
 	return __devm_regmap_init(&swr->dev, &regmap_swr, &swr->dev, config,
 				lock_key, lock_name);
 }
-EXPORT_SYMBOL(__devm_regmap_init_swr);
+EXPORT_SYMBOL_GPL(__devm_regmap_init_swr);
 
 MODULE_LICENSE("GPL v2");
