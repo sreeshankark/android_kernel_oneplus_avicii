@@ -511,7 +511,7 @@ struct tpp_cpu_cluster {
 
 static struct tpp_cpu_cluster tpp_cpu_clusters[TPP_MAX_CLUSTER_SIZE];
 
-int tpp_cluster_amount()
+int tpp_cluster_amount(void)
 {
 	return tpp_cluster_size;
 }
