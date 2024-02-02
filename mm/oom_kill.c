@@ -162,7 +162,6 @@ bool should_ulmk_retry(gfp_t gfp_mask)
 	last_kill = atomic64_read(&ulmk_kill_jiffies);
 	last_wdog_pet = atomic64_read(&ulmk_watchdog_pet_jiffies);
 	wdog_expired = atomic64_read(&ulmk_wdog_expired);
-	trigger_active = psi_is_trigger_active();
 
 	/*
 	 * Returning True causes direct reclaim retry and false
@@ -210,7 +209,6 @@ bool should_ulmk_retry(gfp_t gfp_mask)
 		ret = false;
 	} else if (!trigger_active) {
 		BUG_ON(ulmk_dbg_policy & ULMK_DBG_POLICY_TRIGGER);
-		psi_emergency_trigger();
 		psi_emerg_trigger_jiffies = now;
 		ret = true;
 	} else if (wdog_expired) {
