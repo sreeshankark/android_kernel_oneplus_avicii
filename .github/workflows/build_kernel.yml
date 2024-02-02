@@ -23,6 +23,15 @@ jobs:
          run: |
             cd ~
             git clone https://github.com/Sanju0910/android_kernel_oneplus_avicii-neversettle --recursive --depth=1 kernel
+       - name: Clone latest Clang-LLVM
+         run: |
+             cd ~/kernel
+             mkdir clang-llvm
+             curl -sL https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main/clang-r510928.tar.gz > clang.tar.gz
+             mv clang.tar.gz clang-llvm/
+             cd clang-llvm
+             tar xvf clang.tar.gz
+             rm clang.tar.gz
        - name: Build NS Kernel
          run: |
             cd ~/kernel
