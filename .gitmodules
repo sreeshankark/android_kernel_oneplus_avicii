@@ -1,7 +1,3 @@
 [submodule "KernelSU"]
 	path = KernelSU
 	url = https://github.com/tiann/KernelSU.git
-
-[submodule "clang-llvm"]
-	path = clang-llvm
-	url = https://gitlab.com/Sanju0910/clang-llvm.git
