@@ -20,7 +20,7 @@ jobs:
     - name: Update Repo
       id: version
       run: |
-        git config --global user.name "Sanju0910"
+        git config --global user.name "sreeshankark"
         git config --global user.email "sreeshankar0910@gmail.com"
         git submodule sync
         git submodule update --init --recursive
