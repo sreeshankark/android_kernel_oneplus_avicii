@@ -99,13 +99,6 @@ static const struct of_device_id dsi_display_dt_match[] = {
 	{}
 };
 
-static int esd_black_count;
-static int esd_greenish_count;
-static struct dsi_display *primary_display;
-static char reg_read_value[128] = {0};
-int reg_read_len = 1;
-EXPORT_SYMBOL(reg_read_len);
-
 #define to_dsi_bridge(x)  container_of((x), struct dsi_bridge, base)
 
 char buf_Lotid[6];
