@@ -2,6 +2,10 @@ name: NeverSettle Kernel Compiler
 on:
   workflow_dispatch:
       inputs:
+         Buildtype:
+             description: 'Build Type'
+             required: true
+             default: 'RELEASE'
          Changelog:
              description: 'Build Changelog'
              required: true
@@ -10,7 +14,9 @@ on:
 env:
   TOKEN: ${{ secrets.TG_BOT_TOKEN }}
   CHATID: ${{ secrets.TG_CHAT_ID }}
+  CHATIDTEST: ${{ secrets.TG_CHAT_ID_TEST }}
   CHANGELOG: ${{ github.event.inputs.Changelog }}
+  BUILDTYPE: ${{ github.event.inputs.Buildtype }}
 jobs:
   NSK_CI:
     runs-on: ubuntu-22.04
@@ -34,4 +40,3 @@ jobs:
          run: |
             cd ~/kernel
             python build.py 	    
-

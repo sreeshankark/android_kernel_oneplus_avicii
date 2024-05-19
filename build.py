@@ -12,7 +12,15 @@ s = """#!/bin/bash
 
 # Telegram Config
 TOKEN=$(/usr/bin/env python -c "import os; print(os.environ.get('TOKEN'))")
-CHATID=$(/usr/bin/env python -c "import os; print(os.environ.get('CHATID'))")
+if [[ "$(/usr/bin/env python -c "import os; print(os.environ.get('BUILDTYPE'))")" == "RELEASE" ]]; 
+	then
+		CHATID=$(/usr/bin/env python -c "import os; print(os.environ.get('CHATID'))")
+elif [[ "$(/usr/bin/env python -c "import os; print(os.environ.get('BUILDTYPE'))")" == "TEST" ]]; 
+	then
+		CHATID=$(/usr/bin/env python -c "import os; print(os.environ.get('CHATIDTEST'))")
+else
+		exit 0;
+fi	
 CHANGELOG=$(/usr/bin/env python -c "import os; print(os.environ.get('CHANGELOG'))")
 BOT_MSG_URL="https://api.telegram.org/bot${TOKEN}/sendMessage"
 BOT_BUILD_URL="https://api.telegram.org/bot${TOKEN}/sendDocument"
