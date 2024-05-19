@@ -5752,7 +5752,7 @@ static int qpnp_qg_probe(struct platform_device *pdev)
 	chip->esr_actual = -EINVAL;
 	chip->esr_nominal = -EINVAL;
 	chip->batt_age_level = -EINVAL;
-	chip->qg_version = (u8)of_device_get_match_data(&pdev->dev);
+	chip->qg_version = (u8)(long)of_device_get_match_data(&pdev->dev);
 
 	switch (chip->qg_version) {
 	case QG_LITE:
