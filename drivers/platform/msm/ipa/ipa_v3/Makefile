@@ -21,3 +21,5 @@ ipat-$(CONFIG_IPA3_REGDUMP) += dump/ipa_reg_dump.o
 ccflags-$(CONFIG_IPA3_REGDUMP) += -Idrivers/platform/msm/ipa/ipa_v3/dump
 
 ccflags-$(CONFIG_IPA3_REGDUMP_IPA_4_5) += -Idrivers/platform/msm/ipa/ipa_v3/dump/ipa4.5
+
+subdir-ccflags-y := $(call cc-disable-warning, enum-conversion)
