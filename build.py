@@ -67,8 +67,6 @@ builddir="${kernel_dir}/build"
 ZIMAGE=$kernel_dir/out/arch/arm64/boot/Image.gz-dtb
 ns_version=v1.9.601
 kernel_version=4.19.296
-ksu_apk_name=KernelSU_v0.7.0_11326-release.apk
-ksu_apk=https://github.com/tiann/KernelSU/releases/download/v0.7.0/KernelSU_v0.7.0_11326-release.apk
 kernel_name="NeverSettle-Kernel-$ns_version-avicii"
 zip_name="$kernel_name-$(date +"%d%m%Y-%H%M").zip"
 TC_DIR=$HOME/tc/
@@ -91,7 +89,7 @@ git submodule init && git submodule update
 
 #start off by sending a trigger msg
 tg_post_sticker
-tg_post_msg "<b>NeverSettle Kernel Build Triggered ⌛</b>%0A<b>==============================</b>%0A<b>Kernel : </b><code>$kernel_name</code>%0A<b>Machine : </b><code>$os</code>%0A<b>Cores : </b><code>$cores</code>%0A<b>Time : </b><code>$time</code>"
+tg_post_msg "<b>NeverSettle Kernel Build Triggered ⌛</b>%0A<b>============================</b>%0A<b>Kernel : </b><code>$kernel_name</code>%0A<b>Machine : </b><code>$os</code>%0A<b>Cores : </b><code>$cores</code>%0A<b>Time : </b><code>$time</code>"
 
 # Colors
 NC='\\033[0m'
@@ -131,13 +129,11 @@ completion() {
     mv kf.zip $zip_name
     mv $kf/$zip_name $HOME/$zip_name
     rm -rf $kf
-    curl -sL ${ksu_apk} > $HOME/${ksu_apk_name}
     END=$(date +"%s")
     DIFF=$(($END - $START))
     BUILDTIME=$(echo $((${END} - ${START})) | awk '{print int ($1/3600)" Hours:"int(($1/60)%60)"Minutes:"int($1%60)" Seconds"}')
     tg_post_build "$HOME/$zip_name" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
     tg_post_msg "<b>Changelog ($(date +%d-%m-%Y))</b>%0A<code>$CHANGELOG</code>"
-    tg_post_build "$HOME/${ksu_apk_name}" "KernelSU Manager for this build"
     tg_post_msg "<code>Compiled successfully✅</code>"
     tg_post_msg "<b>Support the developer❤️</b>%0A<b>UPI:</b> <code>sreeshankark@axl</code>%0A<b>Paypal:</b> PayPal.me/SreeshankarK"
     curl --upload-file $HOME/$zip_name https://free.keep.sh
