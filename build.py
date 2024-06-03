@@ -15,9 +15,11 @@ TOKEN=$(/usr/bin/env python -c "import os; print(os.environ.get('TOKEN'))")
 if [[ "$(/usr/bin/env python -c "import os; print(os.environ.get('BUILDTYPE'))")" == "RELEASE" ]]; 
 	then
 		CHATID=$(/usr/bin/env python -c "import os; print(os.environ.get('CHATID'))")
+		MESSAGEID=1198
 elif [[ "$(/usr/bin/env python -c "import os; print(os.environ.get('BUILDTYPE'))")" == "TEST" ]]; 
 	then
 		CHATID=$(/usr/bin/env python -c "import os; print(os.environ.get('CHATIDTEST'))")
+		MESSAGEID=1
 else
 		exit 0;
 fi	
@@ -33,7 +35,9 @@ time=$(TZ="Asia/Kolkata" date "+%a %b %d %r")
 
 # send msgs to tg
 tg_post_msg() {
-  curl -s -X POST "$BOT_MSG_URL" -d chat_id="$CHATID" \\
+  curl -s -X POST "$BOT_MSG_URL" \\
+    -d message_thread_id="$MESSAGEID" \\ 
+    -d chat_id="$CHATID" \\
     -d "disable_web_page_preview=true" \\
     -d "parse_mode=html" \\
     -d text="$1"
@@ -48,6 +52,7 @@ tg_post_build()
 
 	#Show the Checksum alongwith caption
 	curl --progress-bar -F document=@"$1" "$BOT_BUILD_URL" \\
+	-F message_thread_id="$MESSAGEID" \\ 
 	-F chat_id="$CHATID"  \\
 	-F "disable_web_page_preview=true" \\
 	-F "parse_mode=Markdown" \\
@@ -56,7 +61,9 @@ tg_post_build()
 
 # send a nice sticker ro act as a sperator between builds
 tg_post_sticker() {
-  curl -s -X POST "$BOT_STICKER_URL" -d chat_id="$CHATID" \\
+  curl -s -X POST "$BOT_STICKER_URL" \\
+    -d message_thread_id="$MESSAGEID" \\ 
+    -d chat_id="$CHATID" \\
     -d sticker="CAACAgUAAxkBAAEKCfxk3IWJbpyf9AJVzCr7WqNariv-YgACfwoAAiV14VZRQDfFXOn16DAE"
 }
 
