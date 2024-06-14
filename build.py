@@ -19,7 +19,7 @@ if [[ "$(/usr/bin/env python -c "import os; print(os.environ.get('BUILDTYPE'))")
 elif [[ "$(/usr/bin/env python -c "import os; print(os.environ.get('BUILDTYPE'))")" == "TEST" ]]; 
 	then
 		CHATID=$(/usr/bin/env python -c "import os; print(os.environ.get('CHATIDTEST'))")
-		MESSAGEID=1
+		MESSAGEID=0
 else
 		exit 0;
 fi	
