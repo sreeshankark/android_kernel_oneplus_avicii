@@ -35,14 +35,9 @@ time=$(TZ="Asia/Kolkata" date "+%a %b %d %r")
 
 # send msgs to tg
 tg_post_msg() {
-  curl -s -X POST "$BOT_MSG_URL" \\
-    -d message_thread_id="$MESSAGEID" \\ 
-    -d chat_id="$CHATID" \\
-    -d "disable_web_page_preview=true" \\
-    -d "parse_mode=html" \\
-    -d text="$1"
-
+  curl -s -X POST "$BOT_MSG_URL" -d chat_id="$CHATID" -d message_thread_id="$MESSAGEID" -d "disable_web_page_preview=true" -d "parse_mode=html" -d text="$1"
 }
+
 
 # send build to tg
 tg_post_build()
@@ -51,20 +46,12 @@ tg_post_build()
 	MD5CHECK=$(md5sum "$1" | cut -d' ' -f1)
 
 	#Show the Checksum alongwith caption
-	curl --progress-bar -F document=@"$1" "$BOT_BUILD_URL" \\
-	-F message_thread_id="$MESSAGEID" \\ 
-	-F chat_id="$CHATID"  \\
-	-F "disable_web_page_preview=true" \\
-	-F "parse_mode=Markdown" \\
-	-F caption="$2 | *MD5 Checksum : *\\`$MD5CHECK\\`"
+	curl --progress-bar -F document=@"$1" "$BOT_BUILD_URL" -F message_thread_id="$MESSAGEID" -F chat_id="$CHATID" -F "disable_web_page_preview=true" -F "parse_mode=Markdown" -F caption="$2 | *MD5 Checksum : *\\`$MD5CHECK\\`"
 }
 
 # send a nice sticker ro act as a sperator between builds
 tg_post_sticker() {
-  curl -s -X POST "$BOT_STICKER_URL" \\
-    -d message_thread_id="$MESSAGEID" \\ 
-    -d chat_id="$CHATID" \\
-    -d sticker="CAACAgUAAxkBAAEKCfxk3IWJbpyf9AJVzCr7WqNariv-YgACfwoAAiV14VZRQDfFXOn16DAE"
+  curl -s -X POST "$BOT_STICKER_URL" -d chat_id="$CHATID" -d message_thread_id="$MESSAGEID" -d sticker="CAACAgUAAxkBAAEKCfxk3IWJbpyf9AJVzCr7WqNariv-YgACfwoAAiV14VZRQDfFXOn16DAE"
 }
 
 kernel_dir="${PWD}"
@@ -72,11 +59,12 @@ objdir="${kernel_dir}/out"
 kf=$HOME/kf
 builddir="${kernel_dir}/build"
 ZIMAGE=$kernel_dir/out/arch/arm64/boot/Image.gz-dtb
-ns_version=v1.9.601
-kernel_version=4.19.296
-kernel_name="NeverSettle-Kernel-$ns_version-avicii"
+build_date="$(date +"%d-%m-%Y")"
+kernel_version=4.19.315
+kernel_name="NeverSettle-Kernel-avicii"
 zip_name="$kernel_name-$(date +"%d%m%Y-%H%M").zip"
 TC_DIR=$HOME/tc/
+sed -i "s/-NeverSettle-Kernel/-NeverSettle-Kernel-$(date +"%y%m%d")/g" arch/arm64/configs/avicii_defconfig
 export ARCH=arm64
 export SUBARCH=arm64
 export CONFIG_FILE="avicii_defconfig debugfs.config"
@@ -90,9 +78,6 @@ export CROSS_COMPILE_ARM32="arm-linux-gnueabi-"
 export LLVM=1
 export LLVM_IAS=1
 export DTC_EXT=/bin/dtc
-
-# Sync submodule
-git submodule init && git submodule update
 
 #start off by sending a trigger msg
 tg_post_sticker
@@ -120,17 +105,17 @@ compile()
 
 completion() {
   cd ${objdir}
-  COMPILED_IMAGE=arch/arm64/boot/Image.gz
+  COMPILED_IMAGE=arch/arm64/boot/Image.gz-dtb
   if [[ -f ${COMPILED_IMAGE} ]]; then
 
-    git clone https://github.com/Sanju0910/kernel_flasher $kf
+    git clone https://github.com/sreeshankark/kernel_flasher $kf
 
     mv -f $ZIMAGE $kf
 
     cd $kf
     find . -name "*.zip" -type f
     find . -name "*.zip" -type f -delete
-    sed -i "s/version.string=/version.string=$ns_version/g" anykernel.sh
+    sed -i "s/version.string=/version.string=$build_date/g" anykernel.sh
     sed -i "s/Based on Linux Kernel KERNEL_VERSION_STRING/Based on Linux Kernel $kernel_version/g" META-INF/com/google/android/update-binary
     zip -r kf.zip *
     mv kf.zip $zip_name
