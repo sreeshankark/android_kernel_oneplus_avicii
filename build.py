@@ -58,7 +58,9 @@ kernel_dir="${PWD}"
 objdir="${kernel_dir}/out"
 kf=$HOME/kf
 builddir="${kernel_dir}/build"
+avbtool=${kernel_dir}/scripts/avb/avbtool.py
 ZIMAGE=$kernel_dir/out/arch/arm64/boot/Image.gz-dtb
+DTBOIMAGE=$kernel_dir/out/arch/arm64/boot/dtbo.img
 build_date="$(date +"%d-%m-%Y")"
 kernel_version=4.19.315
 kernel_name="NeverSettle-Kernel-avicii"
@@ -100,17 +102,18 @@ compile()
     echo -e ${LGR} "######### Compiling kernel #########${NC}"
     make ARCH=arm64 O=out -j$(nproc --all) \\
     2>&1 | tee error.log
-
+    python3 ${avbtool} add_hash_footer --image ${DTBOIMAGE} --partition_size 25165824 --partition_name dtbo
 }
 
 completion() {
   cd ${objdir}
   COMPILED_IMAGE=arch/arm64/boot/Image.gz-dtb
-  if [[ -f ${COMPILED_IMAGE} ]]; then
+  COMPILED_DTBO=arch/arm64/boot/dtbo.img
+  if [[ -f ${COMPILED_IMAGE} && ${COMPILED_DTBO} ]]; then
 
     git clone https://github.com/sreeshankark/kernel_flasher $kf
 
-    mv -f $ZIMAGE $kf
+    mv -f $ZIMAGE ${COMPILED_DTBO} $kf
 
     cd $kf
     find . -name "*.zip" -type f
