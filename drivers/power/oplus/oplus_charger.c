@@ -4255,7 +4255,6 @@ void oplus_chg_set_input_current_limit(struct oplus_chg_chip *chip)
 	}
 
 	if ((chip->chg_ctrl_by_lcd) && (chip->led_on)) {
-		if (!chip->dual_charger_support || (chip->dual_charger_support && chip->charger_volt > 7500)) {
 			if (chip->led_temp_status == LED_TEMP_STATUS__HIGH) {
 				if (current_limit > chip->limits.input_current_led_ma_high){
 					current_limit = chip->limits.input_current_led_ma_high;
@@ -4275,7 +4274,6 @@ void oplus_chg_set_input_current_limit(struct oplus_chg_chip *chip)
 				&& (current_limit > chip->limits.input_current_camera_ma)) {
 			current_limit = chip->limits.input_current_camera_ma;
 			charger_xlog_printk(CHG_LOG_CRTI, "[BATTERY]CAMERA STATUS CHANGED, IS ON\n");
-		}
 	} else if ((chip->chg_ctrl_by_camera) && (chip->camera_on)
 			&&(current_limit > chip->limits.input_current_camera_ma)) {
 		current_limit = chip->limits.input_current_camera_ma;
@@ -4286,9 +4284,7 @@ void oplus_chg_set_input_current_limit(struct oplus_chg_chip *chip)
 		current_limit = chip->limits.input_current_calling_ma;
 		charger_xlog_printk(CHG_LOG_CRTI, "[BATTERY]calling STATUS CHANGED, IS ON\n");
 	}
-	if (chip->chg_ctrl_by_vooc && chip->vbatt_num == 2
-				&& oplus_vooc_get_fast_chg_type() == CHARGER_SUBTYPE_FASTCHG_VOOC
-				&& oplus_vooc_get_fastchg_started() == true) {
+	if (chip->chg_ctrl_by_vooc && oplus_vooc_get_fastchg_started() == true) {
 		if(chip->led_on) {
 			if(chip->vooc_temp_status == VOOC_TEMP_STATUS__HIGH) {
 				current_limit = chip->limits.input_current_vooc_led_ma_high;
@@ -8415,10 +8411,6 @@ static void oplus_chg_check_status_full(struct oplus_chg_chip *chip)
 	static int fastchg_present_wait_count = 0;
 
 	if (chip->chg_ctrl_by_vooc) {
-		if (oplus_vooc_get_fastchg_ing() == true
-				&& oplus_vooc_get_fast_chg_type() != CHARGER_SUBTYPE_FASTCHG_VOOC)
-			return;
-	} else {
 		if (oplus_vooc_get_fastchg_ing() == true)
 			return;
 	}
@@ -9925,7 +9917,7 @@ static const int cool_down_current_limit_normal[6] = {1200, 1500, 2000, 2000, 20
 static const int cool_down_current_limit_onebat[6] = {1200, 1500, 2000, 1500, 2000, 2000};
 static const int cool_down_current_limit_onebat_nohv[6] = {1200, 1500, 2000, 2000, 2000, 2000};
 static const int old_cool_down_current_limit_onebat[6] = {500, 900, 1200, 1500, 2000, 1500};/* use for old 18w smart charger */
-static const int cool_down_current_limit_vooc[6] = {1500, 1500, 2000, 2500, 3000, 3500};
+//static const int cool_down_current_limit_vooc[6] = {1500, 1500, 2000, 2500, 3000, 3500};
 
 #define BATT_NTC_CTRL_THRESHOLD_LOW 320
 #define BATT_NTC_CTRL_THRESHOLD_HIGH 600
@@ -10027,18 +10019,18 @@ int oplus_smart_charge_by_bcc(struct oplus_chg_chip *chip, int val)
 	return ret;
 }
 
-int choose_little_current (int val1, int val2) {
+/*int choose_little_current (int val1, int val2) {
 	if(val1 >= val2)
 		return val2;
 	else
 		return val1;
-}
+}*/
 void oplus_smart_charge_by_shell_temp(struct oplus_chg_chip *chip, int val) {
 	int subtype = 0, rc = -EINVAL;
 	static int pre_shell_temp_current = 0;
 	int onebat_index_temp = 0;
 	int normal_index_temp = 0;
-	int vooc_index_temp = 0;
+	//int vooc_index_temp = 0;
 
 
 	if (!chip) {
@@ -10071,7 +10063,7 @@ void oplus_smart_charge_by_shell_temp(struct oplus_chg_chip *chip, int val) {
 	pre_shell_temp_current = val;
 	onebat_index_temp = ARRAY_SIZE(cool_down_current_limit_onebat) < c_level_index ? ARRAY_SIZE(cool_down_current_limit_onebat) : c_level_index;
 	normal_index_temp = ARRAY_SIZE(cool_down_current_limit_normal) < c_level_index ? ARRAY_SIZE(cool_down_current_limit_normal) : c_level_index;
-	vooc_index_temp = ARRAY_SIZE(cool_down_current_limit_vooc) < c_level_index ? ARRAY_SIZE(cool_down_current_limit_vooc) : c_level_index;
+	//vooc_index_temp = ARRAY_SIZE(cool_down_current_limit_vooc) < c_level_index ? ARRAY_SIZE(cool_down_current_limit_vooc) : c_level_index;
 
 
 	subtype = oplus_chg_get_fast_chg_type();
@@ -10095,28 +10087,28 @@ void oplus_smart_charge_by_shell_temp(struct oplus_chg_chip *chip, int val) {
 		} else {
 			chip->cool_down = c_level_index;
 			if (chip->vbatt_num == 1) {
-				chip->limits.pd_input_current_charger_ma = choose_little_current(cool_down_current_limit_onebat[onebat_index_temp - 1], chip->limits.default_pd_input_current_charger_ma);
-				chip->limits.qc_input_current_charger_ma = choose_little_current(cool_down_current_limit_onebat[onebat_index_temp - 1], chip->limits.default_qc_input_current_charger_ma);
+				chip->limits.pd_input_current_charger_ma = chip->limits.default_pd_input_current_charger_ma;
+				chip->limits.qc_input_current_charger_ma = chip->limits.default_qc_input_current_charger_ma;
 				if (CHARGER_SUBTYPE_PD == subtype)
 					chip->limits.input_current_charger_ma = chip->limits.pd_input_current_charger_ma;
 				else if (CHARGER_SUBTYPE_QC == subtype)
 					chip->limits.input_current_charger_ma = chip->limits.qc_input_current_charger_ma;
 				else
-					chip->limits.input_current_charger_ma = choose_little_current(cool_down_current_limit_onebat[onebat_index_temp - 1], chip->limits.default_input_current_charger_ma);
+					chip->limits.input_current_charger_ma = chip->limits.default_input_current_charger_ma;
 			} else {
-				chip->limits.pd_input_current_charger_ma = choose_little_current(cool_down_current_limit_normal[normal_index_temp - 1], chip->limits.default_pd_input_current_charger_ma);
-				chip->limits.qc_input_current_charger_ma = choose_little_current(cool_down_current_limit_normal[normal_index_temp - 1], chip->limits.default_qc_input_current_charger_ma);
+				chip->limits.pd_input_current_charger_ma = chip->limits.default_pd_input_current_charger_ma;
+				chip->limits.qc_input_current_charger_ma = chip->limits.default_qc_input_current_charger_ma;
 				if (CHARGER_SUBTYPE_PD == subtype)
 					chip->limits.input_current_charger_ma = chip->limits.pd_input_current_charger_ma;
 				else if (CHARGER_SUBTYPE_QC == subtype)
 					chip->limits.input_current_charger_ma = chip->limits.qc_input_current_charger_ma;
 				else
-					chip->limits.input_current_charger_ma = choose_little_current(cool_down_current_limit_normal[normal_index_temp - 1], chip->limits.default_input_current_charger_ma);
+					chip->limits.input_current_charger_ma = chip->limits.default_input_current_charger_ma;
 			}
 
-			chip->limits.input_current_vooc_ma_high = choose_little_current(cool_down_current_limit_vooc[vooc_index_temp - 1], chip->limits.default_input_current_vooc_ma_high);
-			chip->limits.input_current_vooc_ma_warm = choose_little_current(cool_down_current_limit_vooc[vooc_index_temp - 1], chip->limits.default_input_current_vooc_ma_warm);
-			chip->limits.input_current_vooc_ma_normal = choose_little_current(cool_down_current_limit_vooc[vooc_index_temp - 1], chip->limits.default_input_current_vooc_ma_normal);
+			chip->limits.input_current_vooc_ma_high = chip->limits.default_input_current_vooc_ma_high;
+			chip->limits.input_current_vooc_ma_warm = chip->limits.default_input_current_vooc_ma_warm;
+			chip->limits.input_current_vooc_ma_normal = chip->limits.default_input_current_vooc_ma_normal;
 		}
 		chip->cool_down_done = true;
 		chip->cool_down_force_5v = false;
@@ -10149,35 +10141,13 @@ void oplus_smart_charge_by_shell_temp(struct oplus_chg_chip *chip, int val) {
 		}
 		break;
 	case CHARGER_SUBTYPE_FASTCHG_VOOC:
-		if (chip->chg_ctrl_by_vooc == true) {
-			if (c_level_index <= 0) {
-				chip->limits.input_current_cool_down_ma = val;
-				chip->limits.input_current_charger_ma = val;
-				chip->limits.pd_input_current_charger_ma = val;
-				chip->limits.qc_input_current_charger_ma = val;
-				chip->limits.input_current_vooc_ma_high = val;
-				chip->limits.input_current_vooc_ma_warm = val;
-				chip->limits.input_current_vooc_ma_normal = val;
-			} else {
-				if (chip->vbatt_num == 1) {
-					chip->limits.input_current_cool_down_ma = val <  cool_down_current_limit_onebat[onebat_index_temp - 1] ? val : cool_down_current_limit_onebat[onebat_index_temp - 1];
-				} else {
-					chip->limits.input_current_cool_down_ma = val <  cool_down_current_limit_normal[normal_index_temp - 1] ? val : cool_down_current_limit_normal[normal_index_temp - 1];
-				}
-				chip->limits.input_current_charger_ma = chip->limits.input_current_cool_down_ma;
-				chip->limits.pd_input_current_charger_ma = chip->limits.input_current_cool_down_ma;
-				chip->limits.qc_input_current_charger_ma = chip->limits.input_current_cool_down_ma;
-				chip->limits.input_current_vooc_ma_high = val <  cool_down_current_limit_vooc[vooc_index_temp - 1] ? val : cool_down_current_limit_vooc[vooc_index_temp - 1];
-				chip->limits.input_current_vooc_ma_warm = chip->limits.input_current_vooc_ma_high;
-				chip->limits.input_current_vooc_ma_normal = chip->limits.input_current_vooc_ma_high;
-			}
-		} else {
-			if (c_level_index > 0) {
-				chip->cool_down = oplus_convert_current_to_level(chip, val) < c_level_index ? oplus_convert_current_to_level(chip, val) : c_level_index;
-			} else {
-				chip->cool_down = oplus_convert_current_to_level(chip, val);
-			}
-		}
+		chip->limits.input_current_cool_down_ma = val;
+		chip->limits.input_current_charger_ma = val;
+		chip->limits.pd_input_current_charger_ma = val;
+		chip->limits.qc_input_current_charger_ma = val;
+		chip->limits.input_current_vooc_ma_high = val;
+		chip->limits.input_current_vooc_ma_warm = val;
+		chip->limits.input_current_vooc_ma_normal = val;
 		chip->cool_down_done = true;
 		chip->cool_down_force_5v = false;
 		chip->chg_ctrl_by_cool_down = true;
@@ -10198,21 +10168,21 @@ void oplus_smart_charge_by_shell_temp(struct oplus_chg_chip *chip, int val) {
 			chip->limits.input_current_vooc_ma_normal = val;
 		} else {
 			if (chip->vbatt_num == 1) {
-				chip->limits.input_current_cool_down_ma = val <  cool_down_current_limit_onebat[onebat_index_temp - 1] ? val : cool_down_current_limit_onebat[onebat_index_temp - 1];
+				chip->limits.input_current_cool_down_ma = chip->limits.input_current_cool_down_ma;
 			} else {
 				chip->limits.input_current_cool_down_ma = val <  cool_down_current_limit_normal[normal_index_temp - 1] ? val : cool_down_current_limit_normal[normal_index_temp - 1];
 			}
 
 			if(subtype == CHARGER_SUBTYPE_PD)
-				chip->limits.input_current_cool_down_ma = choose_little_current(chip->limits.input_current_cool_down_ma, chip->limits.default_pd_input_current_charger_ma);
+				chip->limits.input_current_cool_down_ma = chip->limits.default_pd_input_current_charger_ma;
 			else
-				chip->limits.input_current_cool_down_ma = choose_little_current(chip->limits.input_current_cool_down_ma, chip->limits.default_qc_input_current_charger_ma);
+				chip->limits.input_current_cool_down_ma = chip->limits.default_qc_input_current_charger_ma;
 
 			chip->limits.input_current_charger_ma = chip->limits.input_current_cool_down_ma;
 			chip->limits.pd_input_current_charger_ma = chip->limits.input_current_cool_down_ma;
 			chip->limits.qc_input_current_charger_ma = chip->limits.input_current_cool_down_ma;
 
-			chip->limits.input_current_vooc_ma_high = val <  cool_down_current_limit_vooc[vooc_index_temp - 1] ? val : cool_down_current_limit_vooc[vooc_index_temp - 1];
+			chip->limits.input_current_vooc_ma_high = chip->limits.input_current_vooc_ma_high;
 			chip->limits.input_current_vooc_ma_warm = chip->limits.input_current_vooc_ma_high;
 			chip->limits.input_current_vooc_ma_normal = chip->limits.input_current_vooc_ma_high;
 		}
@@ -10250,7 +10220,7 @@ void oplus_smart_charge_by_cool_down(struct oplus_chg_chip *chip, int val)
 	OPLUS_CHARGER_SUBTYPE esubtype = CHARGER_SUBTYPE_DEFAULT;
 	int onebat_index_temp = 0;
 	int normal_index_temp = 0;
-	int vooc_index_temp = 0;
+	//int vooc_index_temp = 0;
 	int m_cool_down_current_limit_onebat[6] = {0};
 	int cool_down_force_5v_limit_onebat = 0;
 
@@ -10262,7 +10232,7 @@ void oplus_smart_charge_by_cool_down(struct oplus_chg_chip *chip, int val)
 
 	onebat_index_temp = ARRAY_SIZE(cool_down_current_limit_onebat) < val ? ARRAY_SIZE(cool_down_current_limit_onebat) : val;
 	normal_index_temp = ARRAY_SIZE(cool_down_current_limit_normal) < val ? ARRAY_SIZE(cool_down_current_limit_normal) : val;
-	vooc_index_temp = ARRAY_SIZE(cool_down_current_limit_vooc) < val ? ARRAY_SIZE(cool_down_current_limit_vooc) : val;
+	//vooc_index_temp = ARRAY_SIZE(cool_down_current_limit_vooc) < val ? ARRAY_SIZE(cool_down_current_limit_vooc) : val;
 
 	esubtype = chip->chg_ops->get_charger_subtype();
 
@@ -10301,28 +10271,28 @@ void oplus_smart_charge_by_cool_down(struct oplus_chg_chip *chip, int val)
 		chip->cool_down = val;
 
 		if (chip->vbatt_num == 1) {
-			chip->limits.pd_input_current_charger_ma = choose_little_current(m_cool_down_current_limit_onebat[onebat_index_temp - 1], chip->limits.default_pd_input_current_charger_ma);
-			chip->limits.qc_input_current_charger_ma = choose_little_current(m_cool_down_current_limit_onebat[onebat_index_temp - 1], chip->limits.default_qc_input_current_charger_ma);
+			chip->limits.pd_input_current_charger_ma = chip->limits.default_pd_input_current_charger_ma;
+			chip->limits.qc_input_current_charger_ma = chip->limits.default_qc_input_current_charger_ma;
 			if (CHARGER_SUBTYPE_PD == esubtype)
 				chip->limits.input_current_charger_ma = chip->limits.pd_input_current_charger_ma;
 			else if (CHARGER_SUBTYPE_QC == esubtype)
 				chip->limits.input_current_charger_ma = chip->limits.qc_input_current_charger_ma;
 			else
-				chip->limits.input_current_charger_ma = choose_little_current(m_cool_down_current_limit_onebat[onebat_index_temp - 1], chip->limits.default_input_current_charger_ma);
+				chip->limits.input_current_charger_ma = chip->limits.default_input_current_charger_ma;
 		} else {
-			chip->limits.pd_input_current_charger_ma = choose_little_current(cool_down_current_limit_normal[normal_index_temp - 1], chip->limits.default_pd_input_current_charger_ma);
-			chip->limits.qc_input_current_charger_ma = choose_little_current(cool_down_current_limit_normal[normal_index_temp - 1], chip->limits.default_qc_input_current_charger_ma);
+			chip->limits.pd_input_current_charger_ma = chip->limits.default_pd_input_current_charger_ma;
+			chip->limits.qc_input_current_charger_ma = chip->limits.default_qc_input_current_charger_ma;
 			if (CHARGER_SUBTYPE_PD == esubtype)
 				chip->limits.input_current_charger_ma = chip->limits.pd_input_current_charger_ma;
 			else if (CHARGER_SUBTYPE_QC == esubtype)
 				chip->limits.input_current_charger_ma = chip->limits.qc_input_current_charger_ma;
 			else
-				chip->limits.input_current_charger_ma = choose_little_current(cool_down_current_limit_normal[normal_index_temp - 1], chip->limits.default_input_current_charger_ma);
+				chip->limits.input_current_charger_ma = chip->limits.default_input_current_charger_ma;
 		}
 
-		chip->limits.input_current_vooc_ma_high = choose_little_current(cool_down_current_limit_vooc[vooc_index_temp - 1], chip->limits.default_input_current_vooc_ma_high);
-		chip->limits.input_current_vooc_ma_warm = choose_little_current(cool_down_current_limit_vooc[vooc_index_temp - 1], chip->limits.default_input_current_vooc_ma_warm);
-		chip->limits.input_current_vooc_ma_normal = choose_little_current(cool_down_current_limit_vooc[vooc_index_temp - 1], chip->limits.default_input_current_vooc_ma_normal);
+		chip->limits.input_current_vooc_ma_high = chip->limits.default_input_current_vooc_ma_high;
+		chip->limits.input_current_vooc_ma_warm = chip->limits.default_input_current_vooc_ma_warm;
+		chip->limits.input_current_vooc_ma_normal = chip->limits.default_input_current_vooc_ma_normal;
 		chip->cool_down_done = true;
 
 		if ((chip->vbatt_num == 1) && (val < cool_down_force_5v_limit_onebat))  {
