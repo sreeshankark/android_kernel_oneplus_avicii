@@ -56,17 +56,17 @@ tg_post_sticker() {
 
 kernel_dir="${PWD}"
 objdir="${kernel_dir}/out"
-kf=$HOME/kf
+kf="$kernel_dir/packaging"
 builddir="${kernel_dir}/build"
 avbtool=${kernel_dir}/scripts/avb/avbtool.py
 ZIMAGE=$kernel_dir/out/arch/arm64/boot/Image.gz-dtb
 DTBOIMAGE=$kernel_dir/out/arch/arm64/boot/dtbo.img
+version="v2.0"
 build_date="$(date +"%d-%m-%Y")"
 kernel_version=4.19.315
-kernel_name="NeverSettle-Kernel-avicii"
+kernel_name="NeverSettle-Kernel-$version-avicii"
 zip_name="$kernel_name-$(date +"%d%m%Y-%H%M").zip"
 TC_DIR=$HOME/tc/
-sed -i "s/-NeverSettle-Kernel/-NeverSettle-Kernel-$(date +"%y%m%d")/g" arch/arm64/configs/avicii_defconfig
 export ARCH=arm64
 export SUBARCH=arm64
 export CONFIG_FILE="avicii_defconfig debugfs.config"
@@ -111,19 +111,16 @@ completion() {
   COMPILED_DTBO=arch/arm64/boot/dtbo.img
   if [[ -f ${COMPILED_IMAGE} && ${COMPILED_DTBO} ]]; then
 
-    git clone https://github.com/sreeshankark/kernel_flasher $kf
-
     mv -f $ZIMAGE ${COMPILED_DTBO} $kf
 
     cd $kf
     find . -name "*.zip" -type f
     find . -name "*.zip" -type f -delete
-    sed -i "s/version.string=/version.string=$build_date/g" anykernel.sh
+    sed -i "s/version.string=/version.string=$version/g" anykernel.sh
+    sed -i "s/date.string=/date.string=$build_date/g" anykernel.sh
     sed -i "s/Based on Linux Kernel KERNEL_VERSION_STRING/Based on Linux Kernel $kernel_version/g" META-INF/com/google/android/update-binary
-    zip -r kf.zip *
-    mv kf.zip $zip_name
+    zip -r $zip_name *
     mv $kf/$zip_name $HOME/$zip_name
-    rm -rf $kf
     END=$(date +"%s")
     DIFF=$(($END - $START))
     BUILDTIME=$(echo $((${END} - ${START})) | awk '{print int ($1/3600)" Hours:"int(($1/60)%60)"Minutes:"int($1%60)" Seconds"}')
