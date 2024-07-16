@@ -36,7 +36,6 @@ struct ext_blk_mq_tags {
 	spinlock_t lock;
 };
 
-
 extern struct blk_mq_tags *blk_mq_init_tags(unsigned int nr_tags, unsigned int reserved_tags, int node, int alloc_policy);
 extern void blk_mq_free_tags(struct blk_mq_tags *tags);
 
