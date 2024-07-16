@@ -29,7 +29,7 @@ jobs:
          run: |
             cd ~
             git clone https://github.com/sreeshankark/android_kernel_oneplus_avicii --depth=1 kernel
-            curl -sL https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main/clang-r522817.tar.gz > ~/clang.tar.gz
+            curl -sL https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main/clang-r530567.tar.gz > ~/clang.tar.gz
             mkdir ~/clang
             tar -xvf ~/clang.tar.gz -C ~/clang
             mkdir ~/kernel/clang-llvm
