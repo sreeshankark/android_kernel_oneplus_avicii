@@ -1,6 +1,6 @@
 # 
-# NeverSettle Kernel v2.1
-# Linux/arm64 4.19.317 Kernel Configuration
+# NeverSettle Kernel v2.11
+# Linux/arm64 4.19.318 Kernel Configuration
 #
 
 #
@@ -34,7 +34,7 @@ CONFIG_THREAD_INFO_IN_TASK=y
 #
 CONFIG_INIT_ENV_ARG_LIMIT=32
 # CONFIG_COMPILE_TEST is not set
-CONFIG_LOCALVERSION="-NeverSettle-Kernel-v2.1"
+CONFIG_LOCALVERSION="-NeverSettle-Kernel-v2.11"
 # CONFIG_LOCALVERSION_AUTO is not set
 CONFIG_BUILD_SALT=""
 CONFIG_HAVE_KERNEL_GZIP=y
