@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /*
  * Copyright (c) 2016-2021, The Linux Foundation. All rights reserved.
- * Copyright (c) 2022 Qualcomm Innovation Center, Inc. All rights reserved.
+ * Copyright (c) 2022-2024 Qualcomm Innovation Center, Inc. All rights reserved.
  */
 
 #define pr_fmt(fmt) "smcinvoke: %s: " fmt, __func__
@@ -559,10 +559,10 @@ static struct smcinvoke_cb_txn *find_cbtxn_locked(
 }
 
 /*
- * size_add saturates at SIZE_MAX. If integer overflow is detected,
+ * smci_size_add saturates at SIZE_MAX. If integer overflow is detected,
  * this function would return SIZE_MAX otherwise normal a+b is returned.
  */
-static inline size_t size_add(size_t a, size_t b)
+static inline size_t smci_size_add(size_t a, size_t b)
 {
 	return (b > (SIZE_MAX - a)) ? SIZE_MAX : a + b;
 }
@@ -582,7 +582,7 @@ static inline size_t pad_size(size_t a, size_t b)
  */
 static inline size_t size_align(size_t a, size_t b)
 {
-	return size_add(a, pad_size(a, b));
+	return smci_size_add(a, pad_size(a, b));
 }
 
 static uint16_t get_server_id(int cb_server_fd)
@@ -1216,7 +1216,7 @@ static size_t compute_in_msg_size(const struct smcinvoke_cmd_req *req,
 
 	/* each buffer has to be 8 bytes aligned */
 	while (i < OBJECT_COUNTS_NUM_buffers(req->counts))
-		total_size = size_add(total_size,
+		total_size = smci_size_add(total_size,
 		size_align(args_buf[i++].b.size, SMCINVOKE_ARGS_ALIGN_SIZE));
 
 	return PAGE_ALIGN(total_size);
