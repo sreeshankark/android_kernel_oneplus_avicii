@@ -198,4 +198,4 @@ obj-$(CONFIG_GNSS)		+= gnss/
 obj-$(CONFIG_SENSORS_SSC)	+= sensors/
 
 # KernelSU
-obj-$(CONFIG_KSU_NEXT)		+= kernelsu-next/
+obj-$(CONFIG_KSU_NEXT)		+= kernelsu/
