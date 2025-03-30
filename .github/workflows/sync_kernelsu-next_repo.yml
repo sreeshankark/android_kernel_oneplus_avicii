@@ -25,7 +25,7 @@ jobs:
         git submodule sync
         git submodule update --init --recursive
         cd $GITHUB_WORKSPACE/KernelSU-Next
-        git checkout next
+        git checkout next-susfs
         git pull
         cd .. && git add .
         git commit -m "KernelSU-Next: Sync with repo"
