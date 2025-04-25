@@ -377,7 +377,6 @@ static int f2fs_write_meta_pages(struct address_space *mapping,
 	if (wbc->sync_mode != WB_SYNC_ALL &&
 			get_pages(sbi, F2FS_DIRTY_META) <
 					nr_pages_to_skip(sbi, META))
-
 		goto skip_write;
 
 	/* if locked failed, cp will flush dirty pages instead */
@@ -1474,6 +1473,7 @@ static int do_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
 	struct curseg_info *seg_i = CURSEG_I(sbi, CURSEG_HOT_NODE);
 	u64 kbytes_written;
 	int err;
+
 	/* Flush all the NAT/SIT pages */
 	f2fs_sync_meta_pages(sbi, META, LONG_MAX, FS_CP_META_IO);
 	if (get_pages(sbi, F2FS_DIRTY_META) && !f2fs_cp_error(sbi)) {
@@ -1645,6 +1645,7 @@ int f2fs_write_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
 	struct f2fs_checkpoint *ckpt = F2FS_CKPT(sbi);
 	unsigned long long ckpt_ver;
 	int err = 0;
+
 	if (f2fs_readonly(sbi->sb) || f2fs_hw_is_readonly(sbi))
 		return -EROFS;
 
@@ -1673,6 +1674,7 @@ int f2fs_write_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
 	trace_f2fs_write_checkpoint(sbi->sb, cpc->reason, "finish block_ops");
 
 	f2fs_flush_merged_writes(sbi);
+
 	/* this is the case of multiple fstrims without any changes */
 	if (cpc->reason & CP_DISCARD) {
 		if (!f2fs_exist_trim_candidates(sbi, cpc)) {
@@ -1707,11 +1709,7 @@ int f2fs_write_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
 	}
 
 	f2fs_flush_sit_entries(sbi, cpc);
-#ifdef CONFIG_OPLUS_FEATURE_OF2FS
-	/* flush summary info in virtual log header */
-	store_virtual_curseg_summary(sbi);
-	restore_virtual_curseg_status(sbi, true);
-#endif
+
 	/* save inmem log status */
 	f2fs_save_inmem_curseg(sbi);
 
@@ -1726,9 +1724,6 @@ int f2fs_write_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
 
 	f2fs_restore_inmem_curseg(sbi);
 stop:
-#ifdef CONFIG_OPLUS_FEATURE_OF2FS
-	restore_virtual_curseg_status(sbi, false);
-#endif
 	unblock_operations(sbi);
 	stat_inc_cp_count(sbi->stat_info);
 
