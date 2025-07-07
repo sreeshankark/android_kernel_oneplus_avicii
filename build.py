@@ -61,14 +61,14 @@ builddir="${kernel_dir}/build"
 avbtool=${kernel_dir}/scripts/avb/avbtool.py
 ZIMAGE=$kernel_dir/out/arch/arm64/boot/Image.gz-dtb
 DTBOIMAGE=$kernel_dir/out/arch/arm64/boot/dtbo.img
-version="v3.1"
+version="v3.2"
+ksu_version="v1.0.8"
+ksu_version_code="12701"
 build_date="$(date +"%d-%m-%Y")"
 kernel_version=4.19.325
-ksu_next_apk_name=KernelSU_Next_v1.0.5_12430-release.apk
-ksu_next_apk=https://github.com/KernelSU-Next/KernelSU-Next/releases/download/v1.0.5/KernelSU_Next_v1.0.5_12430-release.apk
 kernel_name="NeverSettle-Kernel-$version-avicii"
-ksu_apk_name=KernelSU_Next_v1.0.5_12430-release.apk
-ksu_apk=https://github.com/KernelSU-Next/KernelSU-Next/releases/download/v1.0.5/KernelSU_Next_v1.0.5_12430-release.apk
+ksu_apk_name="KernelSU_Next_$ksu_version.apk"
+ksu_apk="https://github.com/KernelSU-Next/KernelSU-Next/releases/download/$ksu_version/KernelSU_Next_$ksu_version_$ksu_version_code-release.apk"
 zip_name="$kernel_name-$(date +"%d%m%Y-%H%M").zip"
 TC_DIR=$HOME/tc/
 export ARCH=arm64
@@ -87,7 +87,7 @@ export DTC_EXT=/bin/dtc
 
 #start off by sending a trigger msg
 tg_post_sticker
-tg_post_msg "<b>NeverSettle Kernel Build Triggered ⌛</b>%0A<b>==============================</b>%0A<b>Kernel : </b><code>$kernel_name</code>%0A<b>Machine : </b><code>$os</code>%0A<b>Cores : </b><code>$cores</code>%0A<b>Time : </b><code>$time</code>"
+tg_post_msg "<b>NeverSettle Kernel Build Triggered ⌛</b>%0A<b>============================</b>%0A<b>Kernel : </b><code>$kernel_name</code>%0A<b>Machine : </b><code>$os</code>%0A<b>Cores : </b><code>$cores</code>%0A<b>Time : </b><code>$time</code>"
 
 # Colors
 NC='\\033[0m'
