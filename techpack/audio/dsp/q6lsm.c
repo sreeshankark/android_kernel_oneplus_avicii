@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /*
  * Copyright (c) 2013-2020, Linux Foundation. All rights reserved.
- * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+ * Copyright (c) 2023-2024 Qualcomm Innovation Center, Inc. All rights reserved.
  */
 #include <linux/fs.h>
 #include <linux/mutex.h>
@@ -230,8 +230,7 @@ static int q6lsm_callback(struct apr_client_data *data, void *priv)
 		}
 
 		if (client->param_size != param_size) {
-			pr_err("%s: response payload size %d mismatched with user requested %d\n",
-			    __func__, param_size, client->param_size);
+			pr_err("%s: response payload size %d mismatched with user requested %zu\n",			    __func__, param_size, client->param_size);
 			ret = -EINVAL;
 			goto done;
 		}
@@ -2035,6 +2034,22 @@ static int q6lsm_mmapcallback(struct apr_client_data *data, void *priv)
 		lsm_common.set_custom_topology = 1;
 		return 0;
 	}
+	
+	/*
+	The payload_size can be either 4 or 8 bytes.
+	It has to be verified whether the payload_size is
+	atleast 4 bytes. If it is less, returns errorcode.
+
+	The opcode for 4 bytes is 0x12A80
+	The opcode for 8 bytes is 0x110E8.
+	 
+	*/
+
+	if (data->payload_size < (2 * sizeof(uint16_t))) {
+		pr_err("%s: payload has invalid size[%d]\n", __func__,
+			data->payload_size);
+		return -EINVAL;
+	}
 
 	command = payload[0];
 	retcode = payload[1];
@@ -2477,7 +2492,7 @@ int q6lsm_get_one_param(struct lsm_client *client,
 	}
 	return rc;
 }
-EXPORT_SYMBOL_GPL(q6lsm_get_one_param);
+EXPORT_SYMBOL(q6lsm_get_one_param);
 
 /**
  * q6lsm_start -

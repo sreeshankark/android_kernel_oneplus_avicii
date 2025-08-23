@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /*
- * Copyright (c) 2012-2020, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2012-2021, The Linux Foundation. All rights reserved.
  */
 #include <linux/module.h>
 #include <linux/slab.h>
@@ -1098,6 +1098,71 @@ int adm_apr_send_pkt(void *data, wait_queue_head_t *wait,
 }
 
 /*
+ * adm_apr_send_pkt : returns 0 on success, negative otherwise.
+ */
+int adm_apr_send_pkt(void *data, wait_queue_head_t *wait,
+			int port_idx, int copp_idx, int opcode)
+{
+	int ret = 0;
+	atomic_t *copp_stat = NULL;
+	int32_t time_out = msecs_to_jiffies(TIMEOUT_MS);
+	wait = &this_adm.copp.wait[port_idx][copp_idx];
+
+	if (!wait)
+		return -EINVAL;
+
+	mutex_lock(&this_adm.adm_apr_lock);
+	pr_debug("%s: port idx  %d copp idx  %d\n", __func__,
+				port_idx, copp_idx);
+	copp_stat = &this_adm.copp.stat[port_idx][copp_idx];
+	atomic_set(copp_stat, -1);
+
+	if (opcode != ADM_CMD_DEVICE_OPEN_V8 &&
+		opcode != ADM_CMD_DEVICE_OPEN_V6 &&
+		opcode != ADM_CMD_DEVICE_OPEN_V5 &&
+		opcode != ADM_CMD_DEVICE_CLOSE_V5) {
+		if (atomic_read(&this_adm.copp.cnt[port_idx][copp_idx])
+			== 0) {
+			pr_err("%s: port[0x%x] copp[0x%x] inactive\n",
+				__func__, port_idx, copp_idx);
+			mutex_unlock(&this_adm.adm_apr_lock);
+			return -EINVAL;
+		}
+	}
+
+	if (opcode == ADM_CMD_DEVICE_OPEN_V8 ||
+		opcode == ADM_CMD_DEVICE_OPEN_V6 ||
+		opcode == ADM_CMD_DEVICE_OPEN_V5) {
+		time_out = msecs_to_jiffies(2 * TIMEOUT_MS);
+	}
+
+	ret = apr_send_pkt(this_adm.apr, data);
+	if (ret > 0) {
+		ret = wait_event_timeout(*wait,
+			atomic_read(copp_stat) >= 0,
+			time_out);
+		if (atomic_read(copp_stat) > 0) {
+			pr_err("%s: DSP returned error[%s]\n", __func__,
+				adsp_err_get_err_str(atomic_read(copp_stat)));
+			ret = adsp_err_get_lnx_err_code(atomic_read(copp_stat));
+		} else	if (!ret) {
+			pr_err_ratelimited("%s: request timedout\n",
+				__func__);
+			ret = -ETIMEDOUT;
+		} else {
+			ret = 0;
+		}
+	} else if (ret == 0) {
+		pr_err("%s: packet not transmitted\n", __func__);
+		/* apr_send_pkt can return 0 when nothing is transmitted */
+		ret = -EINVAL;
+	}
+
+	mutex_unlock(&this_adm.adm_apr_lock);
+	return ret;
+}
+
+/*
  * With pre-packed data, only the opcode differes from V5 and V6.
  * Use q6common_pack_pp_params to pack the data correctly.
  */
@@ -1754,16 +1819,11 @@ static int32_t adm_callback(struct apr_client_data *data, void *priv)
 		if (data->opcode == APR_BASIC_RSP_RESULT) {
 			pr_debug("%s: APR_BASIC_RSP_RESULT id 0x%x\n",
 				__func__, payload[0]);
-
-			if (!((client_id != ADM_CLIENT_ID_SOURCE_TRACKING) &&
-			     ((payload[0] == ADM_CMD_SET_PP_PARAMS_V5) ||
-			      (payload[0] == ADM_CMD_SET_PP_PARAMS_V6)))) {
-				if (data->payload_size <
-						(2 * sizeof(uint32_t))) {
-					pr_err("%s: Invalid payload size %d\n",
-						__func__, data->payload_size);
-					return 0;
-				}
+			if (data->payload_size <
+					(2 * sizeof(uint32_t))) {
+				pr_err("%s: Invalid payload size %d\n",
+					__func__, data->payload_size);
+				return 0;
 			}
 
 			if (payload[1] != 0) {

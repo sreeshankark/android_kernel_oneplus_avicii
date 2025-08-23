@@ -819,6 +819,30 @@ int wsa883x_codec_get_dev_num(struct snd_soc_component *component)
 }
 EXPORT_SYMBOL_GPL(wsa883x_codec_get_dev_num);
 
+/*
+ * wsa883x_codec_get_dev_num - returns swr device number
+ * @component: Codec instance
+ *
+ * Return: swr device number on success or negative error
+ * code on failure.
+ */
+int wsa883x_codec_get_dev_num(struct snd_soc_component *component)
+{
+	struct wsa883x_priv *wsa883x;
+
+	if (!component)
+		return -EINVAL;
+
+	wsa883x = snd_soc_component_get_drvdata(component);
+	if (!wsa883x) {
+		pr_err("%s: wsa883x component is NULL\n", __func__);
+		return -EINVAL;
+	}
+
+	return wsa883x->swr_slave->dev_num;
+}
+EXPORT_SYMBOL(wsa883x_codec_get_dev_num);
+
 static int wsa883x_get_compander(struct snd_kcontrol *kcontrol,
 			       struct snd_ctl_elem_value *ucontrol)
 {
@@ -1557,7 +1581,7 @@ static int wsa883x_swr_probe(struct swr_device *pdev)
 	ret = swr_get_logical_dev_num(pdev, pdev->addr, &devnum);
 	if (ret) {
 		dev_err(&pdev->dev,
-			"%s get devnum %d for dev addr %lx failed\n",
+			"%s get devnum %d for dev addr %llx failed\n",
 			__func__, devnum, pdev->addr);
 		goto dev_err;
 	}
