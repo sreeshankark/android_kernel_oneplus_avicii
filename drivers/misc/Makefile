@@ -76,6 +76,8 @@ obj-$(CONFIG_OKL4_LINK_SHBUF)    += okl4-link-shbuf.o
 obj-$(CONFIG_WIGIG_SENSING_SPI)	+= wigig_sensing.o
 obj-$(CONFIG_QTI_MAXIM_FAN_CONTROLLER) += max31760.o
 obj-$(CONFIG_QTI_XR_SMRTVWR_MISC) += qxr-stdalonevwr.o
+obj-$(CONFIG_USB7002_HUB)       += usb7002/
+obj-$(CONFIG_QTI_HEARTBEAT)     += heartbeat/
 
 # ifdef OPLUS_FEATURE_TP_BASIC
 obj-$(CONFIG_CS_F61_NDT) 	+= cs_press/
@@ -108,4 +110,3 @@ obj-$(CONFIG_OEM_QMI)	+= oem_qmi_client.o
 #endif
 
 obj-$(CONFIG_FORCE_FAST_CHARGE) += fastchg.o
-

@@ -392,7 +392,7 @@ static int kgsl_pwrctrl_cx_ipeak_init(struct kgsl_device *device)
 	struct kgsl_pwrctrl *pwr = &device->pwrctrl;
 	struct device_node *node, *child;
 	struct gpu_cx_ipeak_client *cx_ipeak_client;
-	int i = 0, ret;
+	int i = 0, ret = 0;
 
 	node = of_get_child_by_name(device->pdev->dev.of_node,
 				"qcom,gpu-cx-ipeak");

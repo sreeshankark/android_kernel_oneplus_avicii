@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# usb7002 device driver configuration
+#
+
+config USB7002_HUB
+	bool "usb7002 hub driver"
+	default n
+	help
+	  Say Y here if you have a usb7002 connected to your system.
+	  When in doubt, say N.

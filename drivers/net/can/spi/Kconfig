@@ -23,5 +23,19 @@ config CAN_MCP25XXFD
 	  Say yes here to build support for SPI to CAN devices
 	  mcp25xxfd. To compilethis driver as a module, choose
 	  M here: the module will be called mcp25xxfd.
-
+config QTI_CAN
+	tristate "Unified driver for QTI CAN controllers"
+	depends on SPI
+	help
+	  This adds unified driver for QTI CAN controllers on auto
+	  Platform. This driver can support a few SPI controllers
+	  being used on automotive paltform. This Driver is based
+	  on Calypso MPC5746 MCU ans uses SPI bus for data access.
+	  It support most CAN operations including version lookup,
+	  firmware upgrade, CAN message filter, etc.
+config QTI_CAN_TARGET_2W_V2
+	tristate "Unified driver for QTI CAN controllers"
+	depends on SPI
+	help
+	  This adds support for 2W_v2
 endmenu

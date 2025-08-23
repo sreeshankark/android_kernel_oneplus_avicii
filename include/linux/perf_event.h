@@ -1476,7 +1476,7 @@ _name##_show(struct device *dev,					\
 			       char *page)				\
 {									\
 	BUILD_BUG_ON(sizeof(_format) >= PAGE_SIZE);			\
-	return sprintf(page, _format "\n");				\
+	return snprintf(page, PAGE_SIZE, _format "\n");				\
 }									\
 									\
 static struct device_attribute format_attr_##_name = __ATTR_RO(_name)

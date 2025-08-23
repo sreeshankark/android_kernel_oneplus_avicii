@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# QTI Heartbeat device driver configuration
+#
+
+config QTI_HEARTBEAT
+	bool "QTI Heartbeat"
+	depends on QTI_CAN
+	help
+	  Say Y here if you have a heartbeat gpio connected to your system.
+	  When in doubt, say N.

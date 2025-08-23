@@ -1005,7 +1005,7 @@ static int icnss_get_battery_level(struct icnss_priv *priv)
 		battery_percentage = psp.intval;
 	}
 
-	icnss_pr_info("Battery Percentage: %d\n", battery_percentage);
+	icnss_pr_dbg("Battery Percentage: %d\n", battery_percentage);
 out:
 	return battery_percentage;
 }

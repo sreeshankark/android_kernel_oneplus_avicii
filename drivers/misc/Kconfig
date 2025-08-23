@@ -708,6 +708,8 @@ source "drivers/misc/aw8697_haptic/Kconfig"
 #endif
 source "drivers/misc/fpr_FingerprintCard/Kconfig"
 source "drivers/misc/qrc/Kconfig"
+source "drivers/misc/usb7002/Kconfig"
+source "drivers/misc/heartbeat/Kconfig"
 endmenu
 
 config OKL4_USER_VIPC

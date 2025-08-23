@@ -862,6 +862,8 @@ static int qti_flash_led_calc_bharger_max_current(struct qti_flash_led *led,
 		vin_flash_uv = VIN_FLASH_RANGE_2;
 	else if (ocv_uv > OCV_RANGE_2 && ocv_uv <= OCV_RANGE_3)
 		vin_flash_uv = VIN_FLASH_RANGE_3;
+	else    /* In case KW gets upset, default the value to 0 */
+		vin_flash_uv = 0;
 
 	/* Calculate the available power for the flash module. */
 	avail_flash_power_fw = CHGBST_EFFICIENCY * vph_flash_uv * ibat_flash_ua;

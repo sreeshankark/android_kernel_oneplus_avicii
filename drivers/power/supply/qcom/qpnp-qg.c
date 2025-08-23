@@ -3,6 +3,10 @@
  * Copyright (c) 2018-2021 The Linux Foundation. All rights reserved.
  */
 
+/*
+ * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+ */
+
 #define pr_fmt(fmt)	"QG-K: %s: " fmt, __func__
 
 #include <linux/debugfs.h>
@@ -103,7 +107,10 @@ static bool is_battery_present(struct qpnp_qg *chip)
 	u8 reg = 0;
 	int rc;
 
-	if (chip->qg_version == QG_LITE) {
+	/* For AUTO platform, do not perform battery detection */
+	if (chip->dt.batt_less) {
+		present = false;
+	} else if (chip->qg_version == QG_LITE) {
 		rc = qg_read(chip, chip->qg_base + QG_STATUS2_REG, &reg, 1);
 		if (rc < 0)
 			pr_err("Failed to read battery presence, rc=%d\n", rc);
@@ -1851,6 +1858,10 @@ static int qg_get_charge_counter(struct qpnp_qg *chip, int *charge_counter)
 	int rc, cc_soc = 0;
 	int64_t temp = 0;
 
+	/* For AUTO platforms, battery info comes from MCU */
+	if (chip->dt.batt_less)
+		return 0;
+
 	if (is_debug_batt_id(chip) || chip->battery_missing) {
 		*charge_counter = -EINVAL;
 		return 0;
@@ -2426,6 +2437,10 @@ static int qg_charge_full_update(struct qpnp_qg *chip)
 	union power_supply_propval prop = {0, };
 	int rc, recharge_soc, health;
 
+	/* For AUTO platforms, battery info comes from MCU */
+	if (chip->dt.batt_less)
+		return 0;
+
 	if (!chip->dt.hold_soc_while_full)
 		goto out;
 
@@ -2700,6 +2715,10 @@ static void qg_status_change_work(struct work_struct *work)
 	union power_supply_propval prop = {0, };
 	int rc = 0, batt_temp = 0;
 	bool input_present = false;
+
+	/* For AUTO platforms, battery info comes from MCU */
+	if (chip->dt.batt_less)
+		return;
 
 	if (!is_batt_available(chip)) {
 		pr_debug("batt-psy not available\n");
@@ -4470,6 +4489,10 @@ static int qg_parse_dt(struct qpnp_qg *chip)
 		else
 			chip->dt.tcss_entry_soc = temp;
 	}
+
+	/* For battery less AUTO platform */
+	if (of_property_read_bool(node, "qcom,batt-less"))
+		chip->dt.batt_less = true;
 
 	chip->dt.bass_enable = of_property_read_bool(node, "qcom,bass-enable");
 
