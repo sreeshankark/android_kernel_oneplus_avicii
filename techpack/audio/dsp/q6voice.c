@@ -7996,6 +7996,7 @@ static int32_t qdsp_cvs_callback(struct apr_client_data *data, void *priv)
 			return -EINVAL;
 		}
 
+
 		if (__builtin_add_overflow(cvs_voc_pkt[2], 3 * sizeof(uint32_t), &tot_buf_sz)) {
 			 pr_err("%s: integer overflow detected\n", __func__);
 			 return -EINVAL;
