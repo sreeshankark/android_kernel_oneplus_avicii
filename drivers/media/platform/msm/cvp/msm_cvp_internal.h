@@ -368,6 +368,7 @@ struct msm_cvp_inst {
 	struct cvp_fence_queue fence_cmd_queue;
 #else
 	struct mutex fence_lock;
+	char proc_name[100];
 #endif
 };
 
