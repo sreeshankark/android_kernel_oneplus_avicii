@@ -21,8 +21,10 @@
 #include "cam_vfe_soc.h"
 #include "cam_debug_util.h"
 #include "cam_cpas_api.h"
+#include "cam_trace.h"
 
 static const char drv_name[] = "vfe_bus";
+static char rup_controller_name[32] = "";
 
 #define CAM_VFE_BUS_VER3_IRQ_REG0                0
 #define CAM_VFE_BUS_VER3_IRQ_REG1                1
@@ -916,6 +918,7 @@ static int cam_vfe_bus_ver3_handle_rup_top_half(uint32_t evt_id,
 	struct cam_isp_resource_node               *vfe_out = NULL;
 	struct cam_vfe_bus_ver3_vfe_out_data       *rsrc_data = NULL;
 	struct cam_vfe_bus_irq_evt_payload         *evt_payload;
+	uint32_t irq_status;
 
 	vfe_out = th_payload->handler_priv;
 	if (!vfe_out) {
@@ -944,6 +947,12 @@ static int cam_vfe_bus_ver3_handle_rup_top_half(uint32_t evt_id,
 	evt_payload->evt_id  = evt_id;
 	for (i = 0; i < th_payload->num_registers; i++)
 		evt_payload->irq_reg_val[i] = th_payload->evt_status_arr[i];
+
+	irq_status =
+		th_payload->evt_status_arr[CAM_IFE_IRQ_BUS_VER3_REG_STATUS0];
+
+	trace_cam_log_event("RUP", "RUP_IRQ", irq_status, 0);
+
 	th_payload->evt_payload_priv = evt_payload;
 
 	return rc;
@@ -1863,12 +1872,13 @@ static int cam_vfe_bus_ver3_deinit_comp_grp(
 static int cam_vfe_bus_ver3_get_secure_mode(void *priv, void *cmd_args,
 	uint32_t arg_size)
 {
-	bool *mode = cmd_args;
-	struct cam_isp_resource_node *res =
-		(struct cam_isp_resource_node *) priv;
-	struct cam_vfe_bus_ver3_vfe_out_data *rsrc_data =
-		(struct cam_vfe_bus_ver3_vfe_out_data *)res->res_priv;
+	struct cam_isp_hw_get_cmd_update      *secure_mode = cmd_args;
+	struct cam_vfe_bus_ver3_vfe_out_data  *rsrc_data;
+	uint32_t                              *mode;
 
+	rsrc_data = (struct cam_vfe_bus_ver3_vfe_out_data *)
+		secure_mode->res->res_priv;
+	mode = (uint32_t *)secure_mode->data;
 	*mode = (rsrc_data->secure_mode == CAM_SECURE_MODE_SECURE) ?
 		true : false;
 
@@ -2237,6 +2247,8 @@ static int cam_vfe_bus_ver3_handle_vfe_out_done_top_half(uint32_t evt_id,
 	struct cam_isp_resource_node               *vfe_out = NULL;
 	struct cam_vfe_bus_ver3_vfe_out_data       *rsrc_data = NULL;
 	struct cam_vfe_bus_irq_evt_payload         *evt_payload;
+	struct cam_vfe_bus_ver3_comp_grp_data      *resource_data;
+	uint32_t                                    status_0;
 
 	vfe_out = th_payload->handler_priv;
 	if (!vfe_out) {
@@ -2245,6 +2257,7 @@ static int cam_vfe_bus_ver3_handle_vfe_out_done_top_half(uint32_t evt_id,
 	}
 
 	rsrc_data = vfe_out->res_priv;
+	resource_data = rsrc_data->comp_grp->res_priv;
 
 	CAM_DBG(CAM_ISP, "VFE:%d Bus IRQ status_0: 0x%X status_1: 0x%X",
 		rsrc_data->common_data->core_index,
@@ -2272,6 +2285,17 @@ static int cam_vfe_bus_ver3_handle_vfe_out_done_top_half(uint32_t evt_id,
 		evt_payload->irq_reg_val[i] = th_payload->evt_status_arr[i];
 
 	th_payload->evt_payload_priv = evt_payload;
+
+	status_0 = th_payload->evt_status_arr[CAM_IFE_IRQ_BUS_VER3_REG_STATUS0];
+
+	if (status_0 & BIT(resource_data->comp_grp_type +
+		rsrc_data->common_data->comp_done_shift)) {
+		trace_cam_log_event("bufdone", "bufdone_IRQ",
+			status_0, resource_data->comp_grp_type);
+	}
+
+	if (status_0 & 0x1)
+		trace_cam_log_event("UnexpectedRUP", "RUP_IRQ", status_0, 40);
 
 	CAM_DBG(CAM_ISP, "Exit");
 	return rc;
@@ -3200,7 +3224,7 @@ static int cam_vfe_bus_ver3_update_hfr(void *priv, void *cmd_args,
 	}
 
 	reg_val_pair = &vfe_out_data->common_data->io_buf_update[0];
-	hfr_cfg = update_hfr->hfr_update;
+	hfr_cfg = (struct cam_isp_port_hfr_config *)update_hfr->data;
 
 	for (i = 0, j = 0; i < vfe_out_data->num_wm; i++) {
 		if (j >= (MAX_REG_VAL_PAIR_SIZE - MAX_BUF_UPDATE_REG_NUM * 2)) {
@@ -3315,7 +3339,8 @@ static int cam_vfe_bus_ver3_update_ubwc_config_v2(void *cmd_args)
 		goto end;
 	}
 
-	ubwc_generic_cfg = update_ubwc->ubwc_config;
+	ubwc_generic_cfg = (struct cam_vfe_generic_ubwc_config *)
+		update_ubwc->data;
 
 	for (i = 0; i < vfe_out_data->num_wm; i++) {
 
@@ -3483,7 +3508,8 @@ static int cam_vfe_bus_ver3_update_wm_config(
 
 	wm_config_update = cmd_args;
 	vfe_out_data = wm_config_update->res->res_priv;
-	wm_config = wm_config_update->wm_config;
+	wm_config = (struct cam_isp_vfe_wm_config  *)
+		wm_config_update->data;
 
 	if (!vfe_out_data || !vfe_out_data->cdm_util_ops || !wm_config) {
 		CAM_ERR(CAM_ISP, "Invalid data");
@@ -3722,7 +3748,6 @@ int cam_vfe_bus_ver3_init(
 	struct cam_vfe_bus              *vfe_bus_local;
 	struct cam_vfe_bus_ver3_hw_info *ver3_hw_info = bus_hw_info;
 	struct cam_vfe_soc_private      *soc_private = NULL;
-	char rup_controller_name[12] = "";
 
 	CAM_DBG(CAM_ISP, "Enter");
 

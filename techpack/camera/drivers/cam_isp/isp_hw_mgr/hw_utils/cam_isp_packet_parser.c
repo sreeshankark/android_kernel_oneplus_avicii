@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /*
- * Copyright (c) 2017-2019, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2017-2021, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2023-2024, Qualcomm Innovation Center, Inc. All rights reserved.
  */
 
 #include <media/cam_defs.h>
@@ -18,7 +19,7 @@ int cam_isp_add_change_base(
 	struct cam_kmd_buf_info                *kmd_buf_info)
 {
 	int rc = -EINVAL;
-	struct cam_ife_hw_mgr_res       *hw_mgr_res;
+	struct cam_isp_hw_mgr_res       *hw_mgr_res;
 	struct cam_isp_resource_node    *res;
 	struct cam_isp_hw_get_cmd_update get_base;
 	struct cam_hw_update_entry      *hw_entry;
@@ -35,7 +36,7 @@ int cam_isp_add_change_base(
 	}
 
 	list_for_each_entry(hw_mgr_res, res_list_isp_src, list) {
-		if (hw_mgr_res->res_type == CAM_IFE_HW_MGR_RES_UNINIT)
+		if (hw_mgr_res->res_type == CAM_ISP_RESOURCE_UNINT)
 			continue;
 
 		for (i = 0; i < CAM_ISP_HW_SPLIT_MAX; i++) {
@@ -91,12 +92,12 @@ static int cam_isp_update_dual_config(
 	struct cam_cmd_buf_desc            *cmd_desc,
 	uint32_t                            split_id,
 	uint32_t                            base_idx,
-	struct cam_ife_hw_mgr_res          *res_list_isp_out,
+	struct cam_isp_hw_mgr_res          *res_list_isp_out,
 	uint32_t                            size_isp_out)
 {
 	int rc = -EINVAL;
 	struct cam_isp_dual_config                 *dual_config;
-	struct cam_ife_hw_mgr_res                  *hw_mgr_res;
+	struct cam_isp_hw_mgr_res                  *hw_mgr_res;
 	struct cam_isp_resource_node               *res;
 	struct cam_isp_hw_dual_isp_update_args      dual_isp_update_args;
 	uint32_t                                    outport_id;
@@ -117,6 +118,7 @@ static int cam_isp_update_dual_config(
 		(cmd_desc->offset >=
 		(len - sizeof(struct cam_isp_dual_config)))) {
 		CAM_ERR(CAM_ISP, "not enough buffer provided");
+		cam_mem_put_cpu_buf(cmd_desc->mem_handle);
 		return -EINVAL;
 	}
 	remain_len = len - cmd_desc->offset;
@@ -127,6 +129,7 @@ static int cam_isp_update_dual_config(
 		sizeof(struct cam_isp_dual_stripe_config)) >
 		(remain_len - offsetof(struct cam_isp_dual_config, stripes))) {
 		CAM_ERR(CAM_ISP, "not enough buffer for all the dual configs");
+		cam_mem_put_cpu_buf(cmd_desc->mem_handle);
 		return -EINVAL;
 	}
 	for (i = 0; i < dual_config->num_ports; i++) {
@@ -140,6 +143,14 @@ static int cam_isp_update_dual_config(
 		}
 
 		hw_mgr_res = &res_list_isp_out[i];
+		if (!hw_mgr_res) {
+			CAM_ERR(CAM_ISP,
+				"Invalid isp out resource i %d num_out_res %d",
+				i, dual_config->num_ports);
+			rc = -EINVAL;
+			goto end;
+		}
+
 		for (j = 0; j < CAM_ISP_HW_SPLIT_MAX; j++) {
 			if (!hw_mgr_res->hw_res[j])
 				continue;
@@ -176,11 +187,12 @@ static int cam_isp_update_dual_config(
 	}
 
 end:
+	cam_mem_put_cpu_buf(cmd_desc->mem_handle);
 	return rc;
 }
 
 int cam_isp_add_cmd_buf_update(
-	struct cam_ife_hw_mgr_res            *hw_mgr_res,
+	struct cam_isp_hw_mgr_res            *hw_mgr_res,
 	uint32_t                              cmd_type,
 	uint32_t                              hw_cmd_type,
 	uint32_t                              base_idx,
@@ -195,7 +207,7 @@ int cam_isp_add_cmd_buf_update(
 	uint32_t                            i;
 	uint32_t                            total_used_bytes = 0;
 
-	if (hw_mgr_res->res_type == CAM_IFE_HW_MGR_RES_UNINIT) {
+	if (hw_mgr_res->res_type == CAM_ISP_RESOURCE_UNINT) {
 		CAM_ERR(CAM_ISP, "io res id:%d not valid",
 			hw_mgr_res->res_type);
 		return -EINVAL;
@@ -243,9 +255,9 @@ int cam_isp_add_cmd_buf_update(
 int cam_isp_add_command_buffers(
 	struct cam_hw_prepare_update_args  *prepare,
 	struct cam_kmd_buf_info            *kmd_buf_info,
-	struct ctx_base_info               *base_info,
+	struct cam_isp_ctx_base_info       *base_info,
 	cam_packet_generic_blob_handler     blob_handler_cb,
-	struct cam_ife_hw_mgr_res          *res_list_isp_out,
+	struct cam_isp_hw_mgr_res          *res_list_isp_out,
 	uint32_t                            size_isp_out)
 {
 	int rc = 0;
@@ -271,6 +283,10 @@ int cam_isp_add_command_buffers(
 		split_id, prepare->packet->num_cmd_buf);
 
 	for (i = 0; i < prepare->packet->num_cmd_buf; i++) {
+		rc = cam_packet_util_validate_cmd_desc(&cmd_desc[i]);
+		if (rc)
+			return rc;
+
 		num_ent = prepare->num_hw_update_entries;
 		if (!cmd_desc[i].length)
 			continue;
@@ -460,7 +476,7 @@ int cam_isp_add_io_buffers(
 	struct cam_hw_prepare_update_args    *prepare,
 	uint32_t                              base_idx,
 	struct cam_kmd_buf_info              *kmd_buf_info,
-	struct cam_ife_hw_mgr_res            *res_list_isp_out,
+	struct cam_isp_hw_mgr_res            *res_list_isp_out,
 	struct list_head                     *res_list_ife_in_rd,
 	uint32_t                              size_isp_out,
 	bool                                  fill_fence)
@@ -469,12 +485,13 @@ int cam_isp_add_io_buffers(
 	dma_addr_t                          io_addr[CAM_PACKET_MAX_PLANES];
 	struct cam_buf_io_cfg              *io_cfg;
 	struct cam_isp_resource_node       *res;
-	struct cam_ife_hw_mgr_res          *hw_mgr_res;
+	struct cam_isp_hw_mgr_res          *hw_mgr_res;
 	struct cam_isp_hw_get_cmd_update    update_buf;
 	struct cam_isp_hw_get_wm_update     wm_update;
 	struct cam_isp_hw_get_wm_update     bus_rd_update;
 	struct cam_hw_fence_map_entry      *out_map_entries;
 	struct cam_hw_fence_map_entry      *in_map_entries;
+	struct cam_isp_hw_get_cmd_update    secure_mode;
 	uint32_t                            kmd_buf_remain_size;
 	uint32_t                            i, j, num_out_buf, num_in_buf;
 	uint32_t                            res_id_out, res_id_in, plane_id;
@@ -482,7 +499,8 @@ int cam_isp_add_io_buffers(
 	size_t                              size;
 	int32_t                             hdl;
 	int                                 mmu_hdl;
-	bool                                mode, is_buf_secure;
+	bool                                is_buf_secure;
+	uint32_t                            mode;
 
 	io_cfg = (struct cam_buf_io_cfg *) ((uint8_t *)
 			&prepare->packet->payload +
@@ -540,7 +558,7 @@ int cam_isp_add_io_buffers(
 			}
 
 			hw_mgr_res = &res_list_isp_out[res_id_out];
-			if (hw_mgr_res->res_type == CAM_IFE_HW_MGR_RES_UNINIT) {
+			if (hw_mgr_res->res_type == CAM_ISP_RESOURCE_UNINT) {
 				CAM_ERR(CAM_ISP, "io res id:%d not valid",
 					io_cfg[i].resource_type);
 				return -EINVAL;
@@ -550,10 +568,15 @@ int cam_isp_add_io_buffers(
 			CAM_DBG(CAM_ISP,
 				"configure input io with fill fence %d",
 				fill_fence);
+			if (!res_list_ife_in_rd) {
+				CAM_ERR(CAM_ISP,
+					"No ISP in Read supported");
+				return -EINVAL;
+			}
 			if (!list_empty(res_list_ife_in_rd)) {
 				hw_mgr_res =
 					list_first_entry(res_list_ife_in_rd,
-					struct cam_ife_hw_mgr_res, list);
+					struct cam_isp_hw_mgr_res, list);
 			} else {
 				CAM_ERR(CAM_ISP,
 					"No IFE in Read resource");
@@ -606,10 +629,17 @@ int cam_isp_add_io_buffers(
 					break;
 
 				hdl = io_cfg[i].mem_handle[plane_id];
-				if (res->process_cmd(res,
-						CAM_ISP_HW_CMD_GET_SECURE_MODE,
-						&mode,
-						sizeof(bool)))
+				secure_mode.cmd_type =
+					CAM_ISP_HW_CMD_GET_SECURE_MODE;
+				secure_mode.res = res;
+				secure_mode.data = (void *)&mode;
+				rc = res->hw_intf->hw_ops.process_cmd(
+					res->hw_intf->hw_priv,
+					CAM_ISP_HW_CMD_GET_SECURE_MODE,
+					&secure_mode,
+					sizeof(
+					struct cam_isp_hw_get_cmd_update));
+				if (rc)
 					return -EINVAL;
 
 				is_buf_secure = cam_mem_is_secure_buf(hdl);
@@ -716,10 +746,17 @@ int cam_isp_add_io_buffers(
 					break;
 
 				hdl = io_cfg[i].mem_handle[plane_id];
-				if (res->process_cmd(res,
-						CAM_ISP_HW_CMD_GET_SECURE_MODE,
-						&mode,
-						sizeof(bool)))
+				secure_mode.cmd_type =
+					CAM_ISP_HW_CMD_GET_SECURE_MODE;
+				secure_mode.res = res;
+				secure_mode.data = (void *)&mode;
+				rc = res->hw_intf->hw_ops.process_cmd(
+					res->hw_intf->hw_priv,
+					CAM_ISP_HW_CMD_GET_SECURE_MODE,
+					&secure_mode,
+					sizeof(
+					struct cam_isp_hw_get_cmd_update));
+				if (rc)
 					return -EINVAL;
 
 				is_buf_secure = cam_mem_is_secure_buf(hdl);
@@ -852,7 +889,7 @@ int cam_isp_add_reg_update(
 {
 	int rc = -EINVAL;
 	struct cam_isp_resource_node         *res;
-	struct cam_ife_hw_mgr_res            *hw_mgr_res;
+	struct cam_isp_hw_mgr_res            *hw_mgr_res;
 	struct cam_hw_update_entry           *hw_entry;
 	struct cam_isp_hw_get_cmd_update      get_regup;
 	uint32_t kmd_buf_remain_size, num_ent, i, reg_update_size;
@@ -869,7 +906,7 @@ int cam_isp_add_reg_update(
 
 	reg_update_size = 0;
 	list_for_each_entry(hw_mgr_res, res_list_isp_src, list) {
-		if (hw_mgr_res->res_type == CAM_IFE_HW_MGR_RES_UNINIT)
+		if (hw_mgr_res->res_type == CAM_ISP_RESOURCE_UNINT)
 			continue;
 
 		for (i = 0; i < CAM_ISP_HW_SPLIT_MAX; i++) {

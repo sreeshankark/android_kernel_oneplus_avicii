@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: GPL-2.0-only */
 /*
  * Copyright (c) 2017-2019, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2022 Qualcomm Innovation Center, Inc. All rights reserved.
  */
 
 #include <linux/io.h>
@@ -9,6 +10,9 @@
 #ifndef _CAM_DEBUG_UTIL_H_
 #define _CAM_DEBUG_UTIL_H_
 
+#define CAM_IS_NULL_TO_STR(ptr) ((ptr) ? "Non-NULL" : "NULL")
+
+/* Module IDs used for debug logging */
 #define CAM_CDM        (1 << 0)
 #define CAM_CORE       (1 << 1)
 #define CAM_CPAS       (1 << 2)
@@ -42,6 +46,8 @@
 /* CAM_PERF: Used for performance (clock, BW etc) logs */
 #define CAM_PERF       (1 << 25)
 #define CAM_CUSTOM     (1 << 26)
+#define CAM_OPE        (1 << 28)
+#define CAM_PRESIL     (1 << 27)
 
 #define STR_BUFFER_MAX_LENGTH  1024
 

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0-only */
 /*
- * Copyright (c) 2017-2019, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2017-2021, The Linux Foundation. All rights reserved.
  */
 
 #ifndef _CAM_CPAS_API_H_
@@ -46,7 +46,19 @@ enum cam_cpas_hw_version {
 	CAM_CPAS_TITAN_175_V120 = 0x175120,
 	CAM_CPAS_TITAN_175_V130 = 0x175130,
 	CAM_CPAS_TITAN_480_V100 = 0x480100,
+	CAM_CPAS_TITAN_540_V100 = 0x540100,
+	CAM_CPAS_TITAN_520_V100 = 0x520100,
+	CAM_CPAS_TITAN_545_V110 = 0x545110,
 	CAM_CPAS_TITAN_MAX
+};
+
+/**
+ * enum cam_cpas_hw_soc_id - Enum for Titan soc id
+ */
+enum cam_cpas_hw_soc_id {
+	CAM_CPAS_TITAN_SOC_ID_507 = 507,
+	CAM_CPAS_TITAN_SOC_ID_518 = 518,
+	CAM_CPAS_TITAN_SOC_ID_MAX
 };
 
 /**
@@ -523,7 +535,7 @@ int cam_cpas_get_hw_info(
  *
  */
 int cam_cpas_get_cpas_hw_version(
-	uint32_t				 *hw_version);
+	uint32_t  *hw_version);
 
 /**
  * cam_cpas_is_feature_supported()
@@ -532,11 +544,14 @@ int cam_cpas_get_cpas_hw_version(
  *
  * @flag  : Camera hw features to check
  *
- * @return 1 if feature is supported
+ * @hw_id  : HW id index, if hw id is not valid feature, send zero
+ *
+ * @return true if feature is supported
+ *         false if feature is not supported
  *
  */
-int cam_cpas_is_feature_supported(
-	uint32_t flag);
+bool cam_cpas_is_feature_supported(uint32_t flag,
+	uint32_t hw_id);
 
 /**
  * cam_cpas_axi_util_path_type_to_string()
@@ -564,5 +579,15 @@ const char *cam_cpas_axi_util_path_type_to_string(
 const char *cam_cpas_axi_util_trans_type_to_string(
 	uint32_t path_data_type);
 
+/**
+ * cam_cpas_log_votes()
+ *
+ * @brief: API to print the all bw votes of axi client. It also print the
+ *     applied camnoc axi clock vote value and ahb vote value
+ *
+ * @return 0 on success.
+ *
+ */
+void cam_cpas_log_votes(void);
 
 #endif /* _CAM_CPAS_API_H_ */

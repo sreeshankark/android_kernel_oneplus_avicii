@@ -6,8 +6,7 @@
 #include <linux/module.h>
 #include "cam_cci_core.h"
 #include "cam_cci_dev.h"
-#include "cam_cci_ctrl_interface.h"
-#define  DUMP_CCI_REGISTERS
+#include "cam_req_mgr_workq.h"
 
 static int32_t cam_cci_convert_type_to_num_bytes(
 	enum camera_sensor_i2c_type type)
@@ -56,7 +55,6 @@ static void cam_cci_flush_queue(struct cci_device *cci_dev,
 
 		/* Set reset pending flag to true */
 		cci_dev->cci_master_info[master].reset_pending = true;
-		cci_dev->cci_master_info[master].status = 0;
 
 		/* Set proper mask to RESET CMD address based on MASTER */
 		if (master == MASTER_0)
@@ -185,16 +183,25 @@ static int32_t cam_cci_lock_queue(struct cci_device *cci_dev,
 	return cam_cci_write_i2c_queue(cci_dev, val, master, queue);
 }
 
-#ifdef DUMP_CCI_REGISTERS
-static void cam_cci_dump_registers(struct cci_device *cci_dev,
+
+void cam_cci_dump_registers(struct cci_device *cci_dev,
 	enum cci_i2c_master_t master, enum cci_i2c_queue_t queue)
 {
+	uint32_t dump_en = 0;
 	uint32_t read_val = 0;
 	uint32_t i = 0;
 	uint32_t reg_offset = 0;
 	uint32_t read_buf_level = 0;
 	uint32_t read_data_reg_offset = 0x0;
 	void __iomem *base = cci_dev->soc_info.reg_map[0].mem_base;
+
+	dump_en = cci_dev->dump_en;
+	if (!(dump_en & CAM_CCI_NACK_DUMP_EN) &&
+		!(dump_en & CAM_CCI_TIMEOUT_DUMP_EN)) {
+		CAM_DBG(CAM_CCI,
+			"Nack and Timeout dump is not enabled");
+		return;
+	}
 
 	/* CCI Top Registers */
 	CAM_INFO(CAM_CCI, "****CCI TOP Registers ****");
@@ -246,7 +253,7 @@ static void cam_cci_dump_registers(struct cci_device *cci_dev,
 			reg_offset, read_val);
 	}
 }
-#endif
+EXPORT_SYMBOL(cam_cci_dump_registers);
 
 static uint32_t cam_cci_wait(struct cci_device *cci_dev,
 	enum cci_i2c_master_t master,
@@ -264,9 +271,8 @@ static uint32_t cam_cci_wait(struct cci_device *cci_dev,
 	CAM_DBG(CAM_CCI, "wait DONE_for_completion_timeout");
 
 	if (rc <= 0) {
-#ifdef DUMP_CCI_REGISTERS
 		cam_cci_dump_registers(cci_dev, master, queue);
-#endif
+
 		CAM_ERR(CAM_CCI, "wait for queue: %d", queue);
 		if (rc == 0)
 			rc = -ETIMEDOUT;
@@ -1041,9 +1047,8 @@ static int32_t cam_cci_burst_read(struct v4l2_subdev *sd,
 			CAM_ERR(CAM_CCI,
 				"wait_for_completion_timeout rc = %d FIFO buf_lvl:0x%x",
 				rc, val);
-#ifdef DUMP_CCI_REGISTERS
 			cam_cci_dump_registers(cci_dev, master, queue);
-#endif
+
 			cam_cci_flush_queue(cci_dev, master);
 			goto rel_mutex_q;
 		}
@@ -1129,11 +1134,10 @@ static int32_t cam_cci_burst_read(struct v4l2_subdev *sd,
 				CAM_ERR(CAM_CCI,
 					"Failed to receive RD_DONE irq rc = %d FIFO buf_lvl:0x%x",
 					rc, val);
-				#ifdef DUMP_CCI_REGISTERS
-					cam_cci_dump_registers(cci_dev,
-						master, queue);
-				#endif
-					cam_cci_flush_queue(cci_dev, master);
+				cam_cci_dump_registers(cci_dev,
+					master, queue);
+
+				cam_cci_flush_queue(cci_dev, master);
 				goto rel_mutex_q;
 			}
 
@@ -1317,9 +1321,8 @@ static int32_t cam_cci_read(struct v4l2_subdev *sd,
 	rc = wait_for_completion_timeout(
 		&cci_dev->cci_master_info[master].rd_done, CCI_TIMEOUT);
 	if (rc <= 0) {
-#ifdef DUMP_CCI_REGISTERS
 		cam_cci_dump_registers(cci_dev, master, queue);
-#endif
+
 		if (rc == 0)
 			rc = -ETIMEDOUT;
 		val = cam_io_r_mb(base +
@@ -1405,6 +1408,9 @@ static int32_t cam_cci_i2c_write(struct v4l2_subdev *sd,
 		c_ctrl->cci_info->sid, c_ctrl->cci_info->retries,
 		c_ctrl->cci_info->id_map);
 
+	if (master >= MASTER_MAX)
+		master = NUM_MASTERS - 1;
+
 	mutex_lock(&cci_dev->cci_master_info[master].mutex);
 	if (cci_dev->cci_master_info[master].is_first_req) {
 		cci_dev->cci_master_info[master].is_first_req = false;
@@ -1478,9 +1484,15 @@ static void cam_cci_write_async_helper(struct work_struct *work)
 	enum cci_i2c_master_t master;
 	struct cam_cci_master_info *cci_master_info;
 
+	cam_req_mgr_thread_switch_delay_detect(
+		write_async->workq_scheduled_ts);
 	cci_dev = write_async->cci_dev;
 	i2c_msg = &write_async->c_ctrl.cfg.cci_i2c_write_cfg;
 	master = write_async->c_ctrl.cci_info->cci_i2c_master;
+
+	if (master >= MASTER_MAX)
+		master = NUM_MASTERS - 1;
+
 	cci_master_info = &cci_dev->cci_master_info[master];
 
 	mutex_lock(&cci_master_info->mutex_q[write_async->queue]);
@@ -1544,8 +1556,79 @@ static int32_t cam_cci_i2c_write_async(struct v4l2_subdev *sd,
 	cci_i2c_write_cfg_w->size = cci_i2c_write_cfg->size;
 	cci_i2c_write_cfg_w->delay = cci_i2c_write_cfg->delay;
 
+	write_async->workq_scheduled_ts = ktime_get();
 	queue_work(cci_dev->write_wq[write_async->queue], &write_async->work);
 
+	return rc;
+}
+
+static int32_t cam_cci_read_bytes_v_1_2(struct v4l2_subdev *sd,
+	struct cam_cci_ctrl *c_ctrl)
+{
+	int32_t rc = 0;
+	struct cci_device *cci_dev = NULL;
+	enum cci_i2c_master_t master;
+	struct cam_cci_read_cfg *read_cfg = NULL;
+	uint16_t read_bytes = 0;
+
+	if (!sd || !c_ctrl) {
+		CAM_ERR(CAM_CCI, "sd %pK c_ctrl %pK", sd, c_ctrl);
+		return -EINVAL;
+	}
+	if (!c_ctrl->cci_info) {
+		CAM_ERR(CAM_CCI, "cci_info NULL");
+		return -EINVAL;
+	}
+	cci_dev = v4l2_get_subdevdata(sd);
+	if (!cci_dev) {
+		CAM_ERR(CAM_CCI, "cci_dev NULL");
+		return -EINVAL;
+	}
+	if (cci_dev->cci_state != CCI_STATE_ENABLED) {
+		CAM_ERR(CAM_CCI, "invalid cci state %d", cci_dev->cci_state);
+		return -EINVAL;
+	}
+
+	if (c_ctrl->cci_info->cci_i2c_master >= MASTER_MAX
+			|| c_ctrl->cci_info->cci_i2c_master < 0) {
+		CAM_ERR(CAM_CCI, "Invalid I2C master addr");
+		return -EINVAL;
+	}
+
+	master = c_ctrl->cci_info->cci_i2c_master;
+	read_cfg = &c_ctrl->cfg.cci_i2c_read_cfg;
+	if ((!read_cfg->num_byte) || (read_cfg->num_byte > CCI_I2C_MAX_READ)) {
+		CAM_ERR(CAM_CCI, "read num bytes 0");
+		rc = -EINVAL;
+		goto ERROR;
+	}
+
+	read_bytes = read_cfg->num_byte;
+	CAM_DBG(CAM_CCI, "Bytes to read %u", read_bytes);
+	do {
+		if (read_bytes >= CCI_READ_MAX_V_1_2)
+			read_cfg->num_byte = CCI_READ_MAX_V_1_2;
+		else
+			read_cfg->num_byte = read_bytes;
+
+		cci_dev->is_burst_read = false;
+		rc = cam_cci_read(sd, c_ctrl);
+		if (rc) {
+			CAM_ERR(CAM_CCI, "failed to read rc:%d", rc);
+			goto ERROR;
+		}
+
+		if (read_bytes >= CCI_READ_MAX_V_1_2) {
+			read_cfg->addr += CCI_READ_MAX_V_1_2;
+			read_cfg->data += CCI_READ_MAX_V_1_2;
+			read_bytes -= CCI_READ_MAX_V_1_2;
+		} else {
+			read_bytes = 0;
+		}
+	} while (read_bytes);
+
+ERROR:
+	cci_dev->is_burst_read = false;
 	return rc;
 }
 
@@ -1776,9 +1859,16 @@ int32_t cam_cci_core_cfg(struct v4l2_subdev *sd,
 		mutex_unlock(&cci_dev->init_mutex);
 		break;
 	case MSM_CCI_I2C_READ:
-		mutex_lock(&cci_dev->init_mutex);
-		rc = cam_cci_read_bytes(sd, cci_ctrl);
-		mutex_unlock(&cci_dev->init_mutex);
+		/*
+		 * CCI version 1.2 does not support burst read
+		 * due to the absence of the read threshold register
+		 */
+		if (cci_dev->hw_version == CCI_VERSION_1_2_9) {
+			CAM_DBG(CAM_CCI, "cci-v1.2 no burst read");
+			rc = cam_cci_read_bytes_v_1_2(sd, cci_ctrl);
+		} else {
+			rc = cam_cci_read_bytes(sd, cci_ctrl);
+		}
 		break;
 	case MSM_CCI_I2C_WRITE:
 	case MSM_CCI_I2C_WRITE_SEQ:

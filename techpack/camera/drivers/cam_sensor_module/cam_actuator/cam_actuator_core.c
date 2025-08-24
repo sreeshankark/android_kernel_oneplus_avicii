@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /*
  * Copyright (c) 2017-2020, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2023-2024, Qualcomm Innovation Center, Inc. All rights reserved.
  */
 
 #include <linux/module.h>
@@ -495,6 +496,10 @@ int32_t cam_actuator_i2c_pkt_parse(struct cam_actuator_ctrl_t *a_ctrl,
 
 		/* Loop through multiple command buffers */
 		for (i = 0; i < csl_packet->num_cmd_buf; i++) {
+			rc = cam_packet_util_validate_cmd_desc(&cmd_desc[i]);
+			if (rc)
+				return rc;
+
 			total_cmd_buf_in_bytes = cmd_desc[i].length;
 			if (!total_cmd_buf_in_bytes)
 				continue;
@@ -561,7 +566,7 @@ int32_t cam_actuator_i2c_pkt_parse(struct cam_actuator_ctrl_t *a_ctrl,
 				rc = cam_sensor_i2c_command_parser(
 					&a_ctrl->io_master_info,
 					i2c_reg_settings,
-					&cmd_desc[i], 1);
+					&cmd_desc[i], 1, NULL);
 				if (rc < 0) {
 					CAM_ERR(CAM_ACTUATOR,
 					"Failed:parse init settings: %d",
@@ -570,6 +575,7 @@ int32_t cam_actuator_i2c_pkt_parse(struct cam_actuator_ctrl_t *a_ctrl,
 				}
 				break;
 			}
+			cam_mem_put_cpu_buf(cmd_desc[i].mem_handle);
 		}
 
 		if (a_ctrl->cam_act_state == CAM_ACTUATOR_ACQUIRE) {
@@ -659,7 +665,7 @@ int32_t cam_actuator_i2c_pkt_parse(struct cam_actuator_ctrl_t *a_ctrl,
 		rc = cam_sensor_i2c_command_parser(
 			&a_ctrl->io_master_info,
 			i2c_reg_settings,
-			cmd_desc, 1);
+			cmd_desc, 1, NULL);
 		if (rc < 0) {
 			CAM_ERR(CAM_ACTUATOR,
 				"Auto move lens parsing failed: %d", rc);
@@ -690,7 +696,7 @@ int32_t cam_actuator_i2c_pkt_parse(struct cam_actuator_ctrl_t *a_ctrl,
 		rc = cam_sensor_i2c_command_parser(
 			&a_ctrl->io_master_info,
 			i2c_reg_settings,
-			cmd_desc, 1);
+			cmd_desc, 1, NULL);
 		if (rc < 0) {
 			CAM_ERR(CAM_ACTUATOR,
 				"Manual move lens parsing failed: %d", rc);
@@ -709,6 +715,68 @@ int32_t cam_actuator_i2c_pkt_parse(struct cam_actuator_ctrl_t *a_ctrl,
 		}
 		cam_actuator_update_req_mgr(a_ctrl, csl_packet);
 		break;
+	case CAM_ACTUATOR_PACKET_OPCODE_READ: {
+		struct cam_buf_io_cfg *io_cfg;
+		struct i2c_settings_array i2c_read_settings;
+
+		if (a_ctrl->cam_act_state < CAM_ACTUATOR_CONFIG) {
+			rc = -EINVAL;
+			CAM_WARN(CAM_ACTUATOR,
+				"Not in right state to read actuator: %d",
+				a_ctrl->cam_act_state);
+			goto end;
+		}
+		CAM_DBG(CAM_ACTUATOR, "number of I/O configs: %d:",
+			csl_packet->num_io_configs);
+		if (csl_packet->num_io_configs == 0) {
+			CAM_ERR(CAM_ACTUATOR, "No I/O configs to process");
+			rc = -EINVAL;
+			goto end;
+		}
+
+		INIT_LIST_HEAD(&(i2c_read_settings.list_head));
+
+		io_cfg = (struct cam_buf_io_cfg *) ((uint8_t *)
+			&csl_packet->payload +
+			csl_packet->io_configs_offset);
+
+		if (io_cfg == NULL) {
+			CAM_ERR(CAM_ACTUATOR, "I/O config is invalid(NULL)");
+			rc = -EINVAL;
+			goto end;
+		}
+
+		offset = (uint32_t *)&csl_packet->payload;
+		offset += (csl_packet->cmd_buf_offset / sizeof(uint32_t));
+		cmd_desc = (struct cam_cmd_buf_desc *)(offset);
+		i2c_read_settings.is_settings_valid = 1;
+		i2c_read_settings.request_id = 0;
+		rc = cam_sensor_i2c_command_parser(&a_ctrl->io_master_info,
+			&i2c_read_settings,
+			cmd_desc, 1, io_cfg);
+		if (rc < 0) {
+			CAM_ERR(CAM_ACTUATOR,
+				"actuator read pkt parsing failed: %d", rc);
+			goto end;
+		}
+
+		rc = cam_sensor_i2c_read_data(
+			&i2c_read_settings,
+			&a_ctrl->io_master_info);
+		if (rc < 0) {
+			CAM_ERR(CAM_ACTUATOR, "cannot read data, rc:%d", rc);
+			delete_request(&i2c_read_settings);
+			goto end;
+		}
+
+		rc = delete_request(&i2c_read_settings);
+		if (rc < 0) {
+			CAM_ERR(CAM_ACTUATOR,
+				"Failed in deleting the read settings");
+			goto end;
+		}
+		break;
+		}
 	default:
 		CAM_ERR(CAM_ACTUATOR, "Wrong Opcode: %d",
 			csl_packet->header.op_code & 0xFFFFFF);
@@ -717,6 +785,7 @@ int32_t cam_actuator_i2c_pkt_parse(struct cam_actuator_ctrl_t *a_ctrl,
 	}
 
 end:
+	cam_mem_put_cpu_buf(config.packet_handle);
 	return rc;
 }
 
@@ -807,9 +876,15 @@ int32_t cam_actuator_driver_cmd(struct cam_actuator_ctrl_t *a_ctrl,
 		bridge_params.v4l2_sub_dev_flag = 0;
 		bridge_params.media_entity_flag = 0;
 		bridge_params.priv = a_ctrl;
+		bridge_params.dev_id = CAM_ACTUATOR;
 
 		actuator_acq_dev.device_handle =
 			cam_create_device_hdl(&bridge_params);
+		if (actuator_acq_dev.device_handle <= 0) {
+			rc = -EFAULT;
+			CAM_ERR(CAM_ACTUATOR, "Can not create device handle");
+			goto release_mutex;
+		}
 		a_ctrl->bridge_intf.device_hdl = actuator_acq_dev.device_handle;
 		a_ctrl->bridge_intf.session_hdl =
 			actuator_acq_dev.session_handle;
@@ -946,7 +1021,7 @@ int32_t cam_actuator_driver_cmd(struct cam_actuator_ctrl_t *a_ctrl,
 			(a_ctrl->io_master_info.master_type == CCI_MASTER)) {
 				CAM_WARN(CAM_ACTUATOR,
 					"CCI HW is in resetting mode:: Reapplying Init settings");
-				usleep_range(5000, 5010);
+				usleep_range(1000, 1010);
 				rc = cam_actuator_apply_settings(a_ctrl,
 					&a_ctrl->i2c_data.init_settings);
 			}

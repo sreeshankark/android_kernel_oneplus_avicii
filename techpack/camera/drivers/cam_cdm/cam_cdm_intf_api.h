@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0-only */
 /*
- * Copyright (c) 2017-2018, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2017-2021, The Linux Foundation. All rights reserved.
  */
 
 #ifndef _CAM_CDM_API_H_
@@ -10,11 +10,16 @@
 #include "cam_cdm_util.h"
 #include "cam_soc_util.h"
 
+#define CAM_CDM_BL_CMD_MAX  25
+
 /* enum cam_cdm_id - Enum for possible CAM CDM hardwares */
 enum cam_cdm_id {
 	CAM_CDM_VIRTUAL,
 	CAM_CDM_HW_ANY,
-	CAM_CDM_CPAS_0,
+	CAM_CDM_CPAS,
+	CAM_CDM_IFE,
+	CAM_CDM_TFE,
+	CAM_CDM_OPE,
 	CAM_CDM_IPE0,
 	CAM_CDM_IPE1,
 	CAM_CDM_BPS,
@@ -29,6 +34,9 @@ enum cam_cdm_cb_status {
 	CAM_CDM_CB_STATUS_PAGEFAULT,
 	CAM_CDM_CB_STATUS_HW_RESET_ONGOING,
 	CAM_CDM_CB_STATUS_HW_RESET_DONE,
+	CAM_CDM_CB_STATUS_HW_FLUSH,
+	CAM_CDM_CB_STATUS_HW_RESUBMIT,
+	CAM_CDM_CB_STATUS_HW_ERROR,
 	CAM_CDM_CB_STATUS_UNKNOWN_ERROR,
 };
 
@@ -39,17 +47,26 @@ enum cam_cdm_bl_cmd_addr_type {
 	CAM_CDM_BL_CMD_TYPE_KERNEL_IOVA,
 };
 
+/* enum cam_cdm_bl_fifo - interface commands.*/
+enum cam_cdm_bl_fifo_queue {
+	CAM_CDM_BL_FIFO_0,
+	CAM_CDM_BL_FIFO_1,
+	CAM_CDM_BL_FIFO_2,
+	CAM_CDM_BL_FIFO_3,
+	CAM_CDM_BL_FIFO_MAX,
+};
+
 /**
  * struct cam_cdm_acquire_data - Cam CDM acquire data structure
  *
  * @identifier : Input identifier string which is the device label from dt
- *                    like vfe, ife, jpeg etc
+ *                     like vfe, ife, jpeg etc
  * @cell_index : Input integer identifier pointing to the cell index from dt
  *                     of the device. This can be used to form a unique string
  *                     with @identifier like vfe0, ife1, jpeg0 etc
  * @id : ID of a specific or any CDM HW which needs to be acquired.
  * @userdata : Input private data which will be returned as part
- *             of callback.
+ *                     of callback.
  * @cam_cdm_callback : Input callback pointer for triggering the
  *                     callbacks from CDM driver
  *                     @handle : CDM Client handle
@@ -57,12 +74,14 @@ enum cam_cdm_bl_cmd_addr_type {
  *                     @status : Callback status
  *                     @cookie : Cookie if the callback is gen irq status
  * @base_array_cnt : Input number of ioremapped address pair pointing
- *                   in base_array, needed only if selected cdm is a virtual.
+ *                     in base_array, needed only if selected cdm is a virtual.
  * @base_array : Input pointer to ioremapped address pair arrary
- *               needed only if selected cdm is a virtual.
+ *                     needed only if selected cdm is a virtual.
+ * @priority : Priority of the client.
  * @cdm_version : CDM version is output while acquiring HW cdm and
- *                it is Input while acquiring virtual cdm, Currently fixing it
- *                to one version below acquire API.
+ *                     it is Input while acquiring virtual cdm.
+ *                     Currently fixing it to one version below
+ *                     acquire API.
  * @ops : Output pointer updated by cdm driver to the CDM
  *                     util ops for this HW version of CDM acquired.
  * @handle  : Output Unique handle generated for this acquire
@@ -77,6 +96,7 @@ struct cam_cdm_acquire_data {
 		enum cam_cdm_cb_status status, uint64_t cookie);
 	uint32_t base_array_cnt;
 	struct cam_soc_reg_map *base_array[CAM_SOC_MAX_BLOCK];
+	enum cam_cdm_bl_fifo_queue priority;
 	struct cam_hw_version cdm_version;
 	struct cam_cdm_utils_ops *ops;
 	uint32_t handle;
@@ -92,7 +112,8 @@ struct cam_cdm_acquire_data {
  * @len : Input length of the BL command, Cannot be more than 1MB and
  *           this is will be validated with offset+size of the memory pointed
  *           by mem_handle
- *
+ * @enable_debug_gen_irq : bool flag to submit extra gen_irq afteR bl_command
+ * @arbitrate : bool flag to arbitrate on submitted BL boundary
  */
 struct cam_cdm_bl_cmd {
 	union {
@@ -102,6 +123,8 @@ struct cam_cdm_bl_cmd {
 	} bl_addr;
 	uint32_t offset;
 	uint32_t len;
+	bool enable_debug_gen_irq;
+	bool arbitrate;
 };
 
 /**
@@ -114,6 +137,7 @@ struct cam_cdm_bl_cmd {
  * @cookie : Cookie if the callback is gen irq status
  * @type : type of the submitted bl cmd address.
  * @cmd_arrary_count : Input number of BL commands to be submitted to CDM
+ * @gen_irq_arb : enum for setting arbitration in gen_irq
  * @bl_cmd_array     : Input payload holding the BL cmd's arrary
  *                     to be sumbitted.
  *
@@ -124,7 +148,43 @@ struct cam_cdm_bl_request {
 	uint64_t cookie;
 	enum cam_cdm_bl_cmd_addr_type type;
 	uint32_t cmd_arrary_count;
+	bool gen_irq_arb;
 	struct cam_cdm_bl_cmd cmd[1];
+};
+
+/**
+ * struct cam_cdm_bl_data - last submiited CDM BL data
+ *
+ * @mem_handle : Input mem handle of bl cmd
+ * @hw_addr    : Hw address of submitted Bl command
+ * @offset     : Input offset of the actual bl cmd in the memory pointed
+ *               by mem_handle
+ * @len        : length of submitted Bl command to CDM.
+ * @input_len  : Input length of the BL command, Cannot be more than 1MB and
+ *           this is will be validated with offset+size of the memory pointed
+ *           by mem_handle
+ * @type       :  CDM bl cmd addr types.
+ */
+struct cam_cdm_bl_data {
+	int32_t mem_handle;
+	dma_addr_t hw_addr;
+	uint32_t offset;
+	size_t len;
+	uint32_t  input_len;
+	enum cam_cdm_bl_cmd_addr_type type;
+};
+
+/**
+ * struct cam_cdm_bl_info
+ *
+ * @bl_count   : No. of Bl commands submiited to CDM.
+ * @cmd        : payload holding the BL cmd's arrary
+ *               that is sumbitted.
+ *
+ */
+struct cam_cdm_bl_info {
+	int32_t bl_count;
+	struct cam_cdm_bl_data cmd[CAM_CDM_BL_CMD_MAX];
 };
 
 /**
@@ -191,7 +251,7 @@ int cam_cdm_stream_off(uint32_t handle);
 
 /**
  * @brief : API to reset previously acquired CDM,
- *          this can be only performed only the CDM is private.
+ *          this should be only performed only if the CDM is private.
  *
  * @handle : Input handle of the CDM to reset
  *
@@ -199,4 +259,50 @@ int cam_cdm_stream_off(uint32_t handle);
  */
 int cam_cdm_reset_hw(uint32_t handle);
 
+/**
+ * @brief : API to flush previously acquired CDM,
+ *          this should be only performed only if the CDM is private.
+ *
+ * @handle : Input handle of the CDM to reset
+ *
+ * @return 0 on success
+ */
+int cam_cdm_flush_hw(uint32_t handle);
+
+/**
+ * @brief : API to detect culprit bl_tag in previously acquired CDM,
+ *          this should be only performed only if the CDM is private.
+ *
+ * @handle : Input handle of the CDM to reset
+ *
+ * @return 0 on success
+ */
+int cam_cdm_handle_error(uint32_t handle);
+
+/**
+ * @brief : API get CDM ops
+ *
+ * @return : CDM operations
+ *
+ */
+struct cam_cdm_utils_ops *cam_cdm_publish_ops(void);
+
+/**
+ * @brief : API to detect hang in previously acquired CDM,
+ *          this should be only performed only if the CDM is private.
+ *
+ * @handle : Input handle of the CDM to detect hang
+ *
+ * @return 0 on success
+ */
+int cam_cdm_detect_hang_error(uint32_t handle);
+
+/**
+ * @brief : API to dump the CDM Debug registers
+ *
+ * @handle : Input handle of the CDM to dump the registers
+ *
+ * @return 0 on success
+ */
+int cam_cdm_dump_debug_registers(uint32_t handle);
 #endif /* _CAM_CDM_API_H_ */
