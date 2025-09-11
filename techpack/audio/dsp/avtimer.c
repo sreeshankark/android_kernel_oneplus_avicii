@@ -115,7 +115,7 @@ static int32_t aprv2_core_fn_q(struct apr_client_data *data, void *priv)
 		avtimer.core_handle_q = NULL;
 		avtimer.avtimer_open_cnt = 0;
 		atomic_set(&avtimer.adsp_ready, 0);
-		queue_delayed_work(system_power_efficient_wq, &avtimer.ssr_dwork,
+		schedule_delayed_work(&avtimer.ssr_dwork,
 				  msecs_to_jiffies(SSR_WAKETIME));
 		break;
 	}
@@ -154,7 +154,7 @@ int avcs_core_open(void)
 	}
 	return 0;
 }
-EXPORT_SYMBOL_GPL(avcs_core_open);
+EXPORT_SYMBOL(avcs_core_open);
 
 static int avcs_core_disable_avtimer(int timerhandle)
 {
@@ -279,7 +279,7 @@ done:
 	mutex_unlock(&avtimer.avtimer_lock);
 	return rc;
 }
-EXPORT_SYMBOL_GPL(avcs_core_disable_power_collapse);
+EXPORT_SYMBOL(avcs_core_disable_power_collapse);
 
 static void reset_work(struct work_struct *work)
 {
@@ -290,7 +290,7 @@ static void reset_work(struct work_struct *work)
 	}
 	pr_debug("%s:Q6 not ready-retry after sometime\n", __func__);
 	if (--avtimer.num_retries > 0) {
-		queue_delayed_work(system_power_efficient_wq, &avtimer.ssr_dwork,
+		schedule_delayed_work(&avtimer.ssr_dwork,
 			  msecs_to_jiffies(Q6_READY_RETRY));
 	} else {
 		pr_err("%s: Q6 failed responding after multiple retries\n",
@@ -320,7 +320,7 @@ int avcs_core_query_timer(uint64_t *avtimer_tick)
 			avtimer_msw, avtimer_lsw, *avtimer_tick);
 	return 0;
 }
-EXPORT_SYMBOL_GPL(avcs_core_query_timer);
+EXPORT_SYMBOL(avcs_core_query_timer);
 
 /*
  * avcs_core_query_timer_offset:
@@ -375,7 +375,7 @@ int avcs_core_query_timer_offset(int64_t *av_offset, int32_t clock_id)
 
 	return 0;
 }
-EXPORT_SYMBOL_GPL(avcs_core_query_timer_offset);
+EXPORT_SYMBOL(avcs_core_query_timer_offset);
 
 #if IS_ENABLED(CONFIG_AVTIMER_LEGACY)
 static void avcs_set_isp_fptr(bool enable)

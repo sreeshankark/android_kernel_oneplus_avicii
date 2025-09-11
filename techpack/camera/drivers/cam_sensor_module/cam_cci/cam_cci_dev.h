@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0-only */
 /*
- * Copyright (c) 2017-2020, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2017-2019, The Linux Foundation. All rights reserved.
  */
 
 #ifndef _CAM_CCI_DEV_H_
@@ -18,7 +18,6 @@
 #include <linux/kernel.h>
 #include <linux/platform_device.h>
 #include <linux/semaphore.h>
-#include <linux/debugfs.h>
 #include <media/cam_sensor.h>
 #include <media/v4l2-event.h>
 #include <media/v4l2-ioctl.h>
@@ -31,13 +30,10 @@
 #include "cam_cci_hwreg.h"
 #include "cam_soc_util.h"
 #include "cam_debug_util.h"
-#include "cam_req_mgr_workq.h"
 
 #define V4L2_IDENT_CCI 50005
 #define CCI_I2C_QUEUE_0_SIZE 128
 #define CCI_I2C_QUEUE_1_SIZE 32
-#define CCI_I2C_QUEUE_0_SIZE_V_1_2 64
-#define CCI_I2C_QUEUE_1_SIZE_V_1_2 16
 #define CYCLES_PER_MICRO_SEC_DEFAULT 4915
 #define CCI_MAX_DELAY 1000000
 
@@ -58,7 +54,6 @@
 
 /* Max bytes that can be read per CCI read transaction */
 #define CCI_READ_MAX 256
-#define CCI_READ_MAX_V_1_2 0xE
 #define CCI_I2C_READ_MAX_RETRIES 3
 #define CCI_I2C_MAX_READ 8192
 #define CCI_I2C_MAX_WRITE 8192
@@ -74,11 +69,6 @@
 
 #define PRIORITY_QUEUE (QUEUE_0)
 #define SYNC_QUEUE (QUEUE_1)
-
-#define CAM_CCI_NACK_DUMP_EN      BIT(1)
-#define CAM_CCI_TIMEOUT_DUMP_EN   BIT(2)
-
-#define CCI_VERSION_1_2_9 0x10020009
 
 enum cci_i2c_sync {
 	MSM_SYNC_DISABLE,
@@ -211,7 +201,6 @@ enum cam_cci_state_t {
  * @irqs_disabled:              Mask for IRQs that are disabled
  * @init_mutex:                 Mutex for maintaining refcount for attached
  *                              devices to cci during init/deinit.
- * @dump_en:                     To enable the selective dump
  */
 struct cci_device {
 	struct v4l2_subdev subdev;
@@ -242,7 +231,6 @@ struct cci_device {
 	bool is_burst_read;
 	uint32_t irqs_disabled;
 	struct mutex init_mutex;
-	uint64_t  dump_en;
 };
 
 enum cam_cci_i2c_cmd_type {
@@ -308,15 +296,12 @@ struct cci_write_async {
 	struct cam_cci_ctrl c_ctrl;
 	enum cci_i2c_queue_t queue;
 	struct work_struct work;
-	ktime_t workq_scheduled_ts;
 	enum cci_i2c_sync sync_en;
 };
 
 irqreturn_t cam_cci_irq(int irq_num, void *data);
 
 struct v4l2_subdev *cam_cci_get_subdev(int cci_dev_index);
-void cam_cci_dump_registers(struct cci_device *cci_dev,
-	enum cci_i2c_master_t master, enum cci_i2c_queue_t queue);
 
 #define VIDIOC_MSM_CCI_CFG \
 	_IOWR('V', BASE_VIDIOC_PRIVATE + 23, struct cam_cci_ctrl)

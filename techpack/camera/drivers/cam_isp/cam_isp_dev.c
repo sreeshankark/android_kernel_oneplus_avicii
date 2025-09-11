@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /*
- * Copyright (c) 2017-2020, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2017-2019, The Linux Foundation. All rights reserved.
  */
 
 #include <linux/delay.h>
@@ -50,13 +50,9 @@ static const struct of_device_id cam_isp_dt_match[] = {
 static int cam_isp_subdev_open(struct v4l2_subdev *sd,
 	struct v4l2_subdev_fh *fh)
 {
-	cam_req_mgr_rwsem_read_op(CAM_SUBDEV_LOCK);
-
 	mutex_lock(&g_isp_dev.isp_mutex);
 	g_isp_dev.open_cnt++;
 	mutex_unlock(&g_isp_dev.isp_mutex);
-
-	cam_req_mgr_rwsem_read_op(CAM_SUBDEV_UNLOCK);
 
 	return 0;
 }
@@ -99,17 +95,13 @@ static int cam_isp_dev_remove(struct platform_device *pdev)
 	int rc = 0;
 	int i;
 
-	/* clean up ife/tfe resources */
-	for (i = 0; i < g_isp_dev.max_context; i++) {
+	/* clean up resources */
+	for (i = 0; i < CAM_CTX_MAX; i++) {
 		rc = cam_isp_context_deinit(&g_isp_dev.ctx_isp[i]);
 		if (rc)
 			CAM_ERR(CAM_ISP, "ISP context %d deinit failed",
-				i);
+				 i);
 	}
-	kfree(g_isp_dev.ctx);
-	g_isp_dev.ctx = NULL;
-	kfree(g_isp_dev.ctx_isp);
-	g_isp_dev.ctx_isp = NULL;
 
 	rc = cam_subdev_remove(&g_isp_dev.sd);
 	if (rc)
@@ -125,31 +117,12 @@ static int cam_isp_dev_probe(struct platform_device *pdev)
 	int i;
 	struct cam_hw_mgr_intf         hw_mgr_intf;
 	struct cam_node               *node;
-	const char                    *compat_str = NULL;
-
 	int iommu_hdl = -1;
-
-	rc = of_property_read_string_index(pdev->dev.of_node, "arch-compat", 0,
-		(const char **)&compat_str);
 
 	g_isp_dev.sd.internal_ops = &cam_isp_subdev_internal_ops;
 	/* Initialize the v4l2 subdevice first. (create cam_node) */
-	if (strnstr(compat_str, "ife", strlen(compat_str))) {
-		rc = cam_subdev_probe(&g_isp_dev.sd, pdev, CAM_ISP_DEV_NAME,
+	rc = cam_subdev_probe(&g_isp_dev.sd, pdev, CAM_ISP_DEV_NAME,
 		CAM_IFE_DEVICE_TYPE);
-		g_isp_dev.isp_device_type = CAM_IFE_DEVICE_TYPE;
-		g_isp_dev.max_context = CAM_IFE_CTX_MAX;
-	} else if (strnstr(compat_str, "tfe", strlen(compat_str))) {
-		rc = cam_subdev_probe(&g_isp_dev.sd, pdev, CAM_ISP_DEV_NAME,
-		CAM_TFE_DEVICE_TYPE);
-		g_isp_dev.isp_device_type = CAM_TFE_DEVICE_TYPE;
-		g_isp_dev.max_context = CAM_TFE_CTX_MAX;
-	} else  {
-		CAM_ERR(CAM_ISP, "Invalid ISP hw type %s", compat_str);
-		rc = -EINVAL;
-		goto err;
-	}
-
 	if (rc) {
 		CAM_ERR(CAM_ISP, "ISP cam_subdev_probe failed!");
 		goto err;
@@ -157,50 +130,29 @@ static int cam_isp_dev_probe(struct platform_device *pdev)
 	node = (struct cam_node *) g_isp_dev.sd.token;
 
 	memset(&hw_mgr_intf, 0, sizeof(hw_mgr_intf));
-	g_isp_dev.ctx = kcalloc(g_isp_dev.max_context,
-		sizeof(struct cam_context),
-		GFP_KERNEL);
-	if (!g_isp_dev.ctx) {
-		CAM_ERR(CAM_ISP,
-			"Mem Allocation failed for ISP base context");
-		goto unregister;
-	}
-
-	g_isp_dev.ctx_isp = kcalloc(g_isp_dev.max_context,
-		sizeof(struct cam_isp_context),
-		GFP_KERNEL);
-	if (!g_isp_dev.ctx_isp) {
-		CAM_ERR(CAM_ISP,
-			"Mem Allocation failed for Isp private context");
-		kfree(g_isp_dev.ctx);
-		g_isp_dev.ctx = NULL;
-		goto unregister;
-	}
-
-	rc = cam_isp_hw_mgr_init(compat_str, &hw_mgr_intf, &iommu_hdl);
+	rc = cam_isp_hw_mgr_init(pdev->dev.of_node, &hw_mgr_intf, &iommu_hdl);
 	if (rc != 0) {
 		CAM_ERR(CAM_ISP, "Can not initialized ISP HW manager!");
-		goto kfree;
+		goto unregister;
 	}
 
-	for (i = 0; i < g_isp_dev.max_context; i++) {
+	for (i = 0; i < CAM_CTX_MAX; i++) {
 		rc = cam_isp_context_init(&g_isp_dev.ctx_isp[i],
 			&g_isp_dev.ctx[i],
 			&node->crm_node_intf,
 			&node->hw_mgr_intf,
-			i,
-			g_isp_dev.isp_device_type);
+			i);
 		if (rc) {
 			CAM_ERR(CAM_ISP, "ISP context init failed!");
-			goto kfree;
+			goto unregister;
 		}
 	}
-	rc = cam_node_init(node, &hw_mgr_intf, g_isp_dev.ctx,
-			g_isp_dev.max_context, CAM_ISP_DEV_NAME);
 
+	rc = cam_node_init(node, &hw_mgr_intf, g_isp_dev.ctx, CAM_CTX_MAX,
+		CAM_ISP_DEV_NAME);
 	if (rc) {
 		CAM_ERR(CAM_ISP, "ISP node init failed!");
-		goto kfree;
+		goto unregister;
 	}
 
 	cam_smmu_set_client_page_fault_handler(iommu_hdl,
@@ -211,13 +163,6 @@ static int cam_isp_dev_probe(struct platform_device *pdev)
 	CAM_INFO(CAM_ISP, "Camera ISP probe complete");
 
 	return 0;
-
-kfree:
-	kfree(g_isp_dev.ctx);
-	g_isp_dev.ctx = NULL;
-	kfree(g_isp_dev.ctx_isp);
-	g_isp_dev.ctx_isp = NULL;
-
 unregister:
 	rc = cam_subdev_remove(&g_isp_dev.sd);
 err:

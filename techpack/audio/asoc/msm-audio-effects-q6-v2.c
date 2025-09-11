@@ -58,7 +58,7 @@ bool msm_audio_effects_is_effmodule_supp_in_top(int effect_module,
 		return false;
 	}
 }
-EXPORT_SYMBOL_GPL(msm_audio_effects_is_effmodule_supp_in_top);
+EXPORT_SYMBOL(msm_audio_effects_is_effmodule_supp_in_top);
 
 int msm_audio_effects_enable_extn(struct audio_client *ac,
 				struct msm_nt_eff_all_config *effects,
@@ -274,7 +274,7 @@ invalid_config:
 	kfree(params);
 	return rc;
 }
-EXPORT_SYMBOL_GPL(msm_audio_effects_virtualizer_handler);
+EXPORT_SYMBOL(msm_audio_effects_virtualizer_handler);
 
 /**
  * msm_audio_effects_reverb_handler -
@@ -709,7 +709,7 @@ invalid_config:
 	kfree(params);
 	return rc;
 }
-EXPORT_SYMBOL_GPL(msm_audio_effects_reverb_handler);
+EXPORT_SYMBOL(msm_audio_effects_reverb_handler);
 
 /**
  * msm_audio_effects_bass_boost_handler -
@@ -863,7 +863,7 @@ invalid_config:
 	kfree(params);
 	return rc;
 }
-EXPORT_SYMBOL_GPL(msm_audio_effects_bass_boost_handler);
+EXPORT_SYMBOL(msm_audio_effects_bass_boost_handler);
 
 /**
  * msm_audio_effects_pbe_handler -
@@ -1061,7 +1061,7 @@ invalid_config:
 	kfree(params);
 	return rc;
 }
-EXPORT_SYMBOL_GPL(msm_audio_effects_pbe_handler);
+EXPORT_SYMBOL(msm_audio_effects_pbe_handler);
 
 /**
  * msm_audio_effects_popless_eq_handler -
@@ -1323,7 +1323,7 @@ invalid_config:
 	kfree(eq_config_data);
 	return rc;
 }
-EXPORT_SYMBOL_GPL(msm_audio_effects_popless_eq_handler);
+EXPORT_SYMBOL(msm_audio_effects_popless_eq_handler);
 
 static int __msm_audio_effects_volume_handler(struct audio_client *ac,
 					      struct soft_volume_params *vol,
@@ -1488,4 +1488,4 @@ int msm_audio_effects_volume_handler_v2(struct audio_client *ac,
 {
 	return __msm_audio_effects_volume_handler(ac, vol, values, instance);
 }
-EXPORT_SYMBOL_GPL(msm_audio_effects_volume_handler_v2);
+EXPORT_SYMBOL(msm_audio_effects_volume_handler_v2);

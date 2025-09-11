@@ -362,7 +362,7 @@ uint32_t voc_get_session_id(char *name)
 
 	return session_id;
 }
-EXPORT_SYMBOL_GPL(voc_get_session_id);
+EXPORT_SYMBOL(voc_get_session_id);
 
 static struct voice_data *voice_get_session(u32 session_id)
 {
@@ -1678,7 +1678,7 @@ int voc_set_ecns_enable(uint32_t session_id, uint32_t module_id,
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_set_ecns_enable);
+EXPORT_SYMBOL(voc_set_ecns_enable);
 
 static int voice_send_set_pp_enable_cmd(
 	struct voice_data *v, struct module_instance_info mod_inst_info,
@@ -2003,7 +2003,7 @@ void voc_disable_dtmf_det_on_active_sessions(void)
 		}
 	}
 }
-EXPORT_SYMBOL_GPL(voc_disable_dtmf_det_on_active_sessions);
+EXPORT_SYMBOL(voc_disable_dtmf_det_on_active_sessions);
 
 /**
  * voc_enable_dtmf_rx_detection -
@@ -2035,7 +2035,7 @@ int voc_enable_dtmf_rx_detection(uint32_t session_id, uint32_t enable)
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_enable_dtmf_rx_detection);
+EXPORT_SYMBOL(voc_enable_dtmf_rx_detection);
 
 /**
  * voc_set_destroy_cvd_flag -
@@ -2050,7 +2050,7 @@ void voc_set_destroy_cvd_flag(bool is_destroy_cvd)
 	pr_debug("%s: %d\n", __func__, is_destroy_cvd);
 	common.is_destroy_cvd = is_destroy_cvd;
 }
-EXPORT_SYMBOL_GPL(voc_set_destroy_cvd_flag);
+EXPORT_SYMBOL(voc_set_destroy_cvd_flag);
 
 /**
  * voc_alloc_cal_shared_memory -
@@ -2078,7 +2078,7 @@ int voc_alloc_cal_shared_memory(void)
 
 	return rc;
 }
-EXPORT_SYMBOL_GPL(voc_alloc_cal_shared_memory);
+EXPORT_SYMBOL(voc_alloc_cal_shared_memory);
 
 /**
  * voc_alloc_voip_shared_memory -
@@ -2108,7 +2108,7 @@ int voc_alloc_voip_shared_memory(void)
 
 	return rc;
 }
-EXPORT_SYMBOL_GPL(voc_alloc_voip_shared_memory);
+EXPORT_SYMBOL(voc_alloc_voip_shared_memory);
 
 static int is_cal_memory_allocated(void)
 {
@@ -2460,7 +2460,7 @@ int voc_update_amr_vocoder_rate(uint32_t session_id)
 done:
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_update_amr_vocoder_rate);
+EXPORT_SYMBOL(voc_update_amr_vocoder_rate);
 
 static int voice_send_start_voice_cmd(struct voice_data *v)
 {
@@ -6067,7 +6067,7 @@ int voc_start_record(uint32_t port_id, uint32_t set, uint32_t session_id)
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_start_record);
+EXPORT_SYMBOL(voc_start_record);
 
 static int voice_cvs_start_playback(struct voice_data *v)
 {
@@ -6307,7 +6307,7 @@ int voc_start_playback(uint32_t set, uint16_t port_id)
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_start_playback);
+EXPORT_SYMBOL(voc_start_playback);
 
 /**
  * voc_disable_topology -
@@ -6337,7 +6337,7 @@ int voc_disable_topology(uint32_t session_id, uint32_t disable)
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_disable_topology);
+EXPORT_SYMBOL(voc_disable_topology);
 
 /**
  * voc_set_incall_capture_channel_config -
@@ -6350,7 +6350,7 @@ void voc_set_incall_capture_channel_config(int channel_count)
 {
 	common.rec_channel_count = channel_count;
 }
-EXPORT_SYMBOL_GPL(voc_set_incall_capture_channel_config);
+EXPORT_SYMBOL(voc_set_incall_capture_channel_config);
 
 /**
  * voc_get_incall_capture_channel_config -
@@ -6362,7 +6362,7 @@ int voc_get_incall_capture_channel_config(void)
 {
 	return common.rec_channel_count;
 }
-EXPORT_SYMBOL_GPL(voc_get_incall_capture_channel_config);
+EXPORT_SYMBOL(voc_get_incall_capture_channel_config);
 
 static int voice_set_packet_exchange_mode_and_config(uint32_t session_id,
 						 uint32_t mode)
@@ -6439,7 +6439,7 @@ int voc_set_tx_mute(uint32_t session_id, uint32_t dir, uint32_t mute,
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_set_tx_mute);
+EXPORT_SYMBOL(voc_set_tx_mute);
 
 /**
  * voc_set_device_mute -
@@ -6492,7 +6492,7 @@ int voc_set_device_mute(uint32_t session_id, uint32_t dir, uint32_t mute,
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_set_device_mute);
+EXPORT_SYMBOL(voc_set_device_mute);
 
 int voc_get_rx_device_mute(uint32_t session_id)
 {
@@ -6542,7 +6542,7 @@ int voc_set_tty_mode(uint32_t session_id, uint8_t tty_mode)
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_set_tty_mode);
+EXPORT_SYMBOL(voc_set_tty_mode);
 
 /**
  * voc_get_tty_mode -
@@ -6571,7 +6571,7 @@ uint8_t voc_get_tty_mode(uint32_t session_id)
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_get_tty_mode);
+EXPORT_SYMBOL(voc_get_tty_mode);
 
 /**
  * voc_set_pp_enable -
@@ -6621,7 +6621,7 @@ int voc_set_pp_enable(uint32_t session_id,
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_set_pp_enable);
+EXPORT_SYMBOL(voc_set_pp_enable);
 
 /**
  * voc_set_hd_enable -
@@ -6658,7 +6658,7 @@ int voc_set_hd_enable(uint32_t session_id, uint32_t enable)
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_set_hd_enable);
+EXPORT_SYMBOL(voc_set_hd_enable);
 
 /**
  * voc_set_afe_sidetone -
@@ -6702,7 +6702,7 @@ int voc_set_afe_sidetone(uint32_t session_id, bool sidetone_enable)
 	}
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_set_afe_sidetone);
+EXPORT_SYMBOL(voc_set_afe_sidetone);
 
 /**
  * voc_get_afe_sidetone -
@@ -6717,7 +6717,7 @@ bool voc_get_afe_sidetone(void)
 	ret = common.sidetone_enable;
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_get_afe_sidetone);
+EXPORT_SYMBOL(voc_get_afe_sidetone);
 int voc_get_pp_enable(uint32_t session_id,
 		      struct module_instance_info mod_inst_info)
 {
@@ -6780,7 +6780,7 @@ int voc_set_rx_vol_step(uint32_t session_id, uint32_t dir, uint32_t vol_step,
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_set_rx_vol_step);
+EXPORT_SYMBOL(voc_set_rx_vol_step);
 
 /**
  * voc_set_device_config -
@@ -6834,7 +6834,7 @@ int voc_set_device_config(uint32_t session_id, uint8_t path_dir,
 
 	return 0;
 }
-EXPORT_SYMBOL_GPL(voc_set_device_config);
+EXPORT_SYMBOL(voc_set_device_config);
 
 /**
  * voc_set_ext_ec_ref_media_fmt_info -
@@ -6859,7 +6859,7 @@ int voc_set_ext_ec_ref_media_fmt_info(struct media_format_info *finfo)
 	mutex_unlock(&common.common_lock);
 	return 0;
 }
-EXPORT_SYMBOL_GPL(voc_set_ext_ec_ref_media_fmt_info);
+EXPORT_SYMBOL(voc_set_ext_ec_ref_media_fmt_info);
 
 /**
  * voc_set_route_flag -
@@ -6894,7 +6894,7 @@ int voc_set_route_flag(uint32_t session_id, uint8_t path_dir, uint8_t set)
 
 	return 0;
 }
-EXPORT_SYMBOL_GPL(voc_set_route_flag);
+EXPORT_SYMBOL(voc_set_route_flag);
 
 /**
  * voc_get_route_flag -
@@ -6927,7 +6927,7 @@ uint8_t voc_get_route_flag(uint32_t session_id, uint8_t path_dir)
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_get_route_flag);
+EXPORT_SYMBOL(voc_get_route_flag);
 
 /**
  * voc_get_mbd_enable -
@@ -6945,7 +6945,7 @@ bool voc_get_mbd_enable(void)
 
 	return enable;
 }
-EXPORT_SYMBOL_GPL(voc_get_mbd_enable);
+EXPORT_SYMBOL(voc_get_mbd_enable);
 
 /**
  * voc_set_mbd_enable -
@@ -6991,7 +6991,7 @@ uint8_t voc_set_mbd_enable(bool enable)
 
 	return 0;
 }
-EXPORT_SYMBOL_GPL(voc_set_mbd_enable);
+EXPORT_SYMBOL(voc_set_mbd_enable);
 
 /**
  * voc_end_voice_call -
@@ -7042,7 +7042,7 @@ int voc_end_voice_call(uint32_t session_id)
 	mutex_unlock(&v->lock);
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_end_voice_call);
+EXPORT_SYMBOL(voc_end_voice_call);
 
 /**
  * voc_standby_voice_call -
@@ -7100,7 +7100,7 @@ int voc_standby_voice_call(uint32_t session_id)
 fail:
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_standby_voice_call);
+EXPORT_SYMBOL(voc_standby_voice_call);
 
 /**
  * voc_disable_device -
@@ -7149,7 +7149,7 @@ done:
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_disable_device);
+EXPORT_SYMBOL(voc_disable_device);
 
 /**
  * voc_enable_device -
@@ -7259,7 +7259,7 @@ done:
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_enable_device);
+EXPORT_SYMBOL(voc_enable_device);
 
 /**
  * voc_set_lch -
@@ -7303,7 +7303,7 @@ int voc_set_lch(uint32_t session_id, enum voice_lch_mode lch_mode)
 done:
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_set_lch);
+EXPORT_SYMBOL(voc_set_lch);
 
 /**
  * voc_resume_voice_call -
@@ -7328,7 +7328,7 @@ int voc_resume_voice_call(uint32_t session_id)
 fail:
 	return -EINVAL;
 }
-EXPORT_SYMBOL_GPL(voc_resume_voice_call);
+EXPORT_SYMBOL(voc_resume_voice_call);
 
 /**
  * voc_start_voice_call -
@@ -7451,7 +7451,7 @@ fail:
 	mutex_unlock(&v->lock);
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_start_voice_call);
+EXPORT_SYMBOL(voc_start_voice_call);
 
 /**
  * voc_set_ext_ec_ref_port_id -
@@ -7480,7 +7480,7 @@ exit:
 	mutex_unlock(&common.common_lock);
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_set_ext_ec_ref_port_id);
+EXPORT_SYMBOL(voc_set_ext_ec_ref_port_id);
 
 /**
  * voc_get_ext_ec_ref_port_id -
@@ -7496,7 +7496,7 @@ int voc_get_ext_ec_ref_port_id(void)
 	else
 		return AFE_PORT_INVALID;
 }
-EXPORT_SYMBOL_GPL(voc_get_ext_ec_ref_port_id);
+EXPORT_SYMBOL(voc_get_ext_ec_ref_port_id);
 
 /**
  * voc_register_mvs_cb -
@@ -7518,7 +7518,7 @@ void voc_register_mvs_cb(ul_cb_fn ul_cb,
 	common.mvs_info.ssr_cb = ssr_cb;
 	common.mvs_info.private_data = private_data;
 }
-EXPORT_SYMBOL_GPL(voc_register_mvs_cb);
+EXPORT_SYMBOL(voc_register_mvs_cb);
 
 /**
  * voc_register_dtmf_rx_detection_cb -
@@ -7534,7 +7534,7 @@ void voc_register_dtmf_rx_detection_cb(dtmf_rx_det_cb_fn dtmf_rx_ul_cb,
 	common.dtmf_info.dtmf_rx_ul_cb = dtmf_rx_ul_cb;
 	common.dtmf_info.private_data = private_data;
 }
-EXPORT_SYMBOL_GPL(voc_register_dtmf_rx_detection_cb);
+EXPORT_SYMBOL(voc_register_dtmf_rx_detection_cb);
 
 /**
  * voc_config_vocoder -
@@ -7554,7 +7554,7 @@ void voc_config_vocoder(uint32_t media_type,
 	common.mvs_info.evrc_min_rate = evrc_min_rate;
 	common.mvs_info.evrc_max_rate = evrc_max_rate;
 }
-EXPORT_SYMBOL_GPL(voc_config_vocoder);
+EXPORT_SYMBOL(voc_config_vocoder);
 
 static int32_t qdsp_mvm_callback(struct apr_client_data *data, void *priv)
 {
@@ -7990,12 +7990,6 @@ static int32_t qdsp_cvs_callback(struct apr_client_data *data, void *priv)
 			VSS_ISTREAM_EVT_OOB_NOTIFY_ENC_BUFFER_CONSUMED;
 
 		cvs_voc_pkt = v->shmem_info.sh_buf.buf[1].data;
-
-		if (!cvs_voc_pkt) {
-			pr_err("%s: cvs_voc_pkt is NULL\n", __func__);
-			return -EINVAL;
-		}
-
 
 		if (__builtin_add_overflow(cvs_voc_pkt[2], 3 * sizeof(uint32_t), &tot_buf_sz)) {
 			 pr_err("%s: integer overflow detected\n", __func__);
@@ -8621,7 +8615,7 @@ int voc_send_cvp_start_vocpcm(uint32_t session_id,
 done:
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_send_cvp_start_vocpcm);
+EXPORT_SYMBOL(voc_send_cvp_start_vocpcm);
 
 /**
  * voc_send_cvp_stop_vocpcm -
@@ -8691,7 +8685,7 @@ int voc_send_cvp_stop_vocpcm(uint32_t session_id)
 done:
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_send_cvp_stop_vocpcm);
+EXPORT_SYMBOL(voc_send_cvp_stop_vocpcm);
 
 /**
  * voc_send_cvp_map_vocpcm_memory -
@@ -8713,7 +8707,7 @@ int voc_send_cvp_map_vocpcm_memory(uint32_t session_id,
 					      (dma_addr_t) paddr, bufsize,
 					      VOC_VOICE_HOST_PCM_MAP_TOKEN);
 }
-EXPORT_SYMBOL_GPL(voc_send_cvp_map_vocpcm_memory);
+EXPORT_SYMBOL(voc_send_cvp_map_vocpcm_memory);
 
 /**
  * voc_send_cvp_unmap_vocpcm_memory -
@@ -8736,7 +8730,7 @@ int voc_send_cvp_unmap_vocpcm_memory(uint32_t session_id)
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_send_cvp_unmap_vocpcm_memory);
+EXPORT_SYMBOL(voc_send_cvp_unmap_vocpcm_memory);
 
 /**
  * voc_send_cvp_vocpcm_push_buf_evt - Send buf event command
@@ -8808,7 +8802,7 @@ int voc_send_cvp_vocpcm_push_buf_evt(uint32_t session_id,
 done:
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_send_cvp_vocpcm_push_buf_evt);
+EXPORT_SYMBOL(voc_send_cvp_vocpcm_push_buf_evt);
 
 /**
  * voc_register_hpcm_evt_cb - Updates hostpcm info.
@@ -8823,7 +8817,7 @@ void voc_register_hpcm_evt_cb(hostpcm_cb_fn hostpcm_cb,
 	common.hostpcm_info.hostpcm_evt_cb = hostpcm_cb;
 	common.hostpcm_info.private_data = private_data;
 }
-EXPORT_SYMBOL_GPL(voc_register_hpcm_evt_cb);
+EXPORT_SYMBOL(voc_register_hpcm_evt_cb);
 
 /**
  * voc_deregister_hpcm_evt_cb - resets hostpcm info.
@@ -8834,7 +8828,7 @@ void voc_deregister_hpcm_evt_cb(void)
 	common.hostpcm_info.hostpcm_evt_cb = NULL;
 	common.hostpcm_info.private_data = NULL;
 }
-EXPORT_SYMBOL_GPL(voc_deregister_hpcm_evt_cb);
+EXPORT_SYMBOL(voc_deregister_hpcm_evt_cb);
 
 /**
  * voc_get_cvd_version - retrieve CVD version.
@@ -8891,7 +8885,7 @@ done:
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_get_cvd_version);
+EXPORT_SYMBOL(voc_get_cvd_version);
 
 static int voice_alloc_cal_mem_map_table(void)
 {
@@ -9494,7 +9488,7 @@ int voc_set_sound_focus(struct sound_focus_param soundFocusData)
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_set_sound_focus);
+EXPORT_SYMBOL(voc_set_sound_focus);
 
 static int voice_send_get_sound_focus_cmd(struct voice_data *v,
 				struct sound_focus_param *soundFocusData)
@@ -9631,7 +9625,7 @@ int voc_get_sound_focus(struct sound_focus_param *soundFocusData)
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_get_sound_focus);
+EXPORT_SYMBOL(voc_get_sound_focus);
 
 static int is_source_tracking_shared_memomry_allocated(void)
 {
@@ -9950,7 +9944,7 @@ int voc_get_source_tracking(struct source_tracking_param *sourceTrackingData)
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voc_get_source_tracking);
+EXPORT_SYMBOL(voc_get_source_tracking);
 
 #ifdef OPLUS_FEATURE_AUDIODETECT
 int voice_set_cvp_auddet_param(u8 bEnable)
@@ -9992,7 +9986,7 @@ int voice_set_cvp_auddet_param(u8 bEnable)
 	mutex_unlock(&common.common_lock);
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voice_set_cvp_auddet_param);
+EXPORT_SYMBOL(voice_set_cvp_auddet_param);
 
 int voice_get_cvp_param(void)
 {
@@ -10113,7 +10107,7 @@ done:
 	mutex_unlock(&common.common_lock);
 	return ret;
 }
-EXPORT_SYMBOL_GPL(voice_get_cvp_param);
+EXPORT_SYMBOL(voice_get_cvp_param);
 #endif /* OPLUS_FEATURE_AUDIODETECT */
 
 static int voice_set_cvp_param(struct voice_data *v,
@@ -10330,7 +10324,7 @@ int is_voc_initialized(void)
 {
 	return module_initialized;
 }
-EXPORT_SYMBOL_GPL(is_voc_initialized);
+EXPORT_SYMBOL(is_voc_initialized);
 
 int __init voice_init(void)
 {

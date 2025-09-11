@@ -31,7 +31,7 @@ void wcd_mbhc_jack_report(struct wcd_mbhc *mbhc,
 {
 	snd_soc_jack_report(jack, status, mask);
 }
-EXPORT_SYMBOL_GPL(wcd_mbhc_jack_report);
+EXPORT_SYMBOL(wcd_mbhc_jack_report);
 
 static void __hphocp_off_report(struct wcd_mbhc *mbhc, u32 jack_status,
 				int irq)
@@ -157,7 +157,7 @@ void wcd_enable_curr_micbias(const struct wcd_mbhc *mbhc,
 
 	pr_debug("%s: exit\n", __func__);
 }
-EXPORT_SYMBOL_GPL(wcd_enable_curr_micbias);
+EXPORT_SYMBOL(wcd_enable_curr_micbias);
 
 static const char *wcd_mbhc_get_event_string(int event)
 {
@@ -404,7 +404,7 @@ int wcd_cancel_btn_work(struct wcd_mbhc *mbhc)
 		mbhc->mbhc_cb->lock_sleep(mbhc, false);
 	return r;
 }
-EXPORT_SYMBOL_GPL(wcd_cancel_btn_work);
+EXPORT_SYMBOL(wcd_cancel_btn_work);
 
 bool wcd_swch_level_remove(struct wcd_mbhc *mbhc)
 {
@@ -422,7 +422,7 @@ bool wcd_swch_level_remove(struct wcd_mbhc *mbhc)
 	}
 	#endif /* OPLUS_ARCH_EXTENDS */
 }
-EXPORT_SYMBOL_GPL(wcd_swch_level_remove);
+EXPORT_SYMBOL(wcd_swch_level_remove);
 
 static void wcd_mbhc_clr_and_turnon_hph_padac(struct wcd_mbhc *mbhc)
 {
@@ -536,7 +536,7 @@ int wcd_mbhc_get_impedance(struct wcd_mbhc *mbhc, uint32_t *zl,
 	else
 		return -EINVAL;
 }
-EXPORT_SYMBOL_GPL(wcd_mbhc_get_impedance);
+EXPORT_SYMBOL(wcd_mbhc_get_impedance);
 
 void wcd_mbhc_hs_elec_irq(struct wcd_mbhc *mbhc, int irq_type,
 				 bool enable)
@@ -565,7 +565,7 @@ void wcd_mbhc_hs_elec_irq(struct wcd_mbhc *mbhc, int irq_type,
 			clear_bit(irq_type, &mbhc->intr_status);
 	}
 }
-EXPORT_SYMBOL_GPL(wcd_mbhc_hs_elec_irq);
+EXPORT_SYMBOL(wcd_mbhc_hs_elec_irq);
 
 #ifdef OPLUS_ARCH_EXTENDS
 extern void switch_headset_state(int headset_state);
@@ -693,7 +693,6 @@ void wcd_mbhc_report_plug(struct wcd_mbhc *mbhc, int insertion,
 			}
 			mbhc->hph_status &= ~(SND_JACK_HEADSET |
 						SND_JACK_LINEOUT |
-						SND_JACK_ANC_HEADPHONE |
 						SND_JACK_UNSUPPORTED);
 		}
 
@@ -711,8 +710,9 @@ void wcd_mbhc_report_plug(struct wcd_mbhc *mbhc, int insertion,
 			mbhc->jiffies_atreport = jiffies;
 		} else if (jack_type == SND_JACK_LINEOUT) {
 			mbhc->current_plug = MBHC_PLUG_TYPE_HIGH_HPH;
-		} else if (jack_type == SND_JACK_ANC_HEADPHONE)
-			mbhc->current_plug = MBHC_PLUG_TYPE_ANC_HEADPHONE;
+		} else {
+			pr_debug("%s: invalid Jack type %d\n",__func__, jack_type);
+		}
 
 		#ifdef OPLUS_FEATURE_IMPEDANCE_MATCH
 		if (mbhc->enable_hp_impedance_detect) {
@@ -808,7 +808,7 @@ void wcd_mbhc_report_plug(struct wcd_mbhc *mbhc, int insertion,
 
 	pr_debug("%s: leave hph_status %x\n", __func__, mbhc->hph_status);
 }
-EXPORT_SYMBOL_GPL(wcd_mbhc_report_plug);
+EXPORT_SYMBOL(wcd_mbhc_report_plug);
 
 void wcd_mbhc_elec_hs_report_unplug(struct wcd_mbhc *mbhc)
 {
@@ -847,7 +847,7 @@ void wcd_mbhc_elec_hs_report_unplug(struct wcd_mbhc *mbhc)
 	wcd_mbhc_hs_elec_irq(mbhc, WCD_MBHC_ELEC_HS_INS,
 			     true);
 }
-EXPORT_SYMBOL_GPL(wcd_mbhc_elec_hs_report_unplug);
+EXPORT_SYMBOL(wcd_mbhc_elec_hs_report_unplug);
 
 void wcd_mbhc_find_plug_and_report(struct wcd_mbhc *mbhc,
 				   enum wcd_mbhc_plug_type plug_type)
@@ -903,8 +903,6 @@ void wcd_mbhc_find_plug_and_report(struct wcd_mbhc *mbhc,
 			anc_mic_found =
 			mbhc->mbhc_fn->wcd_mbhc_detect_anc_plug_type(mbhc);
 		jack_type = SND_JACK_HEADSET;
-		if (anc_mic_found)
-			jack_type = SND_JACK_ANC_HEADPHONE;
 
 		/*
 		 * If Headphone was reported previously, this will
@@ -946,7 +944,7 @@ exit:
 	pr_info("%s: leave\n", __func__);
 	#endif /* OPLUS_ARCH_EXTENDS */
 }
-EXPORT_SYMBOL_GPL(wcd_mbhc_find_plug_and_report);
+EXPORT_SYMBOL(wcd_mbhc_find_plug_and_report);
 
 static bool wcd_mbhc_moisture_detect(struct wcd_mbhc *mbhc, bool detection_type)
 {
@@ -1090,9 +1088,6 @@ static void wcd_mbhc_usbc_analog_plug_detect_handler(struct wcd_mbhc *mbhc, bool
 			    WCD_MBHC_REG_UPDATE_BITS(WCD_MBHC_ELECT_ISRC_EN, 0);
 			mbhc->is_extn_cable = false;
 			jack_type = SND_JACK_LINEOUT;
-			break;
-		case MBHC_PLUG_TYPE_ANC_HEADPHONE:
-			jack_type = SND_JACK_ANC_HEADPHONE;
 			break;
 		default:
 			pr_info("%s: Invalid current plug: %d\n",
@@ -1320,9 +1315,6 @@ static void wcd_mbhc_swch_irq_handler(struct wcd_mbhc *mbhc)
 			mbhc->is_extn_cable = false;
 			jack_type = SND_JACK_LINEOUT;
 			break;
-		case MBHC_PLUG_TYPE_ANC_HEADPHONE:
-			jack_type = SND_JACK_ANC_HEADPHONE;
-			break;
 		default:
 			pr_info("%s: Invalid current plug: %d\n",
 				__func__, mbhc->current_plug);
@@ -1466,7 +1458,7 @@ int wcd_mbhc_get_button_mask(struct wcd_mbhc *mbhc)
 
 	return mask;
 }
-EXPORT_SYMBOL_GPL(wcd_mbhc_get_button_mask);
+EXPORT_SYMBOL(wcd_mbhc_get_button_mask);
 
 static void wcd_btn_lpress_fn(struct work_struct *work)
 {
@@ -1564,7 +1556,7 @@ static irqreturn_t wcd_mbhc_btn_press_handler(int irq, void *data)
 	}
 	mbhc->buttons_pressed |= mask;
 	mbhc->mbhc_cb->lock_sleep(mbhc, true);
-	if (queue_delayed_work(system_power_efficient_wq, &mbhc->mbhc_btn_dwork,
+	if (schedule_delayed_work(&mbhc->mbhc_btn_dwork,
 				msecs_to_jiffies(400)) == 0) {
 		WARN(1, "Button pressed twice without release event\n");
 		mbhc->mbhc_cb->lock_sleep(mbhc, false);
@@ -2106,7 +2098,7 @@ int wcd_mbhc_start(struct wcd_mbhc *mbhc, struct wcd_mbhc_config *mbhc_cfg)
 		}
 	} else {
 		if (!mbhc->mbhc_fw || !mbhc->mbhc_cal)
-			queue_delayed_work(system_power_efficient_wq, &mbhc->mbhc_firmware_dwork,
+			schedule_delayed_work(&mbhc->mbhc_firmware_dwork,
 				      usecs_to_jiffies(FW_READ_TIMEOUT));
 		else
 			pr_err("%s: Skipping to read mbhc fw, 0x%pK %pK\n",
@@ -2129,7 +2121,7 @@ err:
 	dev_dbg(mbhc->component->dev, "%s: leave %d\n", __func__, rc);
 	return rc;
 }
-EXPORT_SYMBOL_GPL(wcd_mbhc_start);
+EXPORT_SYMBOL(wcd_mbhc_start);
 
 void wcd_mbhc_stop(struct wcd_mbhc *mbhc)
 {
@@ -2167,7 +2159,7 @@ void wcd_mbhc_stop(struct wcd_mbhc *mbhc)
 
 	pr_debug("%s: leave\n", __func__);
 }
-EXPORT_SYMBOL_GPL(wcd_mbhc_stop);
+EXPORT_SYMBOL(wcd_mbhc_stop);
 
 /*
  * wcd_mbhc_init : initialize MBHC internal structures.
@@ -2535,7 +2527,7 @@ err:
 	pr_debug("%s: leave ret %d\n", __func__, ret);
 	return ret;
 }
-EXPORT_SYMBOL_GPL(wcd_mbhc_init);
+EXPORT_SYMBOL(wcd_mbhc_init);
 
 void wcd_mbhc_deinit(struct wcd_mbhc *mbhc)
 {
@@ -2570,7 +2562,7 @@ void wcd_mbhc_deinit(struct wcd_mbhc *mbhc)
 	mutex_destroy(&mbhc->hphl_pa_lock);
 	mutex_destroy(&mbhc->hphr_pa_lock);
 }
-EXPORT_SYMBOL_GPL(wcd_mbhc_deinit);
+EXPORT_SYMBOL(wcd_mbhc_deinit);
 
 static int __init mbhc_init(void)
 {

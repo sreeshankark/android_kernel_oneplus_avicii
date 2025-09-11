@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0-only */
 /*
- * Copyright (c) 2017-2021, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2017-2019, The Linux Foundation. All rights reserved.
  */
 
 #ifndef _CAM_CPASTOP_HW_H_
@@ -106,10 +106,6 @@ enum cam_camnoc_hw_irq_type {
  * @CAM_CAMNOC_JPEG: Indicates JPEG HW connection to camnoc
  * @CAM_CAMNOC_FD: Indicates FD HW connection to camnoc
  * @CAM_CAMNOC_ICP: Indicates ICP HW connection to camnoc
- * @CAM_CAMNOC_TFE: Indicates TFE HW connection to camnoc
- * @CAM_CAMNOC_TFE_1 : Indicates TFE1 HW connection to camnoc
- * @CAM_CAMNOC_TFE_2 : Indicates TFE2 HW connection to camnoc
- * @CAM_CAMNOC_OPE: Indicates OPE HW connection to camnoc
  */
 enum cam_camnoc_port_type {
 	CAM_CAMNOC_CDM,
@@ -132,10 +128,6 @@ enum cam_camnoc_port_type {
 	CAM_CAMNOC_JPEG,
 	CAM_CAMNOC_FD,
 	CAM_CAMNOC_ICP,
-	CAM_CAMNOC_TFE,
-	CAM_CAMNOC_TFE_1,
-	CAM_CAMNOC_TFE_2,
-	CAM_CAMNOC_OPE,
 };
 
 /**
@@ -280,7 +272,6 @@ struct cam_camnoc_info {
  * @hw: Pointer to HW info
  * @irq_status: IRQ status value
  * @irq_data: IRQ data
- * @workq_scheduled_ts: workqueue scheduled timestamp
  * @work: Work handle
  *
  */
@@ -288,7 +279,6 @@ struct cam_cpas_work_payload {
 	struct cam_hw_info *hw;
 	uint32_t irq_status;
 	uint32_t irq_data;
-	ktime_t workq_scheduled_ts;
 	struct work_struct work;
 };
 

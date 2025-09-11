@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /*
- * Copyright (c) 2017-2020, The Linux Foundation. All rights reserved.
- * Copyright (c) 2022-2024 Qualcomm Innovation Center, Inc. All rights reserved.
+ * Copyright (c) 2017-2019, The Linux Foundation. All rights reserved.
  */
 
 #include <linux/module.h>
@@ -208,19 +207,45 @@ static int cam_eeprom_read_memory(struct cam_eeprom_ctrl_t *e_ctrl,
 			}
 		}
 
-		if (emap[j].mem.valid_size) {
-			rc = camera_io_dev_read_seq(&e_ctrl->io_master_info,
-				emap[j].mem.addr, memptr,
-				emap[j].mem.addr_type,
-				emap[j].mem.data_type,
-				emap[j].mem.valid_size);
-			if (rc < 0) {
-				CAM_ERR(CAM_EEPROM, "read failed rc %d",
-					rc);
-				return rc;
-			}
-			memptr += emap[j].mem.valid_size;
-		}
+                if (e_ctrl->io_master_info.cci_client->sid==0x24) {
+                    if(j>0)
+                        size=emap[j-1].mem.valid_size;
+            	    else
+                	size=0;
+            	    for(i=0;i<((emap[j].mem.valid_size/4)/32+1);i++){
+                        if((i==(emap[j].mem.valid_size/4)/32)&&(((emap[j].mem.valid_size/4)%32)!=0))
+                            read_size=((emap[j].mem.valid_size/4)%32);
+                        else if((i==(emap[j].mem.valid_size/4)/32)&&(((emap[j].mem.valid_size/4)%32)==0))
+                            break;
+                        else
+                            read_size=32;
+                    	rc=EEPROM_FlashMultiRead(e_ctrl,USER_MAT,emap[j].mem.addr+i*32,data,read_size);
+                        if(rc!=0){
+                            CAM_ERR(CAM_EEPROM, "read failed rc=%d ",rc);
+                            return rc;
+                        }else{
+                            for(m=0;m<read_size;m++){
+                                memptr[size+i*4*32+m*4]=(data[m]&0xff);
+                                memptr[size+i*4*32+m*4+1]=((data[m]>>8)&0xff);
+                                memptr[size+i*4*32+m*4+2]=((data[m]>>16)&0xff);
+                                memptr[size+i*4*32+m*4+3]=(data[m]>>24);
+                            }
+                        }
+                    }
+                }else{
+	    	    if (emap[j].mem.valid_size) {
+	        	rc = camera_io_dev_read_seq(&e_ctrl->io_master_info,
+			emap[j].mem.addr, memptr,
+			emap[j].mem.addr_type,
+			emap[j].mem.data_type,
+			emap[j].mem.valid_size);
+		        if (rc) {
+		            CAM_ERR(CAM_EEPROM, "read failed rc %d",rc);
+		            return rc;
+		        }
+	                memptr += emap[j].mem.valid_size;
+                    }
+                }
 
 		if (emap[j].pageen.valid_size) {
 			i2c_reg_settings.addr_type = emap[j].pageen.addr_type;
@@ -457,14 +482,9 @@ static int32_t cam_eeprom_get_dev_handle(struct cam_eeprom_ctrl_t *e_ctrl,
 	bridge_params.v4l2_sub_dev_flag = 0;
 	bridge_params.media_entity_flag = 0;
 	bridge_params.priv = e_ctrl;
-	bridge_params.dev_id = CAM_EEPROM;
 
 	eeprom_acq_dev.device_handle =
 		cam_create_device_hdl(&bridge_params);
-	if (eeprom_acq_dev.device_handle <= 0) {
-		CAM_ERR(CAM_EEPROM, "Can not create device handle");
-		return -EFAULT;
-	}
 	e_ctrl->bridge_intf.device_hdl = eeprom_acq_dev.device_handle;
 	e_ctrl->bridge_intf.session_hdl = eeprom_acq_dev.session_handle;
 
@@ -834,10 +854,6 @@ static int32_t cam_eeprom_parse_write_memory_packet(
 		int                            master;
 		struct cam_sensor_cci_client   *cci;
 
-		rc = cam_packet_util_validate_cmd_desc(&cmd_desc[i]);
-		if (rc)
-			return rc;
-
 		total_cmd_buf_in_bytes = cmd_desc[i].length;
 		processed_cmd_buf_in_bytes = 0;
 
@@ -1001,12 +1017,9 @@ static int32_t cam_eeprom_parse_write_memory_packet(
 				break;
 			}
 		}
-		cam_mem_put_cpu_buf(cmd_desc[i].mem_handle);
 	}
-	return rc;
 
 end:
-	cam_mem_put_cpu_buf(cmd_desc[i].mem_handle);
 	return rc;
 }
 
@@ -1055,10 +1068,6 @@ static int32_t cam_eeprom_init_pkt_parser(struct cam_eeprom_ctrl_t *e_ctrl,
 
 	/* Loop through multiple command buffers */
 	for (i = 0; i < csl_packet->num_cmd_buf; i++) {
-		rc = cam_packet_util_validate_cmd_desc(&cmd_desc[i]);
-		if (rc)
-			return rc;
-
 		total_cmd_buf_in_bytes = cmd_desc[i].length;
 		processed_cmd_buf_in_bytes = 0;
 		if (!total_cmd_buf_in_bytes)
@@ -1109,16 +1118,7 @@ static int32_t cam_eeprom_init_pkt_parser(struct cam_eeprom_ctrl_t *e_ctrl,
 					rc = -EINVAL;
 					goto end;
 				}
-
-				if ((num_map + 1) >=
-					(MSM_EEPROM_MAX_MEM_MAP_CNT *
-					MSM_EEPROM_MEMORY_MAP_MAX_SIZE)) {
-					CAM_ERR(CAM_EEPROM, "OOB error");
-					rc = -EINVAL;
-					goto end;
-				}
 				/* Configure the following map slave address */
-
 				map[num_map + 1].saddr = i2c_info->slave_addr;
 				rc = cam_eeprom_update_slaveInfo(e_ctrl,
 					cmd_buf);
@@ -1167,12 +1167,9 @@ static int32_t cam_eeprom_init_pkt_parser(struct cam_eeprom_ctrl_t *e_ctrl,
 			}
 		}
 		e_ctrl->cal_data.num_map = num_map + 1;
-		cam_mem_put_cpu_buf(cmd_desc[i].mem_handle);
 	}
-	return rc;
 
 end:
-	cam_mem_put_cpu_buf(cmd_desc[i].mem_handle);
 	return rc;
 }
 
@@ -1242,7 +1239,6 @@ static int32_t cam_eeprom_get_cal_data(struct cam_eeprom_ctrl_t *e_ctrl,
 				e_ctrl->cal_data.num_data);
 			memcpy(read_buffer, e_ctrl->cal_data.mapdata,
 					e_ctrl->cal_data.num_data);
-			cam_mem_put_cpu_buf(io_cfg->mem_handle[0]);
 		} else {
 			CAM_ERR(CAM_EEPROM, "Invalid direction");
 			rc = -EINVAL;
@@ -1491,7 +1487,6 @@ static int32_t cam_eeprom_pkt_parse(struct cam_eeprom_ctrl_t *e_ctrl, void *arg)
 		break;
 	}
 
-	cam_mem_put_cpu_buf(dev_config.packet_handle);
 	return rc;
 power_down:
 	cam_eeprom_power_down(e_ctrl);

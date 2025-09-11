@@ -38,7 +38,8 @@
 #define CAM_COMMON_OPCODE_BASE_v2           0x150
 #define CAM_ACQUIRE_HW                      (CAM_COMMON_OPCODE_BASE_v2 + 0x1)
 #define CAM_RELEASE_HW                      (CAM_COMMON_OPCODE_BASE_v2 + 0x2)
-#define CAM_DUMP_REQ                        (CAM_COMMON_OPCODE_BASE_v2 + 0x3)
+//add dpc read for imx471
+#define CAM_GET_DPC_DATA                    (CAM_COMMON_OPCODE_BASE_v2 + 0x3)
 
 #define CAM_EXT_OPCODE_BASE                     0x200
 #define CAM_CONFIG_DEV_EXTERNAL                 (CAM_EXT_OPCODE_BASE + 0x1)
@@ -201,16 +202,6 @@ struct cam_iommu_handle {
 #define CAM_FORMAT_ARGB_16                      48
 #define CAM_FORMAT_MAX                          49
 
-/* Pixel Patterns */
-#define PIXEL_PATTERN_RGRGRG                    0x0
-#define PIXEL_PATTERN_GRGRGR                    0x1
-#define PIXEL_PATTERN_BGBGBG                    0x2
-#define PIXEL_PATTERN_GBGBGB                    0x3
-#define PIXEL_PATTERN_YCBYCR                    0x4
-#define PIXEL_PATTERN_YCRYCB                    0x5
-#define PIXEL_PATTERN_CBYCRY                    0x6
-#define PIXEL_PATTERN_CRYCBY                    0x7
-
 /* camera rotaion */
 #define CAM_ROTATE_CW_0_DEGREE                  0
 #define CAM_ROTATE_CW_90_DEGREE                 1
@@ -250,9 +241,7 @@ struct cam_iommu_handle {
 #define CAM_PACKET_DEV_IFE                      15
 #define CAM_PACKET_DEV_ICP                      16
 #define CAM_PACKET_DEV_LRME                     17
-#define CAM_PACKET_DEV_TFE                      18
-#define CAM_PACKET_DEV_OPE                      19
-#define CAM_PACKET_DEV_MAX                      20
+#define CAM_PACKET_DEV_MAX                      18
 
 /* Register base type */
 #define CAM_REG_DUMP_BASE_TYPE_ISP_LEFT         1
@@ -891,26 +880,5 @@ struct cam_reg_dump_input_info {
 	uint32_t                   dump_set_offsets[1];
 };
 
-/**
- * struct cam_dump_req_cmd -
- *        Dump the information of issue req id
- *
- * @issue_req_id   : Issue Request Id
- * @offset         : Offset for the buffer
- * @buf_handle     : Buffer Handle
- * @error_type     : Error type, using it, dumping information can be extended
- * @session_handle : Session Handle
- * @link_hdl       : link handle
- * @dev_handle     : Device Handle
- */
-struct cam_dump_req_cmd {
-	uint64_t       issue_req_id;
-	size_t         offset;
-	uint32_t       buf_handle;
-	uint32_t       error_type;
-	int32_t        session_handle;
-	int32_t        link_hdl;
-	int32_t        dev_handle;
-};
 
 #endif /* __UAPI_CAM_DEFS_H__ */

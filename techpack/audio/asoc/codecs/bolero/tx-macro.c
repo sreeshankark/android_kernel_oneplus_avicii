@@ -509,7 +509,7 @@ static void tx_macro_tx_hpf_corner_freq_callback(struct work_struct *work)
 						0x03, 0x02);
 		/* Add delay between toggle hpf gate based on sample rate */
 #ifdef OPLUS_ARCH_EXTENDS
-		switch(tx_priv->amic_sample_rate) {
+		switch(tx_priv->pcm_rate[hpf_work->decimator]) {
 		case 0:
 			usleep_range(125, 130);
 			break;
@@ -1043,12 +1043,12 @@ static int tx_macro_enable_dec(struct snd_soc_dapm_widget *w,
 		if (tx_unmute_delay < unmute_delay)
 			tx_unmute_delay = unmute_delay;
 		/* schedule work queue to Remove Mute */
-		queue_delayed_work(system_power_efficient_wq, 
+		queue_delayed_work(system_freezable_wq,
 				   &tx_priv->tx_mute_dwork[decimator].dwork,
 				   msecs_to_jiffies(tx_unmute_delay));
 		if (tx_priv->tx_hpf_work[decimator].hpf_cut_off_freq !=
 							CF_MIN_3DB_150HZ) {
-			queue_delayed_work(system_power_efficient_wq,
+			queue_delayed_work(system_freezable_wq,
 				&tx_priv->tx_hpf_work[decimator].dwork,
 				msecs_to_jiffies(hpf_delay));
 			snd_soc_component_update_bits(component,

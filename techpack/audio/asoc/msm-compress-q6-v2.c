@@ -3963,12 +3963,6 @@ static int msm_compr_channel_map_put(struct snd_kcontrol *kcontrol,
 			pdata->ch_map[fe_id]->channel_map[i] =
 				(char)(ucontrol->value.integer.value[i]);
 
-		if (fe_id >= MSM_FRONTEND_DAI_MM_SIZE) {
-			pr_err("%s Received out of bounds fe_id %llu\n",
-				__func__, fe_id);
-			rc = -EINVAL;
-			goto end;
-		}
 		/* update chmixer_pspd chmap cached with routing driver as well */
 		chmixer_pspd = pdata->chmixer_pspd[fe_id];
 		if (chmixer_pspd && chmixer_pspd->enable) {

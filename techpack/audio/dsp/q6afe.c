@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /* Copyright (c) 2012-2021, The Linux Foundation. All rights reserved.
- * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+ * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
  */
 #include <linux/slab.h>
 #include <linux/debugfs.h>
@@ -290,6 +290,7 @@ struct afe_ctl {
 	/* FTM spk params */
 	uint32_t initial_cal;
 	uint32_t v_vali_flag;
+
 #ifdef OPLUS_ARCH_EXTENDS
 #ifdef CONFIG_SND_SOC_MAX98937
 	uint8_t *dsm_payload;
@@ -479,11 +480,7 @@ static int q6afe_load_avcs_modules(int num_modules, u16 port_id,
 						AVS_MODULE_ID_DEPACKETIZER_COP_V1;
 					goto load_unload;
 				}
-				#endif /* OPLUS_BUG_STABILITY */				if (format_id == ASM_MEDIA_FMT_APTX_ADAPTIVE) {
-					pm[i]->payload->load_unload_info[0].id1 =
-						AVS_MODULE_ID_DEPACKETIZER_COP;
-					goto load_unload;
-				}
+				#endif /* OPLUS_BUG_STABILITY */
 
 				pm[i]->payload->load_unload_info[1].module_type =
 						AMDB_MODULE_TYPE_DECODER;
@@ -579,8 +576,9 @@ int adsp_subsystem_restart(const char *name)
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(adsp_subsystem_restart);
+EXPORT_SYMBOL(adsp_subsystem_restart);
 #endif /* OPLUS_FEATURE_ADSP_RECOVERY */
+
 /**
  * afe_register_ext_mclk_cb - register callback for external mclk
  *
@@ -692,7 +690,7 @@ void afe_set_aanc_info(struct aanc_data *q6_aanc_info)
 		this_afe.aanc_info.aanc_rx_port,
 		this_afe.aanc_info.aanc_tx_port);
 }
-EXPORT_SYMBOL_GPL(afe_set_aanc_info);
+EXPORT_SYMBOL(afe_set_aanc_info);
 
 static void afe_callback_debug_print(struct apr_client_data *data)
 {
@@ -1539,7 +1537,7 @@ int afe_get_port_type(u16 port_id)
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_get_port_type);
+EXPORT_SYMBOL(afe_get_port_type);
 
 int afe_sizeof_cfg_cmd(u16 port_id)
 {
@@ -1684,7 +1682,7 @@ int afe_q6_interface_prepare(void)
 	}
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_q6_interface_prepare);
+EXPORT_SYMBOL(afe_q6_interface_prepare);
 
 /*
  * afe_apr_send_pkt : returns 0 on success, negative otherwise.
@@ -1976,7 +1974,7 @@ int afe_set_aanc_noise_level(int level)
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_set_aanc_noise_level);
+EXPORT_SYMBOL(afe_set_aanc_noise_level);
 
 /* This function shouldn't be called directly. Instead call q6afe_get_param. */
 static int q6afe_get_params_v2(u16 port_id, int index,
@@ -2684,19 +2682,19 @@ int afe_dsm_rx_get_params(uint8_t *payload, int size)
 {
 	return afe_dsm_get_params(DSM_RX_PORT_ID, AFE_MODULE_DSM_RX, AFE_PARAM_ID_DSM_CFG, payload, size);
 }
-EXPORT_SYMBOL_GPL(afe_dsm_rx_get_params);
+EXPORT_SYMBOL(afe_dsm_rx_get_params);
 
 int afe_dsm_rx_set_params(uint8_t *payload, int size)
 {
 	return afe_dsm_set_params(DSM_RX_PORT_ID, AFE_MODULE_DSM_RX, AFE_PARAM_ID_DSM_CFG, payload, size);
 }
-EXPORT_SYMBOL_GPL(afe_dsm_rx_set_params);
+EXPORT_SYMBOL(afe_dsm_rx_set_params);
 
 int afe_dsm_set_calib(uint8_t* payload)
 {
 	return afe_dsm_set_params(DSM_TX_PORT_ID, AFE_MODULE_DSM_TX, AFE_PARAM_ID_CALIB, payload, sizeof(uint32_t)*3);
 }
-EXPORT_SYMBOL_GPL(afe_dsm_set_calib);
+EXPORT_SYMBOL(afe_dsm_set_calib);
 
 int afe_dsm_ramp_dn_cfg(uint8_t *payload, uint32_t delay_in_ms)
 {
@@ -2725,7 +2723,7 @@ fail_cmd:
 	pr_debug("%s: status %d\n", __func__, ret);
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_dsm_ramp_dn_cfg);
+EXPORT_SYMBOL(afe_dsm_ramp_dn_cfg);
 int afe_dsm_pre_calib(uint8_t* payload)
 {
 	uint32_t *params = (uint32_t *)payload;
@@ -2738,7 +2736,7 @@ int afe_dsm_pre_calib(uint8_t* payload)
 	usleep_range(1000*1000, 1000*1000 + 10);              //make the stable iv data
 	return 0;
 }
-EXPORT_SYMBOL_GPL(afe_dsm_pre_calib);
+EXPORT_SYMBOL(afe_dsm_pre_calib);
 
 int afe_dsm_post_calib(uint8_t* payload)
 {
@@ -2749,19 +2747,19 @@ int afe_dsm_post_calib(uint8_t* payload)
 	*(params + 3)	= 1;              // mode 0: disable, 1: enable, 2: bypass and pilot tone, 4: pilot tone only
 	return afe_dsm_rx_set_params(payload, 4*sizeof(uint32_t));
 }
-EXPORT_SYMBOL_GPL(afe_dsm_post_calib);
+EXPORT_SYMBOL(afe_dsm_post_calib);
 
 int afe_dsm_get_calib(uint8_t* payload)
 {
 	return afe_dsm_get_params(DSM_TX_PORT_ID, AFE_MODULE_DSM_TX, AFE_PARAM_ID_CALIB, payload, sizeof(uint32_t)*14);
 }
-EXPORT_SYMBOL_GPL(afe_dsm_get_calib);
+EXPORT_SYMBOL(afe_dsm_get_calib);
 
 int afe_dsm_set_status(uint8_t* payload)
 {
 	return afe_dsm_set_params(DSM_RX_PORT_ID, AFE_MODULE_DSM_RX, AFE_PARAM_ID_DSM_INFO, (int8_t*)payload, sizeof(uint32_t)*8);
 }
-EXPORT_SYMBOL_GPL(afe_dsm_set_status);
+EXPORT_SYMBOL(afe_dsm_set_status);
 #endif
 #endif /* OPLUS_ARCH_EXTENDS */
 
@@ -3773,7 +3771,7 @@ int afe_send_port_island_mode(u16 port_id)
 			__func__, island_mode, port_id, ret);
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_send_port_island_mode);
+EXPORT_SYMBOL(afe_send_port_island_mode);
 
 static int afe_get_vad_preroll_cfg(u16 port_id, u32 *preroll_cfg)
 {
@@ -3890,7 +3888,7 @@ int afe_send_port_vad_cfg_params(u16 port_id)
 			__func__, pre_roll_cfg, port_id, ret);
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_send_port_vad_cfg_params);
+EXPORT_SYMBOL(afe_send_port_vad_cfg_params);
 
 static int remap_cal_data(struct cal_block_data *cal_block, int cal_index)
 {
@@ -4386,7 +4384,7 @@ int afe_port_set_mad_type(u16 port_id, enum afe_mad_type mad_type)
 	atomic_set(&afe_ports_mad_type[i], mad_type);
 	return 0;
 }
-EXPORT_SYMBOL_GPL(afe_port_set_mad_type);
+EXPORT_SYMBOL(afe_port_set_mad_type);
 
 /**
  * afe_port_get_mad_type -
@@ -4413,7 +4411,7 @@ enum afe_mad_type afe_port_get_mad_type(u16 port_id)
 	}
 	return (enum afe_mad_type) atomic_read(&afe_ports_mad_type[i]);
 }
-EXPORT_SYMBOL_GPL(afe_port_get_mad_type);
+EXPORT_SYMBOL(afe_port_get_mad_type);
 
 /**
  * afe_set_config -
@@ -4475,7 +4473,7 @@ int afe_set_config(enum afe_config_type config_type, void *config_data, int arg)
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_set_config);
+EXPORT_SYMBOL(afe_set_config);
 
 /*
  * afe_clear_config - If SSR happens ADSP loses AFE configs, let AFE driver know
@@ -4486,7 +4484,7 @@ void afe_clear_config(enum afe_config_type config)
 {
 	clear_bit(config, &afe_configured_cmd);
 }
-EXPORT_SYMBOL_GPL(afe_clear_config);
+EXPORT_SYMBOL(afe_clear_config);
 
 bool afe_has_config(enum afe_config_type config)
 {
@@ -4560,7 +4558,7 @@ int afe_send_spdif_ch_status_cfg(struct afe_param_id_spdif_ch_status_cfg
 				__func__, port_id, ret);
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_send_spdif_ch_status_cfg);
+EXPORT_SYMBOL(afe_send_spdif_ch_status_cfg);
 
 int afe_send_cmd_wakeup_register(void *handle, bool enable)
 {
@@ -4589,7 +4587,7 @@ int afe_send_cmd_wakeup_register(void *handle, bool enable)
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_send_cmd_wakeup_register);
+EXPORT_SYMBOL(afe_send_cmd_wakeup_register);
 
 static int afe_send_cmd_port_start(u16 port_id)
 {
@@ -4719,7 +4717,7 @@ int afe_spdif_port_start(u16 port_id, struct afe_spdif_port_config *spdif_port,
 fail_cmd:
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_spdif_port_start);
+EXPORT_SYMBOL(afe_spdif_port_start);
 
 /**
  * afe_spdif_reg_event_cfg -
@@ -4791,7 +4789,7 @@ fail_idx:
 	kfree(config);
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_spdif_reg_event_cfg);
+EXPORT_SYMBOL(afe_spdif_reg_event_cfg);
 
 int afe_send_slot_mapping_cfg(
 	struct afe_param_id_slot_mapping_cfg *slot_mapping_cfg,
@@ -5020,7 +5018,7 @@ int afe_tdm_port_start(u16 port_id, struct afe_tdm_port_config *tdm_port,
 fail_cmd:
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_tdm_port_start);
+EXPORT_SYMBOL(afe_tdm_port_start);
 
 /**
  * afe_set_cal_mode -
@@ -5037,7 +5035,7 @@ void afe_set_cal_mode(u16 port_id, enum afe_cal_mode afe_cal_mode)
 	port_index = afe_get_port_index(port_id);
 	this_afe.afe_cal_mode[port_index] = afe_cal_mode;
 }
-EXPORT_SYMBOL_GPL(afe_set_cal_mode);
+EXPORT_SYMBOL(afe_set_cal_mode);
 
 /**
  * afe_set_vad_cfg -
@@ -5057,7 +5055,7 @@ void afe_set_vad_cfg(u32 vad_enable, u32 preroll_config,
 	this_afe.vad_cfg[port_index].is_enable = vad_enable;
 	this_afe.vad_cfg[port_index].pre_roll = preroll_config;
 }
-EXPORT_SYMBOL_GPL(afe_set_vad_cfg);
+EXPORT_SYMBOL(afe_set_vad_cfg);
 
 /**
  * afe_get_island_mode_cfg -
@@ -5076,7 +5074,7 @@ void afe_get_island_mode_cfg(u16 port_id, u32 *enable_flag)
 		*enable_flag = this_afe.island_mode[port_index];
 	}
 }
-EXPORT_SYMBOL_GPL(afe_get_island_mode_cfg);
+EXPORT_SYMBOL(afe_get_island_mode_cfg);
 
 /**
  * afe_set_island_mode_cfg -
@@ -5094,7 +5092,7 @@ void afe_set_island_mode_cfg(u16 port_id, u32 enable_flag)
 	this_afe.island_mode[port_index] = enable_flag;
 
 }
-EXPORT_SYMBOL_GPL(afe_set_island_mode_cfg);
+EXPORT_SYMBOL(afe_set_island_mode_cfg);
 
 /**
  * afe_set_routing_callback -
@@ -5107,7 +5105,7 @@ void afe_set_routing_callback(routing_cb cb)
 {
 	this_afe.rt_cb = cb;
 }
-EXPORT_SYMBOL_GPL(afe_set_routing_callback);
+EXPORT_SYMBOL(afe_set_routing_callback);
 
 int afe_port_send_usb_dev_param(u16 port_id, union afe_port_config *afe_config)
 {
@@ -5895,7 +5893,7 @@ int afe_set_tws_channel_mode(u32 format, u16 port_id, u32 channel_mode)
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_set_tws_channel_mode);
+EXPORT_SYMBOL(afe_set_tws_channel_mode);
 
 static int __afe_port_start(u16 port_id, union afe_port_config *afe_config,
 			    u32 rate, u16 afe_in_channels, u16 afe_in_bit_width,
@@ -6332,7 +6330,7 @@ int afe_port_start(u16 port_id, union afe_port_config *afe_config,
 	return __afe_port_start(port_id, afe_config, rate, 0, 0, NULL,
 				ASM_MEDIA_FMT_NONE, 0, 0, NULL, NULL);
 }
-EXPORT_SYMBOL_GPL(afe_port_start);
+EXPORT_SYMBOL(afe_port_start);
 
 /**
  * afe_port_start_v2 - to configure AFE session with
@@ -6369,7 +6367,7 @@ int afe_port_start_v2(u16 port_id, union afe_port_config *afe_config,
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_port_start_v2);
+EXPORT_SYMBOL(afe_port_start_v2);
 
 /**
  * afe_port_start_v3 - to configure AFE session with
@@ -6402,7 +6400,7 @@ int afe_port_start_v3(u16 port_id, union afe_port_config *afe_config,
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_port_start_v3);
+EXPORT_SYMBOL(afe_port_start_v3);
 
 int afe_get_port_index(u16 port_id)
 {
@@ -7004,7 +7002,7 @@ fail_cmd:
 	mutex_unlock(&this_afe.afe_cmd_lock);
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_open);
+EXPORT_SYMBOL(afe_open);
 
 /**
  * afe_loopback -
@@ -7047,7 +7045,7 @@ int afe_loopback(u16 enable, u16 rx_port, u16 tx_port)
 		pr_err("%s: AFE loopback failed %d\n", __func__, ret);
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_loopback);
+EXPORT_SYMBOL(afe_loopback);
 
 /**
  * afe_loopback_gain -
@@ -7114,7 +7112,7 @@ int afe_loopback_gain(u16 port_id, u16 volume)
 fail_cmd:
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_loopback_gain);
+EXPORT_SYMBOL(afe_loopback_gain);
 
 int afe_pseudo_port_start_nowait(u16 port_id)
 {
@@ -7399,7 +7397,7 @@ int afe_port_group_enable(u16 group_id,
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_port_group_enable);
+EXPORT_SYMBOL(afe_port_group_enable);
 
 int afe_stop_pseudo_port(u16 port_id)
 {
@@ -7457,7 +7455,7 @@ uint32_t afe_req_mmap_handle(struct afe_audio_client *ac)
 {
 	return ac->mem_map_handle;
 }
-EXPORT_SYMBOL_GPL(afe_req_mmap_handle);
+EXPORT_SYMBOL(afe_req_mmap_handle);
 
 /**
  * q6afe_audio_client_alloc -
@@ -7491,7 +7489,7 @@ struct afe_audio_client *q6afe_audio_client_alloc(void *priv)
 
 	return ac;
 }
-EXPORT_SYMBOL_GPL(q6afe_audio_client_alloc);
+EXPORT_SYMBOL(q6afe_audio_client_alloc);
 
 /**
  * q6afe_audio_client_buf_alloc_contiguous -
@@ -7582,7 +7580,7 @@ fail:
 	q6afe_audio_client_buf_free_contiguous(dir, ac);
 	return -EINVAL;
 }
-EXPORT_SYMBOL_GPL(q6afe_audio_client_buf_alloc_contiguous);
+EXPORT_SYMBOL(q6afe_audio_client_buf_alloc_contiguous);
 
 /**
  * afe_memory_map -
@@ -7614,7 +7612,7 @@ int afe_memory_map(phys_addr_t dma_addr_p, u32 dma_buf_sz,
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_memory_map);
+EXPORT_SYMBOL(afe_memory_map);
 
 int afe_cmd_memory_map(phys_addr_t dma_addr_p, u32 dma_buf_sz)
 {
@@ -7805,7 +7803,7 @@ int q6afe_audio_client_buf_free_contiguous(unsigned int dir,
 	mutex_unlock(&ac->cmd_lock);
 	return 0;
 }
-EXPORT_SYMBOL_GPL(q6afe_audio_client_buf_free_contiguous);
+EXPORT_SYMBOL(q6afe_audio_client_buf_free_contiguous);
 
 /**
  * q6afe_audio_client_free -
@@ -7832,7 +7830,7 @@ void q6afe_audio_client_free(struct afe_audio_client *ac)
 	}
 	kfree(ac);
 }
-EXPORT_SYMBOL_GPL(q6afe_audio_client_free);
+EXPORT_SYMBOL(q6afe_audio_client_free);
 
 /**
  * afe_cmd_memory_unmap -
@@ -7882,7 +7880,7 @@ int afe_cmd_memory_unmap(u32 mem_map_handle)
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_cmd_memory_unmap);
+EXPORT_SYMBOL(afe_cmd_memory_unmap);
 
 int afe_cmd_memory_unmap_nowait(u32 mem_map_handle)
 {
@@ -7981,7 +7979,7 @@ int afe_register_get_events(u16 port_id,
 			   __func__, ret);
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_register_get_events);
+EXPORT_SYMBOL(afe_register_get_events);
 
 /**
  * afe_unregister_get_events -
@@ -8057,7 +8055,7 @@ int afe_unregister_get_events(u16 port_id)
 			   __func__, ret);
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_unregister_get_events);
+EXPORT_SYMBOL(afe_unregister_get_events);
 
 /**
  * afe_rt_proxy_port_write -
@@ -8115,7 +8113,7 @@ int afe_rt_proxy_port_write(phys_addr_t buf_addr_p,
 	return ret;
 
 }
-EXPORT_SYMBOL_GPL(afe_rt_proxy_port_write);
+EXPORT_SYMBOL(afe_rt_proxy_port_write);
 
 /**
  * afe_rt_proxy_port_read -
@@ -8170,7 +8168,7 @@ int afe_rt_proxy_port_read(phys_addr_t buf_addr_p,
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_rt_proxy_port_read);
+EXPORT_SYMBOL(afe_rt_proxy_port_read);
 
 #ifdef CONFIG_DEBUG_FS
 static struct dentry *debugfs_afelb;
@@ -8351,7 +8349,7 @@ void afe_set_dtmf_gen_rx_portid(u16 port_id, int set)
 	else if (this_afe.dtmf_gen_rx_portid == port_id)
 		this_afe.dtmf_gen_rx_portid = -1;
 }
-EXPORT_SYMBOL_GPL(afe_set_dtmf_gen_rx_portid);
+EXPORT_SYMBOL(afe_set_dtmf_gen_rx_portid);
 
 /**
  * afe_dtmf_generate_rx - command to generate AFE DTMF RX
@@ -8425,7 +8423,7 @@ fail_cmd:
 	pr_err("%s: failed %d\n", __func__, ret);
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_dtmf_generate_rx);
+EXPORT_SYMBOL(afe_dtmf_generate_rx);
 
 static int afe_sidetone_iir(u16 tx_port_id)
 {
@@ -8775,7 +8773,7 @@ done:
 	return ret;
 
 }
-EXPORT_SYMBOL_GPL(afe_set_display_stream);
+EXPORT_SYMBOL(afe_set_display_stream);
 
 int afe_validate_port(u16 port_id)
 {
@@ -9201,7 +9199,7 @@ fail_cmd:
 	mutex_unlock(&this_afe.afe_cmd_lock);
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_close);
+EXPORT_SYMBOL(afe_close);
 
 int afe_set_digital_codec_core_clock(u16 port_id,
 				struct afe_digital_clk_cfg *cfg)
@@ -9294,7 +9292,7 @@ int afe_set_lpass_clock(u16 port_id, struct afe_clk_cfg *cfg)
 	mutex_unlock(&this_afe.afe_cmd_lock);
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_set_lpass_clock);
+EXPORT_SYMBOL(afe_set_lpass_clock);
 
 static int afe_get_port_idx(u16 port_id)
 {
@@ -9493,7 +9491,7 @@ int afe_set_pll_clk_drift(u16 port_id, int32_t set_clk_drift,
 	mutex_unlock(&this_afe.afe_clk_lock);
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_set_pll_clk_drift);
+EXPORT_SYMBOL(afe_set_pll_clk_drift);
 
 static int afe_set_lpass_clk_cfg_ext_mclk(int index, struct afe_clk_set *cfg,
 							uint32_t mclk_freq)
@@ -9637,7 +9635,7 @@ int afe_set_lpass_clk_cfg(int index, struct afe_clk_set *cfg)
 	mutex_unlock(&this_afe.afe_clk_lock);
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_set_lpass_clk_cfg);
+EXPORT_SYMBOL(afe_set_lpass_clk_cfg);
 
 /**
  * afe_set_lpass_clock_v2 - Enable AFE lpass clock
@@ -9729,7 +9727,7 @@ done:
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_set_lpass_clock_v2);
+EXPORT_SYMBOL(afe_set_lpass_clock_v2);
 
 /**
  * afe_set_mclk_src_cfg - Set audio interface MCLK source configuration
@@ -9852,7 +9850,7 @@ int afe_enable_lpass_core_shared_clock(u16 port_id, u32 enable)
 	mutex_unlock(&this_afe.afe_cmd_lock);
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_enable_lpass_core_shared_clock);
+EXPORT_SYMBOL(afe_enable_lpass_core_shared_clock);
 
 /**
  * q6afe_check_osr_clk_freq -
@@ -9886,7 +9884,7 @@ int q6afe_check_osr_clk_freq(u32 freq)
 	}
 	return ret;
 }
-EXPORT_SYMBOL_GPL(q6afe_check_osr_clk_freq);
+EXPORT_SYMBOL(q6afe_check_osr_clk_freq);
 
 static int afe_get_spv4_th_vi_v_vali_data(void *params, uint32_t size)
 {
@@ -10296,7 +10294,7 @@ get_params_fail:
 done:
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_get_sp_rx_tmax_xmax_logging_data);
+EXPORT_SYMBOL(afe_get_sp_rx_tmax_xmax_logging_data);
 
 /**
  * afe_get_av_dev_drift -
@@ -10340,7 +10338,7 @@ get_params_fail:
 exit:
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_get_av_dev_drift);
+EXPORT_SYMBOL(afe_get_av_dev_drift);
 
 /**
  * afe_get_doa_tracking_mon -
@@ -10390,7 +10388,7 @@ get_params_fail:
 exit:
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_get_doa_tracking_mon);
+EXPORT_SYMBOL(afe_get_doa_tracking_mon);
 
 static int afe_spv4_get_calib_data(
 		struct afe_sp_v4_th_vi_calib_resp *calib_resp)
@@ -10558,10 +10556,11 @@ int afe_spk_prot_feed_back_cfg(int src_port, int dst_port,
 			AFE_PARAM_ID_FEEDBACK_PATH_CFG, &prot_config,
 			 sizeof(union afe_spkr_prot_config));
 #endif /* OPLUS_ARCH_EXTENDS */
+
 fail_cmd:
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_spk_prot_feed_back_cfg);
+EXPORT_SYMBOL(afe_spk_prot_feed_back_cfg);
 
 static int get_cal_type_index(int32_t cal_type)
 {
@@ -11666,7 +11665,7 @@ int send_tfa_cal_apr(void *buf, int cmd_size, bool bRead)
 err:
 	return result;
 }
-EXPORT_SYMBOL_GPL(send_tfa_cal_apr);
+EXPORT_SYMBOL(send_tfa_cal_apr);
 
 void send_tfa_cal_unmap_memory(void)
 {
@@ -11680,7 +11679,7 @@ void send_tfa_cal_unmap_memory(void)
 			this_afe.tfa_cal.map_data.map_handle = 0;
 	}
 }
-EXPORT_SYMBOL_GPL(send_tfa_cal_unmap_memory);
+EXPORT_SYMBOL(send_tfa_cal_unmap_memory);
 
 int send_tfa_cal_in_band(void *buf, int cmd_size)
 {
@@ -11701,7 +11700,7 @@ int send_tfa_cal_in_band(void *buf, int cmd_size)
 
 	return 0;
 }
-EXPORT_SYMBOL_GPL(send_tfa_cal_in_band);
+EXPORT_SYMBOL(send_tfa_cal_in_band);
 
 int send_tfa_cal_set_bypass(void *buf, int cmd_size)
 {
@@ -11722,7 +11721,7 @@ int send_tfa_cal_set_bypass(void *buf, int cmd_size)
 
 	return 0;
 }
-EXPORT_SYMBOL_GPL(send_tfa_cal_set_bypass);
+EXPORT_SYMBOL(send_tfa_cal_set_bypass);
 
 int send_tfa_cal_set_tx_enable(void *buf, int cmd_size)
 {
@@ -11743,7 +11742,7 @@ int send_tfa_cal_set_tx_enable(void *buf, int cmd_size)
 
 	return 0;
 }
-EXPORT_SYMBOL_GPL(send_tfa_cal_set_tx_enable);
+EXPORT_SYMBOL(send_tfa_cal_set_tx_enable);
 #endif /* OPLUS_FEATURE_TFA98XX_VI_FEEDBACK */
 
 #ifdef OPLUS_FEATURE_TFA98XX_VI_FEEDBACK
@@ -11754,13 +11753,13 @@ void set_smartpa_id(int id)
 
 	return;
 }
-EXPORT_SYMBOL_GPL(set_smartpa_id);
+EXPORT_SYMBOL(set_smartpa_id);
 
 int get_smartpa_id(void)
 {
 	return smartpa_id;
 }
-EXPORT_SYMBOL_GPL(get_smartpa_id);
+EXPORT_SYMBOL(get_smartpa_id);
 #endif /* OPLUS_FEATURE_TFA98XX_VI_FEEDBACK */
 
 int __init afe_init(void)
@@ -11880,7 +11879,7 @@ int afe_cal_init_hwdep(void *card)
 	}
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_cal_init_hwdep);
+EXPORT_SYMBOL(afe_cal_init_hwdep);
 
 /*
  * afe_vote_lpass_core_hw -
@@ -11947,7 +11946,7 @@ int afe_vote_lpass_core_hw(uint32_t hw_block_id, char *client_name,
 	mutex_unlock(&this_afe.afe_clk_lock);
 	return ret;
 }
-EXPORT_SYMBOL_GPL(afe_vote_lpass_core_hw);
+EXPORT_SYMBOL(afe_vote_lpass_core_hw);
 
 /*
  * afe_unvote_lpass_core_hw -

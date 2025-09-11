@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /*
- * Copyright (c) 2017-2021, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2017-2019, The Linux Foundation. All rights reserved.
  */
 
 #include <linux/delay.h>
@@ -22,10 +22,6 @@
 #include "cpastop_v175_120.h"
 #include "cpastop_v175_130.h"
 #include "cpastop_v480_100.h"
-#include "cpastop_v540_100.h"
-#include "cpastop_v520_100.h"
-#include "cpastop_v545_110_518.h"
-#include "cam_req_mgr_workq.h"
 
 struct cam_camnoc_info *camnoc_info;
 
@@ -126,22 +122,6 @@ static int cam_cpastop_get_hw_info(struct cam_hw_info *cpas_hw,
 		(hw_caps->camera_version.minor == 8) &&
 		(hw_caps->camera_version.incr == 0)) {
 		soc_info->hw_version = CAM_CPAS_TITAN_480_V100;
-	} else if ((hw_caps->camera_version.major == 5) &&
-		(hw_caps->camera_version.minor == 4) &&
-		(hw_caps->camera_version.incr == 0)) {
-		soc_info->hw_version = CAM_CPAS_TITAN_540_V100;
-	} else if ((hw_caps->camera_version.major == 5) &&
-		(hw_caps->camera_version.minor == 2) &&
-		(hw_caps->camera_version.incr == 0)) {
-		soc_info->hw_version = CAM_CPAS_TITAN_520_V100;
-	} else if ((hw_caps->camera_version.major == 5) &&
-		(hw_caps->camera_version.minor == 4) &&
-		(hw_caps->camera_version.incr == 5)) {
-		if ((hw_caps->cpas_version.major == 1) &&
-			(hw_caps->cpas_version.minor == 1) &&
-			(hw_caps->cpas_version.incr == 0)) {
-			soc_info->hw_version = CAM_CPAS_TITAN_545_V110;
-		}
 	}
 
 	CAM_DBG(CAM_CPAS, "CPAS HW VERSION %x", soc_info->hw_version);
@@ -425,9 +405,6 @@ static void cam_cpastop_work(struct work_struct *work)
 		return;
 	}
 
-	cam_req_mgr_thread_switch_delay_detect(
-			payload->workq_scheduled_ts);
-
 	cpas_hw = payload->hw;
 	cpas_core = (struct cam_cpas *) cpas_hw->core_info;
 	soc_info = &cpas_hw->soc_info;
@@ -527,7 +504,6 @@ static irqreturn_t cam_cpastop_handle_irq(int irq_num, void *data)
 
 	cam_cpastop_reset_irq(cpas_hw);
 
-	payload->workq_scheduled_ts = ktime_get();
 	queue_work(cpas_core->work_queue, &payload->work);
 done:
 	atomic_dec(&cpas_core->irq_count);
@@ -541,7 +517,8 @@ static int cam_cpastop_poweron(struct cam_hw_info *cpas_hw)
 	int i, reg_val;
 	struct cam_cpas_hw_errata_wa_list *errata_wa_list =
 		camnoc_info->errata_wa_list;
-	struct cam_cpas_hw_errata_wa *errata_wa;
+	struct cam_cpas_hw_errata_wa *errata_wa =
+		&errata_wa_list->tcsr_camera_hf_sf_ares_glitch;
 
 	cam_cpastop_reset_irq(cpas_hw);
 	for (i = 0; i < camnoc_info->specific_size; i++) {
@@ -563,13 +540,10 @@ static int cam_cpastop_poweron(struct cam_hw_info *cpas_hw)
 		}
 	}
 
-	if (errata_wa_list) {
-		errata_wa = &errata_wa_list->tcsr_camera_hf_sf_ares_glitch;
-		if (errata_wa->enable) {
-			reg_val = scm_io_read(errata_wa->data.reg_info.offset);
-			reg_val |= errata_wa->data.reg_info.value;
-			scm_io_write(errata_wa->data.reg_info.offset, reg_val);
-		}
+	if (errata_wa->enable) {
+		reg_val = scm_io_read(errata_wa->data.reg_info.offset);
+		reg_val |= errata_wa->data.reg_info.value;
+		scm_io_write(errata_wa->data.reg_info.offset, reg_val);
 	}
 
 	return 0;
@@ -614,7 +588,6 @@ static int cam_cpastop_init_hw_version(struct cam_hw_info *cpas_hw,
 {
 	int rc = 0;
 	struct cam_hw_soc_info *soc_info = &cpas_hw->soc_info;
-	struct cam_cpas_private_soc *soc_private;
 
 	CAM_DBG(CAM_CPAS,
 		"hw_version=0x%x Camera Version %d.%d.%d, cpas version %d.%d.%d",
@@ -650,18 +623,6 @@ static int cam_cpastop_init_hw_version(struct cam_hw_info *cpas_hw,
 		break;
 	case CAM_CPAS_TITAN_480_V100:
 		camnoc_info = &cam480_cpas100_camnoc_info;
-		break;
-	case CAM_CPAS_TITAN_540_V100:
-		camnoc_info = &cam540_cpas100_camnoc_info;
-		break;
-	case CAM_CPAS_TITAN_520_V100:
-		camnoc_info = &cam520_cpas100_camnoc_info;
-		break;
-	case CAM_CPAS_TITAN_545_V110:
-		soc_private = (struct cam_cpas_private_soc *)
-				soc_info->soc_private;
-		if (soc_private->custom_id == CAM_CPAS_TITAN_SOC_ID_518)
-			camnoc_info = &cam545_cpas110_socid518_camnoc_info;
 		break;
 	default:
 		CAM_ERR(CAM_CPAS, "Camera Version not supported %d.%d.%d",

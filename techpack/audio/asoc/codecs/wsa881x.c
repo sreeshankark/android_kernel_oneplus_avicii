@@ -372,7 +372,7 @@ int wsa881x_codec_info_create_codec_entry(struct snd_info_entry *codec_root,
 
 	return 0;
 }
-EXPORT_SYMBOL_GPL(wsa881x_codec_info_create_codec_entry);
+EXPORT_SYMBOL(wsa881x_codec_info_create_codec_entry);
 
 static bool is_swr_slv_reg_readable(int reg)
 {
@@ -1049,7 +1049,7 @@ static void wsa881x_ocp_ctl_work(struct work_struct *work)
 		snd_soc_component_update_bits(component, WSA881X_SPKR_OCP_CTL,
 					0xC0, 0xC0);
 
-	queue_delayed_work(system_power_efficient_wq, &wsa881x->ocp_ctl_work,
+	schedule_delayed_work(&wsa881x->ocp_ctl_work,
 			msecs_to_jiffies(wsa881x_ocp_poll_timer_sec * 1000));
 }
 
@@ -1114,7 +1114,7 @@ static int wsa881x_spkr_pa_event(struct snd_soc_dapm_widget *w,
 						0x07, 0x01);
 			wsa881x_visense_adc_ctrl(component, ENABLE);
 		}
-		queue_delayed_work(system_power_efficient_wq, &wsa881x->ocp_ctl_work,
+		schedule_delayed_work(&wsa881x->ocp_ctl_work,
 			msecs_to_jiffies(WSA881X_OCP_CTL_TIMER_SEC * 1000));
 		/* Force remove group */
 		swr_remove_from_group(wsa881x->swr_slave,
@@ -1190,7 +1190,7 @@ int wsa881x_set_channel_map(struct snd_soc_component *component, u8 *port,
 	}
 	return 0;
 }
-EXPORT_SYMBOL_GPL(wsa881x_set_channel_map);
+EXPORT_SYMBOL(wsa881x_set_channel_map);
 
 static void wsa881x_init(struct snd_soc_component *component)
 {

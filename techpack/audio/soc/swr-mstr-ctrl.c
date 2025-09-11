@@ -1788,9 +1788,10 @@ static void swrm_enable_slave_irq(struct swr_mstr_ctrl *swrm)
 						SWRS_SCP_INT_STATUS_MASK_1);
 		#else /* OPLUS_BUG_STABILITY */
 		if (status & SWRM_MCP_SLV_STATUS_MASK) {
-			swrm_cmd_fifo_rd_cmd(swrm, &temp, i, 0x0,
+			if (!swrm->clk_stop_wakeup) {
+				swrm_cmd_fifo_rd_cmd(swrm, &temp, i, 0x0,
 					SWRS_SCP_INT_STATUS_CLEAR_1, 1);
-			swrm_cmd_fifo_wr_cmd(swrm, 0xFF, i, 0x0,
+				swrm_cmd_fifo_wr_cmd(swrm, 0xFF, i, 0x0,
 					SWRS_SCP_INT_STATUS_CLEAR_1);
 			}
 			swrm_cmd_fifo_wr_cmd(swrm, 0x4, i, 0x0,
@@ -2199,7 +2200,9 @@ handle_irq:
 				 * re-enable Host IRQ and process slave pending
 				 * interrupts, if any.
 				 */
+				swrm->clk_stop_wakeup = true;
 				swrm_enable_slave_irq(swrm);
+				swrm->clk_stop_wakeup = false;
 			}
 			break;
 		default:
@@ -3162,6 +3165,7 @@ static int swrm_runtime_suspend(struct device *dev)
 
 	dev_dbg(dev, "%s: pm_runtime: suspend state: %d\n",
 		__func__, swrm->state);
+
 	if (swrm->state == SWR_MSTR_SSR_RESET) {
 		swrm->state = SWR_MSTR_SSR;
 		return 0;
@@ -3511,6 +3515,7 @@ int swrm_wcd_notify(struct platform_device *pdev, u32 id, void *data)
 			dev_dbg(swrm->dev,
 				"%s:suspend swr if active at SSR up\n",
 				__func__);
+
 			pm_runtime_set_autosuspend_delay(swrm->dev,
 				ERR_AUTO_SUSPEND_TIMER_VAL);
 			usleep_range(50000, 50100);
@@ -3639,7 +3644,7 @@ done:
 	}
 	return ret;
 }
-EXPORT_SYMBOL_GPL(swrm_wcd_notify);
+EXPORT_SYMBOL(swrm_wcd_notify);
 
 /*
  * swrm_pm_cmpxchg:

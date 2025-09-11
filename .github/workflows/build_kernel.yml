@@ -5,7 +5,7 @@ on:
          Buildtype:
              description: 'Build Type'
              required: true
-             default: 'RELEASE'
+             default: 'TEST'
          Changelog:
              description: 'Build Changelog'
              required: true

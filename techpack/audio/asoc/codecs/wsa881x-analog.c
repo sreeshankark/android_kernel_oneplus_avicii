@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /*
  * Copyright (c) 2015-2016, 2018-2021, The Linux Foundation. All rights reserved.
- * Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights reserved.
+ * Copyright (c) 2022 Qualcomm Innovation Center, Inc. All rights reserved.
  */
 
 #include <linux/clk.h>
@@ -527,13 +527,13 @@ static int wsa881x_visense_adc_ctrl(struct snd_soc_component *component,
 			snd_soc_component_update_bits(component,
 					WSA881X_ADC_SEL_IBIAS,
 					0x70, 0x40);
-			snd_soc_component_update_bits(component,
-					WSA881X_ADC_EN_SEL_IBIAS,
-					0x07, 0x04);
-			snd_soc_component_update_bits(component,
-					WSA881X_ADC_EN_MODU_V, 0x80, 0x80);
-			snd_soc_component_update_bits(component,
-					WSA881X_ADC_EN_MODU_I, 0x80, 0x80);
+		snd_soc_component_update_bits(component,
+				WSA881X_ADC_EN_SEL_IBIAS,
+				0x07, 0x04);
+		snd_soc_component_update_bits(component,
+				WSA881X_ADC_EN_MODU_V, 0x80, 0x80);
+		snd_soc_component_update_bits(component,
+				WSA881X_ADC_EN_MODU_I, 0x80, 0x80);
 	} else {
 		/* Ensure: Speaker Protection has been stopped */
 		snd_soc_component_update_bits(component,
@@ -1161,7 +1161,7 @@ static int wsa881x_probe(struct snd_soc_component *component)
 	}
 	mutex_init(&wsa_pdata[wsa881x_index].bg_lock);
 	mutex_init(&wsa_pdata[wsa881x_index].res_lock);
-	snprintf(wsa_pdata[wsa881x_index].tz_pdata.name, 80, "%s",
+	snprintf(wsa_pdata[wsa881x_index].tz_pdata.name, 100, "%s",
 		wsa_tz_names[wsa881x_index]);
 	wsa_pdata[wsa881x_index].component = component;
 	wsa_pdata[wsa881x_index].spk_pa_gain = SPK_GAIN_12DB;
@@ -1277,19 +1277,19 @@ int wsa881x_get_client_index(void)
 {
 	return wsa881x_i2c_addr;
 }
-EXPORT_SYMBOL_GPL(wsa881x_get_client_index);
+EXPORT_SYMBOL(wsa881x_get_client_index);
 
 int wsa881x_get_probing_count(void)
 {
 	return wsa881x_probing_count;
 }
-EXPORT_SYMBOL_GPL(wsa881x_get_probing_count);
+EXPORT_SYMBOL(wsa881x_get_probing_count);
 
 int wsa881x_get_presence_count(void)
 {
 	return wsa881x_presence_count;
 }
-EXPORT_SYMBOL_GPL(wsa881x_get_presence_count);
+EXPORT_SYMBOL(wsa881x_get_presence_count);
 
 static int check_wsa881x_presence(struct i2c_client *client)
 {

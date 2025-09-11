@@ -784,11 +784,7 @@ static int sia81xx_resume(
 	if (is_chip_type_supported(sia81xx->chip_type))
 		sia81xx_reg_init(sia81xx);
 
-	/*
-	if (CHIP_TYPE_SIA8101 == sia81xx->chip_type ||
-		CHIP_TYPE_UNKNOWN == sia81xx->chip_type)
-		*/
-		sia81xx_timer_task_start(sia81xx->timer_task_hdl);
+	sia81xx_timer_task_start(sia81xx->timer_task_hdl);
 
 	return 0;
 

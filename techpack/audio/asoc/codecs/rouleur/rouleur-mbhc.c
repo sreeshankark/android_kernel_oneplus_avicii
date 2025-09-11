@@ -953,7 +953,7 @@ int rouleur_mbhc_get_impedance(struct rouleur_mbhc *rouleur_mbhc,
 
 	return wcd_mbhc_get_impedance(&rouleur_mbhc->wcd_mbhc, zl, zr);
 }
-EXPORT_SYMBOL_GPL(rouleur_mbhc_get_impedance);
+EXPORT_SYMBOL(rouleur_mbhc_get_impedance);
 
 /*
  * rouleur_mbhc_hs_detect: starts mbhc insertion/removal functionality
@@ -987,7 +987,7 @@ int rouleur_mbhc_hs_detect(struct snd_soc_component *component,
 
 	return wcd_mbhc_start(&rouleur_mbhc->wcd_mbhc, mbhc_cfg);
 }
-EXPORT_SYMBOL_GPL(rouleur_mbhc_hs_detect);
+EXPORT_SYMBOL(rouleur_mbhc_hs_detect);
 
 /*
  * rouleur_mbhc_hs_detect_exit: stop mbhc insertion/removal functionality
@@ -1017,7 +1017,7 @@ void rouleur_mbhc_hs_detect_exit(struct snd_soc_component *component)
 	}
 	wcd_mbhc_stop(&rouleur_mbhc->wcd_mbhc);
 }
-EXPORT_SYMBOL_GPL(rouleur_mbhc_hs_detect_exit);
+EXPORT_SYMBOL(rouleur_mbhc_hs_detect_exit);
 
 /*
  * rouleur_mbhc_ssr_down: stop mbhc during
@@ -1042,7 +1042,7 @@ void rouleur_mbhc_ssr_down(struct rouleur_mbhc *mbhc,
 	rouleur_mbhc_hs_detect_exit(component);
 	wcd_mbhc_deinit(wcd_mbhc);
 }
-EXPORT_SYMBOL_GPL(rouleur_mbhc_ssr_down);
+EXPORT_SYMBOL(rouleur_mbhc_ssr_down);
 
 /*
  * rouleur_mbhc_post_ssr_init: initialize mbhc for
@@ -1077,7 +1077,7 @@ int rouleur_mbhc_post_ssr_init(struct rouleur_mbhc *mbhc,
 
 	return ret;
 }
-EXPORT_SYMBOL_GPL(rouleur_mbhc_post_ssr_init);
+EXPORT_SYMBOL(rouleur_mbhc_post_ssr_init);
 
 /*
  * rouleur_mbhc_init: initialize mbhc for rouleur
@@ -1148,7 +1148,7 @@ err:
 	devm_kfree(component->dev, rouleur_mbhc);
 	return ret;
 }
-EXPORT_SYMBOL_GPL(rouleur_mbhc_init);
+EXPORT_SYMBOL(rouleur_mbhc_init);
 
 /*
  * rouleur_mbhc_deinit: deinitialize mbhc for rouleur
@@ -1176,4 +1176,4 @@ void rouleur_mbhc_deinit(struct snd_soc_component *component)
 		devm_kfree(component->dev, rouleur_mbhc);
 	}
 }
-EXPORT_SYMBOL_GPL(rouleur_mbhc_deinit);
+EXPORT_SYMBOL(rouleur_mbhc_deinit);

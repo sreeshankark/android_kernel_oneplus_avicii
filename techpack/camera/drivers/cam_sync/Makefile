@@ -2,7 +2,6 @@
 
 ccflags-y += -I$(srctree)/techpack/camera/include/uapi
 ccflags-y += -I$(srctree)/techpack/camera/drivers/cam_utils
-ccflags-y += -I$(srctree)/techpack/camera/drivers/cam_req_mgr
 ccflags-$(CONFIG_MSM_GLOBAL_SYNX) += -I$(srctree)/drivers/media/platform/msm/synx
 ccflags-y += -I$(src)
 

@@ -203,14 +203,6 @@ ifdef CONFIG_SND_SOC_WCD_IRQ
 	CORE_OBJS += wcd-irq.o
 endif
 
-ifdef CONFIG_SND_SOC_TAS571X
-	ifeq ($(TARGET_PRODUCT),bengal_2w_v2)
-		TAS571X_OBJS += tas571x-v2.o
-	else
-		TAS571X_OBJS += tas571x.o
-	endif
-endif
-
 LINUX_INC +=	-Iinclude/linux
 
 INCS +=		$(COMMON_INC) \
@@ -285,9 +277,6 @@ wsa881x_dlkm-y := $(WSA881X_OBJS)
 
 obj-$(CONFIG_SND_SOC_WSA881X_ANALOG) += wsa881x_analog_dlkm.o
 wsa881x_analog_dlkm-y := $(WSA881X_ANALOG_OBJS)
-
-obj-$(CONFIG_SND_SOC_TAS571X) += tas571x_dlkm.o
-tas571x_dlkm-y := $(TAS571X_OBJS)
 
 obj-$(CONFIG_SND_SOC_MSM_STUB) += stub_dlkm.o
 stub_dlkm-y := $(STUB_OBJS)

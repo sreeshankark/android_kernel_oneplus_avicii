@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0-only */
 /*
- * Copyright (c) 2016-2020, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2016-2019, The Linux Foundation. All rights reserved.
  */
 
 #ifndef _CAM_ISP_HW_MGR_INTF_H_
@@ -17,14 +17,6 @@
 #define CAM_IFE_RDI_NUM_MAX  4
 #define CAM_ISP_BW_CONFIG_V1 1
 #define CAM_ISP_BW_CONFIG_V2 2
-#define CAM_TFE_HW_NUM_MAX   3
-#define CAM_TFE_RDI_NUM_MAX  3
-
-/* maximum context numbers for TFE */
-#define CAM_TFE_CTX_MAX      4
-
-/* maximum context numbers for IFE */
-#define CAM_IFE_CTX_MAX      8
 
 /* Appliacble vote paths for dual ife, based on no. of UAPI definitions */
 #define CAM_ISP_MAX_PER_PATH_VOTES 30
@@ -52,7 +44,6 @@ enum cam_isp_hw_err_type {
 	CAM_ISP_HW_ERROR_P2I_ERROR,
 	CAM_ISP_HW_ERROR_VIOLATION,
 	CAM_ISP_HW_ERROR_BUSIF_OVERFLOW,
-	CAM_ISP_HW_ERROR_CSID_FATAL,
 	CAM_ISP_HW_ERROR_MAX,
 };
 
@@ -124,7 +115,7 @@ struct cam_isp_bw_config_internal {
 /**
  * struct cam_isp_prepare_hw_update_data - hw prepare data
  *
- * @isp_mgr_ctx:            ISP HW manager Context for current request
+ * @ife_mgr_ctx:            IFE HW manager Context for current request
  * @packet_opcode_type:     Packet header opcode in the packet header
  *                          this opcode defines, packet is init packet or
  *                          update packet
@@ -135,11 +126,10 @@ struct cam_isp_bw_config_internal {
  *                          is valid or not
  * @reg_dump_buf_desc:     cmd buffer descriptors for reg dump
  * @num_reg_dump_buf:      Count of descriptors in reg_dump_buf_desc
- * @packet                 CSL packet from user mode driver
  *
  */
 struct cam_isp_prepare_hw_update_data {
-	void                                 *isp_mgr_ctx;
+	struct cam_ife_hw_mgr_ctx            *ife_mgr_ctx;
 	uint32_t                              packet_opcode_type;
 	uint32_t                              bw_config_version;
 	struct cam_isp_bw_config_internal     bw_config[CAM_IFE_HW_NUM_MAX];
@@ -148,7 +138,6 @@ struct cam_isp_prepare_hw_update_data {
 	struct cam_cmd_buf_desc               reg_dump_buf_desc[
 						CAM_REG_DUMP_MAX_BUF_ENTRIES];
 	uint32_t                              num_reg_dump_buf;
-	struct cam_packet                     *packet;
 };
 
 
@@ -179,11 +168,10 @@ struct cam_isp_hw_reg_update_event_data {
  * struct cam_isp_hw_epoch_event_data - Event payload for CAM_HW_EVENT_EPOCH
  *
  * @timestamp:     Time stamp for the epoch event
- * @frame_id_meta: Frame id value corresponding to this frame
+ *
  */
 struct cam_isp_hw_epoch_event_data {
 	uint64_t       timestamp;
-	uint32_t       frame_id_meta;
 };
 
 /**
@@ -234,7 +222,6 @@ enum cam_isp_hw_mgr_command {
 	CAM_ISP_HW_MGR_CMD_RESUME_HW,
 	CAM_ISP_HW_MGR_CMD_SOF_DEBUG,
 	CAM_ISP_HW_MGR_CMD_CTX_TYPE,
-	CAM_ISP_HW_MGR_GET_PACKET_OPCODE,
 	CAM_ISP_HW_MGR_CMD_MAX,
 };
 
@@ -248,18 +235,14 @@ enum cam_isp_ctx_type {
  * struct cam_isp_hw_cmd_args - Payload for hw manager command
  *
  * @cmd_type               HW command type
- * @cmd_data               command data
  * @sof_irq_enable         To debug if SOF irq is enabled
  * @ctx_type               RDI_ONLY, PIX and RDI, or FS2
- * @packet_op_code         packet opcode
  */
 struct cam_isp_hw_cmd_args {
 	uint32_t                          cmd_type;
-	void                             *cmd_data;
 	union {
 		uint32_t                      sof_irq_enable;
 		uint32_t                      ctx_type;
-		uint32_t                      packet_op_code;
 	} u;
 };
 
@@ -269,12 +252,12 @@ struct cam_isp_hw_cmd_args {
  *
  * @brief:              Initialization function for the ISP hardware manager
  *
- * @device_name_str:    Device name string
+ * @of_node:            Device node input
  * @hw_mgr:             Input/output structure for the ISP hardware manager
  *                          initialization
  * @iommu_hdl:          Iommu handle to be returned
  */
-int cam_isp_hw_mgr_init(const char    *device_name_str,
+int cam_isp_hw_mgr_init(struct device_node *of_node,
 	struct cam_hw_mgr_intf *hw_mgr, int *iommu_hdl);
 
 #endif /* __CAM_ISP_HW_MGR_INTF_H__ */

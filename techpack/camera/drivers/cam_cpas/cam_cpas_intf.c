@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /*
- * Copyright (c) 2017-2020, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2017-2019, The Linux Foundation. All rights reserved.
  */
 
 #include <linux/of.h>
@@ -83,18 +83,6 @@ const char *cam_cpas_axi_util_path_type_to_string(
 	case CAM_AXI_PATH_DATA_IPE_WR_REF:
 		return "IPE_WR_REF";
 
-	/* OPE Paths */
-	case CAM_AXI_PATH_DATA_OPE_RD_IN:
-		return "OPE_RD_IN";
-	case CAM_AXI_PATH_DATA_OPE_RD_REF:
-		return "OPE_RD_REF";
-	case CAM_AXI_PATH_DATA_OPE_WR_VID:
-		return "OPE_WR_VID";
-	case CAM_AXI_PATH_DATA_OPE_WR_DISP:
-		return "OPE_WR_DISP";
-	case CAM_AXI_PATH_DATA_OPE_WR_REF:
-		return "OPE_WR_REF";
-
 	/* Common Paths */
 	case CAM_AXI_PATH_DATA_ALL:
 		return "DATA_ALL";
@@ -118,37 +106,28 @@ const char *cam_cpas_axi_util_trans_type_to_string(
 }
 EXPORT_SYMBOL(cam_cpas_axi_util_trans_type_to_string);
 
-bool cam_cpas_is_feature_supported(uint32_t flag,
-	uint32_t hw_id)
+int cam_cpas_is_feature_supported(uint32_t flag)
 {
 	struct cam_hw_info *cpas_hw = NULL;
 	struct cam_cpas_private_soc *soc_private = NULL;
-	uint32_t i;
-	bool  supported = true;
+	uint32_t feature_mask;
 
 	if (!CAM_CPAS_INTF_INITIALIZED()) {
 		CAM_ERR(CAM_CPAS, "cpas intf not initialized");
-		return false;
+		return -ENODEV;
 	}
 
 	cpas_hw = (struct cam_hw_info *) g_cpas_intf->hw_intf->hw_priv;
 	soc_private =
 		(struct cam_cpas_private_soc *)cpas_hw->soc_info.soc_private;
+	feature_mask = soc_private->feature_mask;
 
 	if (flag >= CAM_CPAS_FUSE_FEATURE_MAX) {
 		CAM_ERR(CAM_CPAS, "Unknown feature flag %x", flag);
-		return false;
+		return -EINVAL;
 	}
 
-	for (i = 0; i < soc_private->num_feature_entries; i++) {
-		if ((soc_private->feature_info[i].feature == flag) &&
-			(soc_private->feature_info[i].hw_id == hw_id)) {
-			supported = soc_private->feature_info[i].enable;
-			break;
-		}
-	}
-
-	return supported;
+	return feature_mask & flag ? 1 : 0;
 }
 EXPORT_SYMBOL(cam_cpas_is_feature_supported);
 
@@ -412,30 +391,6 @@ int cam_cpas_start(uint32_t client_handle,
 	return rc;
 }
 EXPORT_SYMBOL(cam_cpas_start);
-
-void cam_cpas_log_votes(void)
-{
-	uint32_t dummy_args;
-	int rc;
-
-	if (!CAM_CPAS_INTF_INITIALIZED()) {
-		CAM_ERR(CAM_CPAS, "cpas intf not initialized");
-		return;
-	}
-
-	if (g_cpas_intf->hw_intf->hw_ops.process_cmd) {
-		rc = g_cpas_intf->hw_intf->hw_ops.process_cmd(
-			g_cpas_intf->hw_intf->hw_priv,
-			CAM_CPAS_HW_CMD_LOG_VOTE, &dummy_args,
-			sizeof(dummy_args));
-		if (rc)
-			CAM_ERR(CAM_CPAS, "Failed in process_cmd, rc=%d", rc);
-	} else {
-		CAM_ERR(CAM_CPAS, "Invalid process_cmd ops");
-	}
-
-}
-EXPORT_SYMBOL(cam_cpas_log_votes);
 
 int cam_cpas_unregister_client(uint32_t client_handle)
 {

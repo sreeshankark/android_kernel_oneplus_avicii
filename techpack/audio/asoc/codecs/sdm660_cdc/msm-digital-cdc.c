@@ -103,7 +103,7 @@ static int msm_digcdc_clock_control(bool flag)
 			}
 			pr_debug("enabled digital codec core clk\n");
 			atomic_set(&pdata->int_mclk0_enabled, true);
-			queue_delayed_work(system_power_efficient_wq,&pdata->disable_int_mclk0_work,
+			schedule_delayed_work(&pdata->disable_int_mclk0_work,
 					      50);
 		}
 	} else {
@@ -331,7 +331,7 @@ void msm_dig_cdc_hph_comp_cb(
 	pr_debug("%s: Enter\n", __func__);
 	dig_cdc->codec_hph_comp_gpio = codec_hph_comp_gpio;
 }
-EXPORT_SYMBOL_GPL(msm_dig_cdc_hph_comp_cb);
+EXPORT_SYMBOL(msm_dig_cdc_hph_comp_cb);
 
 static int msm_dig_cdc_codec_enable_interpolator(struct snd_soc_dapm_widget *w,
 						 struct snd_kcontrol *kcontrol,
@@ -993,13 +993,13 @@ static int msm_dig_cdc_codec_enable_dec(struct snd_soc_dapm_widget *w,
 		snd_soc_component_update_bits(component, tx_mux_ctl_reg,
 						0x08, 0x00);
 
-		queue_delayed_work(system_power_efficient_wq,
+		schedule_delayed_work(
 			    &msm_dig_cdc->tx_mute_dwork[decimator - 1].dwork,
 			    msecs_to_jiffies(tx_unmute_delay));
 		if (tx_hpf_work[decimator - 1].tx_hpf_cut_of_freq !=
 				CF_MIN_3DB_150HZ) {
 
-			queue_delayed_work(system_power_efficient_wq, &tx_hpf_work[decimator - 1].dwork,
+			schedule_delayed_work(&tx_hpf_work[decimator - 1].dwork,
 					msecs_to_jiffies(300));
 		}
 		/* apply the digital gain after the decimator is enabled*/
@@ -1266,7 +1266,7 @@ int msm_dig_codec_info_create_codec_entry(struct snd_info_entry *codec_root,
 
 	return 0;
 }
-EXPORT_SYMBOL_GPL(msm_dig_codec_info_create_codec_entry);
+EXPORT_SYMBOL(msm_dig_codec_info_create_codec_entry);
 
 static void sdm660_tx_mute_update_callback(struct work_struct *work)
 {

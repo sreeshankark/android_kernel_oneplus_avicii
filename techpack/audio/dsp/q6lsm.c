@@ -230,7 +230,8 @@ static int q6lsm_callback(struct apr_client_data *data, void *priv)
 		}
 
 		if (client->param_size != param_size) {
-			pr_err("%s: response payload size %d mismatched with user requested %zu\n",			    __func__, param_size, client->param_size);
+			pr_err("%s: response payload size %d mismatched with user requested %zu\n",
+			    __func__, param_size, client->param_size);
 			ret = -EINVAL;
 			goto done;
 		}
@@ -429,7 +430,7 @@ fail:
 	q6lsm_client_free(client);
 	return NULL;
 }
-EXPORT_SYMBOL_GPL(q6lsm_client_alloc);
+EXPORT_SYMBOL(q6lsm_client_alloc);
 
 /**
  * q6lsm_client_free -
@@ -456,7 +457,7 @@ void q6lsm_client_free(struct lsm_client *client)
 	client = NULL;
 	mutex_unlock(&session_lock);
 }
-EXPORT_SYMBOL_GPL(q6lsm_client_free);
+EXPORT_SYMBOL(q6lsm_client_free);
 
 /*
  * q6lsm_apr_send_pkt : If wait == true, hold mutex to prevent from preempting
@@ -1058,7 +1059,7 @@ void q6lsm_sm_set_param_data(struct lsm_client *client,
 	if (ret)
 		pr_err("%s: Failed to pack params, error %d\n", __func__, ret);
 }
-EXPORT_SYMBOL_GPL(q6lsm_sm_set_param_data);
+EXPORT_SYMBOL(q6lsm_sm_set_param_data);
 
 /**
  * q6lsm_support_multi_stage_detection -
@@ -1071,7 +1072,7 @@ bool q6lsm_adsp_supports_multi_stage_detection(void)
 	return q6core_get_avcs_api_version_per_service(
 			APRV2_IDS_SERVICE_ID_ADSP_LSM_V) >= LSM_API_VERSION_V3;
 }
-EXPORT_SYMBOL_GPL(q6lsm_adsp_supports_multi_stage_detection);
+EXPORT_SYMBOL(q6lsm_adsp_supports_multi_stage_detection);
 
 /**
  * q6lsm_open -
@@ -1133,7 +1134,7 @@ done:
 	pr_debug("%s: leave %d\n", __func__, rc);
 	return rc;
 }
-EXPORT_SYMBOL_GPL(q6lsm_open);
+EXPORT_SYMBOL(q6lsm_open);
 
 static int q6lsm_send_confidence_levels(struct lsm_client *client,
 					struct param_hdr_v3 *param_info,
@@ -1208,7 +1209,7 @@ void set_lsm_port(int lsm_port)
 {
 	lsm_afe_port = lsm_port;
 }
-EXPORT_SYMBOL_GPL(set_lsm_port);
+EXPORT_SYMBOL(set_lsm_port);
 
 int get_lsm_port(void)
 {
@@ -1249,7 +1250,7 @@ int q6lsm_set_afe_data_format(uint64_t fe_id, uint16_t afe_data_format)
 done:
 	return -EINVAL;
 }
-EXPORT_SYMBOL_GPL(q6lsm_set_afe_data_format);
+EXPORT_SYMBOL(q6lsm_set_afe_data_format);
 
 /**
  * q6lsm_get_afe_data_format -
@@ -1279,7 +1280,7 @@ void q6lsm_get_afe_data_format(uint64_t fe_id, uint16_t *afe_data_format)
 		}
 	}
 }
-EXPORT_SYMBOL_GPL(q6lsm_get_afe_data_format);
+EXPORT_SYMBOL(q6lsm_get_afe_data_format);
 
 /**
  * q6lsm_set_port_connected -
@@ -1326,7 +1327,7 @@ int q6lsm_set_port_connected(struct lsm_client *client)
 
 	return rc;
 }
-EXPORT_SYMBOL_GPL(q6lsm_set_port_connected);
+EXPORT_SYMBOL(q6lsm_set_port_connected);
 
 static int q6lsm_send_param_polling_enable(struct lsm_client *client,
 					   bool poll_en,
@@ -1390,7 +1391,7 @@ int q6lsm_set_fwk_mode_cfg(struct lsm_client *client,
 		pr_err("%s: Failed set_params, rc %d\n", __func__, rc);
 	return rc;
 }
-EXPORT_SYMBOL_GPL(q6lsm_set_fwk_mode_cfg);
+EXPORT_SYMBOL(q6lsm_set_fwk_mode_cfg);
 
 static int q6lsm_arrange_mch_map(uint8_t *ch_map, int ch_cnt)
 {
@@ -1470,7 +1471,7 @@ int q6lsm_set_media_fmt_params(struct lsm_client *client)
 err_ret:
 	return rc;
 }
-EXPORT_SYMBOL_GPL(q6lsm_set_media_fmt_params);
+EXPORT_SYMBOL(q6lsm_set_media_fmt_params);
 
 /*
  * q6lsm_set_media_fmt_v2_params -
@@ -1529,7 +1530,7 @@ err_mch_map:
 	kfree(param_buf);
 	return rc;
 }
-EXPORT_SYMBOL_GPL(q6lsm_set_media_fmt_v2_params);
+EXPORT_SYMBOL(q6lsm_set_media_fmt_v2_params);
 
 /**
  * q6lsm_set_data -
@@ -1604,7 +1605,7 @@ int q6lsm_set_data(struct lsm_client *client,
 err_ret:
 	return rc;
 }
-EXPORT_SYMBOL_GPL(q6lsm_set_data);
+EXPORT_SYMBOL(q6lsm_set_data);
 
 /**
  * q6lsm_register_sound_model -
@@ -1652,7 +1653,7 @@ int q6lsm_register_sound_model(struct lsm_client *client,
 
 	return rc;
 }
-EXPORT_SYMBOL_GPL(q6lsm_register_sound_model);
+EXPORT_SYMBOL(q6lsm_register_sound_model);
 
 /**
  * q6lsm_deregister_sound_model -
@@ -1707,7 +1708,7 @@ int q6lsm_deregister_sound_model(struct lsm_client *client)
 
 	return rc;
 }
-EXPORT_SYMBOL_GPL(q6lsm_deregister_sound_model);
+EXPORT_SYMBOL(q6lsm_deregister_sound_model);
 
 static void q6lsm_add_mmaphdr(struct lsm_client *client, struct apr_hdr *hdr,
 			      u32 pkt_size, u32 cmd_flg, u32 token)
@@ -1988,7 +1989,7 @@ int q6lsm_snd_model_buf_free(struct lsm_client *client,
 	rc = q6lsm_snd_cal_free(client, p_info);
 	return rc;
 }
-EXPORT_SYMBOL_GPL(q6lsm_snd_model_buf_free);
+EXPORT_SYMBOL(q6lsm_snd_model_buf_free);
 
 static struct lsm_client *q6lsm_get_lsm_client(int session_id)
 {
@@ -2046,12 +2047,6 @@ static int q6lsm_mmapcallback(struct apr_client_data *data, void *priv)
 	*/
 
 	if (data->payload_size < (2 * sizeof(uint16_t))) {
-		pr_err("%s: payload has invalid size[%d]\n", __func__,
-			data->payload_size);
-		return -EINVAL;
-	}
-
-	if (data->payload_size < (2 * sizeof(uint32_t))) {
 		pr_err("%s: payload has invalid size[%d]\n", __func__,
 			data->payload_size);
 		return -EINVAL;
@@ -2193,7 +2188,7 @@ fail_1:
 	q6lsm_snd_model_buf_free(client, p_info);
 	return rc;
 }
-EXPORT_SYMBOL_GPL(q6lsm_snd_model_buf_alloc);
+EXPORT_SYMBOL(q6lsm_snd_model_buf_alloc);
 
 static int q6lsm_cmd(struct lsm_client *client, int opcode, bool wait)
 {
@@ -2461,7 +2456,7 @@ int q6lsm_set_one_param(struct lsm_client *client,
 
 	return rc;
 }
-EXPORT_SYMBOL_GPL(q6lsm_set_one_param);
+EXPORT_SYMBOL(q6lsm_set_one_param);
 
 int q6lsm_get_one_param(struct lsm_client *client,
 		struct lsm_params_get_info *p_info,
@@ -2512,7 +2507,7 @@ int q6lsm_start(struct lsm_client *client, bool wait)
 {
 	return q6lsm_cmd(client, LSM_SESSION_CMD_START, wait);
 }
-EXPORT_SYMBOL_GPL(q6lsm_start);
+EXPORT_SYMBOL(q6lsm_start);
 
 /**
  * q6lsm_stop -
@@ -2526,7 +2521,7 @@ int q6lsm_stop(struct lsm_client *client, bool wait)
 {
 	return q6lsm_cmd(client, LSM_SESSION_CMD_STOP, wait);
 }
-EXPORT_SYMBOL_GPL(q6lsm_stop);
+EXPORT_SYMBOL(q6lsm_stop);
 
 /**
  * q6lsm_close -
@@ -2540,7 +2535,7 @@ int q6lsm_close(struct lsm_client *client)
 {
 	return q6lsm_cmd(client, LSM_SESSION_CMD_CLOSE_TX, true);
 }
-EXPORT_SYMBOL_GPL(q6lsm_close);
+EXPORT_SYMBOL(q6lsm_close);
 
 /**
  * q6lsm_lab_control -
@@ -2610,7 +2605,7 @@ int q6lsm_lab_control(struct lsm_client *client, u32 enable,
 exit:
 	return rc;
 }
-EXPORT_SYMBOL_GPL(q6lsm_lab_control);
+EXPORT_SYMBOL(q6lsm_lab_control);
 
 /*
  * q6lsm_lab_out_ch_cfg -
@@ -2667,7 +2662,7 @@ int q6lsm_lab_out_ch_cfg(struct lsm_client *client,
 
 	return rc;
 }
-EXPORT_SYMBOL_GPL(q6lsm_lab_out_ch_cfg);
+EXPORT_SYMBOL(q6lsm_lab_out_ch_cfg);
 
 /**
  * q6lsm_stop_lab -
@@ -2690,7 +2685,7 @@ int q6lsm_stop_lab(struct lsm_client *client)
 		pr_err("%s: Lab stop failed %d\n", __func__, rc);
 	return rc;
 }
-EXPORT_SYMBOL_GPL(q6lsm_stop_lab);
+EXPORT_SYMBOL(q6lsm_stop_lab);
 
 /**
  * q6lsm_read -
@@ -2720,7 +2715,7 @@ int q6lsm_read(struct lsm_client *client, struct lsm_cmd_read *read)
 		pr_err("%s: read buffer call failed rc %d\n", __func__, rc);
 	return rc;
 }
-EXPORT_SYMBOL_GPL(q6lsm_read);
+EXPORT_SYMBOL(q6lsm_read);
 
 /**
  * q6lsm_lab_buffer_alloc -
@@ -2817,7 +2812,7 @@ int q6lsm_lab_buffer_alloc(struct lsm_client *client, bool alloc)
 	}
 	return ret;
 }
-EXPORT_SYMBOL_GPL(q6lsm_lab_buffer_alloc);
+EXPORT_SYMBOL(q6lsm_lab_buffer_alloc);
 
 static int get_cal_type_index(int32_t cal_type)
 {
