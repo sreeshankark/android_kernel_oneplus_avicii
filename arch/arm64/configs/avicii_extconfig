@@ -1,17 +1,11 @@
 # 
-# NeverSettle Kernel v3.2
+# NeverSettle Kernel v3.3
 # Linux/arm64 4.19.325 Kernel Configuration
 #
 
 #
 # Compiler: Android (13065274, +pgo, +bolt, +lto, +mlgo, based on r547379) clang version 20.0.0 (https://android.googlesource.com/toolchain/llvm-project f142f8afe21bceb00fb495468aa0b5043e98c419)
 #
-
-#
-# General setup
-#
-CONFIG_LOCALVERSION="-NeverSettle-Kernel-v3.2"
-CONFIG_LOCALVERSION_AUTO=n
 
 #
 # KernelSU

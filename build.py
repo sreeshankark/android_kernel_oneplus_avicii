@@ -61,7 +61,7 @@ builddir="${kernel_dir}/build"
 avbtool=${kernel_dir}/scripts/avb/avbtool.py
 ZIMAGE=$kernel_dir/out/arch/arm64/boot/Image.gz-dtb
 DTBOIMAGE=$kernel_dir/out/arch/arm64/boot/dtbo.img
-version="v3.2"
+version="v3.3"
 ksu_version="v1.0.9"
 ksu_version_code="12797"
 build_date="$(date +"%d-%m-%Y")"
@@ -70,6 +70,8 @@ kernel_name="NeverSettle-Kernel-$version-avicii"
 ksu_apk_name="KernelSU_Next_${ksu_version}_${ksu_version_code}-release.apk"
 ksu_apk="https://github.com/KernelSU-Next/KernelSU-Next/releases/download/${ksu_version}/KernelSU_Next_${ksu_version}_${ksu_version_code}-release.apk"
 zip_name="$kernel_name-$(date +"%d%m%Y-%H%M").zip"
+sed -i "s/-NeverSettle-Kernel/-NeverSettle-Kernel-v3.3/g" arch/arm64/configs/avicii_defconfig
+sed -i 's/CONFIG_LOCALVERSION_AUTO=y/# CONFIG_LOCALVERSION_AUTO is not set/g' arch/arm64/configs/avicii_defconfig
 TC_DIR=$HOME/tc/
 export ARCH=arm64
 export SUBARCH=arm64
@@ -134,7 +136,7 @@ completion() {
     tg_post_msg "<b>Changelog ($(date +%d-%m-%Y))</b>%0A<code>$CHANGELOG</code>"
     tg_post_build "$HOME/${ksu_apk_name}" "KernelSU-Next Manager for this build"
     tg_post_msg "<code>Compiled successfully✅</code>"
-    tg_post_msg "<b>Support the developer❤️</b>%0A<b>UPI:</b> <code>sreeshankark@axl</code>%0A<b>Paypal:</b> PayPal.me/SreeshankarK"
+    tg_post_msg "<b>Support the developer❤️</b>%0A<b>UPI:</b> <code>sreeshankar@superyes</code>%0A<b>BuyMeACoffee:</b> buymeacoffee.com/sreeshankark"
     curl --upload-file $HOME/$zip_name https://free.keep.sh
     echo
     echo -e ${LGR} "############################################"
