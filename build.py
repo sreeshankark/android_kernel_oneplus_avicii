@@ -61,21 +61,21 @@ builddir="${kernel_dir}/build"
 avbtool=${kernel_dir}/scripts/avb/avbtool.py
 ZIMAGE=$kernel_dir/out/arch/arm64/boot/Image.gz-dtb
 DTBOIMAGE=$kernel_dir/out/arch/arm64/boot/dtbo.img
-version="v3.3"
-ksu_version="v1.0.9"
-ksu_version_code="12797"
+version="v3.4"
+ksu_version="v1.1.0"
+ksu_version_code="12862"
 build_date="$(date +"%d-%m-%Y")"
 kernel_version=4.19.325
 kernel_name="NeverSettle-Kernel-$version-avicii"
 ksu_apk_name="KernelSU_Next_${ksu_version}_${ksu_version_code}-release.apk"
 ksu_apk="https://github.com/KernelSU-Next/KernelSU-Next/releases/download/${ksu_version}/KernelSU_Next_${ksu_version}_${ksu_version_code}-release.apk"
 zip_name="$kernel_name-$(date +"%d%m%Y-%H%M").zip"
-sed -i "s/-NeverSettle-Kernel/-NeverSettle-Kernel-v3.3/g" arch/arm64/configs/avicii_defconfig
+sed -i "s/-NeverSettle-Kernel/-NeverSettle-Kernel-v3.4/g" arch/arm64/configs/avicii_defconfig
 sed -i 's/CONFIG_LOCALVERSION_AUTO=y/# CONFIG_LOCALVERSION_AUTO is not set/g' arch/arm64/configs/avicii_defconfig
 TC_DIR=$HOME/tc/
 export ARCH=arm64
 export SUBARCH=arm64
-export CONFIG_FILE="avicii_defconfig avicii_extconfig debugfs.config"
+export CONFIG_FILE="avicii_defconfig avicii_ext.config debugfs.config"
 export BRAND_SHOW_FLAG=oneplus
 export CCACHE=$(command -v ccache)
 export PATH="${PWD}/clang-llvm/bin:${PATH}"
