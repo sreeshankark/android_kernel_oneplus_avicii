@@ -360,7 +360,6 @@ extern int ksu_handle_faccessat(int *dfd, const char __user **filename_user, int
  */
 long do_faccessat(int dfd, const char __user *filename, int mode)
 {
-	ksu_handle_faccessat(&dfd, &filename, &mode, NULL);
 	const struct cred *old_cred;
 	struct cred *override_cred;
 	struct path path;
