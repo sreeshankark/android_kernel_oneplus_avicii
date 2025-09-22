@@ -17,7 +17,7 @@ ccflags-y += -I$(objtree)/security/selinux -include $(srctree)/include/uapi/asm-
 obj-$(CONFIG_KSU) += kernelsu.o
 
 ifndef KSU_VERSION
-KSU_VERSION := 12863
+KSU_VERSION := 12853
 endif
 
 $(info -- KernelSU-Next version: $(KSU_VERSION))
@@ -43,12 +43,12 @@ ifeq ($(shell grep "ssize_t kernel_write" $(srctree)/fs/read_write.c | grep -q "
 ccflags-y += -DKSU_KERNEL_WRITE
 endif
 
-ifndef KSU_NEXT_EXPECTED_SIZE
-KSU_NEXT_EXPECTED_SIZE := 0x3e6
+ifndef KSU_NEXT_MANAGER_SIZE
+KSU_NEXT_MANAGER_SIZE := 0x3e6
 endif
 
-ifndef KSU_NEXT_EXPECTED_HASH
-KSU_NEXT_EXPECTED_HASH := 79e590113c4c4c0c222978e413a5faa801666957b1212a328e46c00c69821bf7
+ifndef KSU_NEXT_MANAGER_HASH
+KSU_NEXT_MANAGER_HASH := 79e590113c4c4c0c222978e413a5faa801666957b1212a328e46c00c69821bf7
 endif
 
 ifdef KSU_MANAGER_PACKAGE
@@ -56,11 +56,11 @@ ccflags-y += -DKSU_MANAGER_PACKAGE=\"$(KSU_MANAGER_PACKAGE)\"
 $(info -- KernelSU-Next Manager package name: $(KSU_MANAGER_PACKAGE))
 endif
 
-$(info -- KernelSU-Next Manager signature size: $(KSU_NEXT_EXPECTED_SIZE))
-$(info -- KernelSU-Next Manager signature hash: $(KSU_NEXT_EXPECTED_HASH))
+$(info -- KernelSU-Next Manager signature size: $(KSU_NEXT_MANAGER_SIZE))
+$(info -- KernelSU-Next Manager signature hash: $(KSU_NEXT_MANAGER_HASH))
 
-ccflags-y += -DEXPECTED_NEXT_SIZE=$(KSU_NEXT_EXPECTED_SIZE)
-ccflags-y += -DEXPECTED_NEXT_HASH=\"$(KSU_NEXT_EXPECTED_HASH)\"
+ccflags-y += -DEXPECTED_MANAGER_SIZE=$(KSU_NEXT_MANAGER_SIZE)
+ccflags-y += -DEXPECTED_MANAGER_HASH=\"$(KSU_NEXT_MANAGER_HASH)\"
 
 ccflags-y += -DKSU_UMOUNT
 
@@ -105,6 +105,12 @@ endif
 ifneq ($(shell grep -Eq "^int path_umount" $(srctree)/fs/internal.h; echo $$?),0)
 $(shell sed -i '/^extern void __init mnt_init/a int path_umount(struct path *path, int flags);' $(srctree)/fs/internal.h;)
 $(info -- KSU_NEXT: adding 'int path_umount(struct path *path, int flags);' to $(srctree)/fs/internal.h)
+endif
+
+ifneq ($(shell grep -q "atomic_t filter_count;" $(srctree)/include/linux/seccomp.h; echo $$?),0)
+$(info -- KSU_NEXT: patching struct seccomp for filter_count)
+$(shell sed -i '/int mode;/a\	atomic_t filter_count;' $(srctree)/include/linux/seccomp.h)
+$(shell sed -i '/#include <linux\/thread_info.h>/a\#include <linux/atomic.h>' $(srctree)/include/linux/seccomp.h)
 endif
 
 ccflags-y += -Wno-implicit-function-declaration -Wno-strict-prototypes -Wno-int-conversion -Wno-gcc-compat
