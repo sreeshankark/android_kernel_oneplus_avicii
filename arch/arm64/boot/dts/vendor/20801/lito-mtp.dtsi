@@ -524,8 +524,11 @@
                 qcom,vooc-low-temp = <120>;
 		qcom,oplus_batt_4400mv;
                 qcom,vooc_fw_update_newmethod;
-                qcom,vooc-high-temp = <480>;
-                qcom,vooc-low-soc = <1>;
+                qcom,vooc-cool-temp = <120>;
+		qcom,vooc-little-cold-temp = <50>;
+		qcom,vooc-high-temp = <480>;
+		qcom,vooc_little_cool_temp = <160>;
+		qcom,vooc-low-soc = <1>;
                 qcom,vooc-high-soc = <90>;
                 qcom,vooc-fw-type = <0x27>;
                 qcom,vooc-max-input-current-support = <6000>;
@@ -535,13 +538,15 @@
                 qcom,vooc_multistep_initial_batt_temp = <360>;
                 qcom,vooc_strategy_normal_current = <0x06>;
                 qcom,vooc-normal-to-little-cool-current = <0x05>;
-                qcom,vooc_batt_over_high_temp = <440>;
+                qcom,vooc_batt_over_high_temp = <470>;
                 qcom,vooc_batt_over_low_temp = <45>;
-                qcom,vooc_over_high_or_low_current = <0x0>;
+                qcom,vooc-normal-high-temp = <430>;
+		qcom,vooc-normal-low-temp = <300>;
+		qcom,vooc_over_high_or_low_current = <0x0>;
 
-                qcom,vooc_strategy1_batt_high_temp0 = <425>;
-                qcom,vooc_strategy1_batt_high_temp1 = <450>;
-                qcom,vooc_strategy1_batt_high_temp2 = <480>;
+                qcom,vooc_strategy1_batt_high_temp0 = <435>;
+                qcom,vooc_strategy1_batt_high_temp1 = <445>;
+                qcom,vooc_strategy1_batt_high_temp2 = <460>;
                 qcom,vooc_strategy1_batt_low_temp2 = <420>;
                 qcom,vooc_strategy1_batt_low_temp1 = <415>;
                 qcom,vooc_strategy1_batt_low_temp0 = <400>;
@@ -553,12 +558,12 @@
                 qcom,vooc_strategy1_low_current1 = <0x06>;//6A
                 qcom,vooc_strategy1_low_current0 = <0x06>;//6A
 
-                qcom,vooc_strategy2_batt_up_temp1 = <375>;
-                qcom,vooc_strategy2_batt_up_down_temp2 = <380>;
-                qcom,vooc_strategy2_batt_up_temp3 = <390>;
-                qcom,vooc_strategy2_batt_up_down_temp4 = <400>;
-                qcom,vooc_strategy2_batt_up_temp5 = <410>;
-                qcom,vooc_strategy2_batt_up_temp6 = <415>;
+                qcom,vooc_strategy2_batt_up_temp1 = <365>;
+                qcom,vooc_strategy2_batt_up_down_temp2 = <370>;
+                qcom,vooc_strategy2_batt_up_temp3 = <375>;
+                qcom,vooc_strategy2_batt_up_down_temp4 = <380>;
+                qcom,vooc_strategy2_batt_up_temp5 = <385>;
+                qcom,vooc_strategy2_batt_up_temp6 = <395>;
                 qcom,vooc_strategy2_high0_current = <0x06>;
                 qcom,vooc_strategy2_high1_current = <0x06>;
                 qcom,vooc_strategy2_high2_current = <0x06>;
