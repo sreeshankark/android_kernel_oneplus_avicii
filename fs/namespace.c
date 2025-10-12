@@ -998,8 +998,6 @@ struct vfsmount *vfs_kern_mount(struct file_system_type *type,
 	if (!type)
 		return ERR_PTR(-EINVAL);
 
-	mnt = alloc_vfsmnt(name);
-	if (!mnt)
 	fc = fs_context_for_mount(type, flags);
 	if (IS_ERR(fc))
 		return ERR_CAST(fc);
