@@ -1,4 +1,4 @@
-\/* binder_alloc.c
+/* binder_alloc.c
  *
  * Android IPC Subsystem
  *
