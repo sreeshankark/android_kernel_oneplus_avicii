@@ -798,12 +798,8 @@ int __vma_adjust(struct vm_area_struct *vma, unsigned long start,
 
 			importer->anon_vma = exporter->anon_vma;
 			error = anon_vma_clone(importer, exporter);
-			if (error) {
-				if (next && next != vma)
-					vm_write_end(next);
-				vm_write_end(vma);
+			if (error)
 				return error;
-			}
 		}
 	}
 again:
@@ -3339,15 +3335,6 @@ struct vm_area_struct *copy_vma(struct vm_area_struct **vmap,
 			get_file(new_vma->vm_file);
 		if (new_vma->vm_ops && new_vma->vm_ops->open)
 			new_vma->vm_ops->open(new_vma);
-		/*
-		 * As the VMA is linked right now, it may be hit by the
-		 * speculative page fault handler. But we don't want it to
-		 * to start mapping page in this area until the caller has
-		 * potentially move the pte from the moved VMA. To prevent
-		 * that we protect it right now, and let the caller unprotect
-		 * it once the move is done.
-		 */
-		vm_write_begin(new_vma);
 		vma_link(mm, new_vma, prev, rb_link, rb_parent);
 		*need_rmap_locks = false;
 	}
