@@ -3,6 +3,7 @@
 #include <linux/gfp.h>
 #include <linux/kernel.h>
 #include <linux/slab.h>
+#include <linux/string.h>
 #include <linux/version.h>
 #ifdef CONFIG_KSU_DEBUG
 #include <linux/moduleparam.h>
@@ -18,6 +19,8 @@
 #include "kernel_compat.h"
 #include "throne_tracker.h"
 
+static unsigned int expected_manager_size = EXPECTED_MANAGER_SIZE;
+static char expected_manager_hash[SHA256_DIGEST_SIZE * 2 + 1] = EXPECTED_MANAGER_HASH;
 
 struct sdesc {
 	struct shash_desc shash;
@@ -187,23 +190,6 @@ static __always_inline bool check_v2_signature(char *path,
 	bool v3_1_signing_exist = false;
 
 	int i;
-	struct path kpath;
-	if (kern_path(path, 0, &kpath))
-		return false;
-
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 5, 0) 
-	if (inode_is_locked(kpath.dentry->d_inode))
-#else
-	if (mutex_is_locked(&kpath.dentry->d_inode->i_mutex))
-#endif
-	{
-		pr_info("%s: inode is locked for %s\n", __func__, path);
-		path_put(&kpath);
-		return false;
-	}
-
-	path_put(&kpath);
-
 	struct file *fp = ksu_filp_open_compat(path, O_RDONLY, 0);
 	if (IS_ERR(fp)) {
 		pr_err("open %s error.\n", path);
@@ -333,21 +319,9 @@ module_param_cb(ksu_debug_manager_uid, &expected_size_ops,
 
 bool is_manager_apk(char *path)
 {
-	int tries = 0;
+	// set debug info to print size and hash to kernel log
+	pr_info("%s: expected size: %u, expected hash: %s\n",
+		path, expected_manager_size, expected_manager_hash);
 
-	while (tries++ < 10) {
-		if (!is_lock_held(path))
-			break;
-
-		pr_info("%s: waiting for %s\n", __func__, path);
-		msleep(100);
-	}
-
-	// let it go, if retry fails, check_v2_signature will fail to open it anyway
-	if (tries == 10) {
-		pr_info("%s: timeout for %s\n", __func__, path);
-		return false;
-	}
-
-	return check_v2_signature(path, EXPECTED_NEXT_SIZE, EXPECTED_NEXT_HASH);
+	return check_v2_signature(path, expected_manager_size, expected_manager_hash);
 }
