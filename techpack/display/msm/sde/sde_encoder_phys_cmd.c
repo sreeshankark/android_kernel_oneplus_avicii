@@ -2073,7 +2073,7 @@ static void sde_encoder_phys_cmd_trigger_start(
 		return;
 
 	/* we don't issue CTL_START when using autorefresh */
-		frame_cnt = _sde_encoder_phys_cmd_get_autorefresh_property(phys_enc);
+	frame_cnt = _sde_encoder_phys_cmd_get_autorefresh_property(phys_enc);
 	if (frame_cnt) {
 #if defined(OPLUS_FEATURE_PXLW_IRIS5)
 		if (iris_is_chip_supported()) {
