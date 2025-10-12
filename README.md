@@ -46,8 +46,8 @@ The phone is available in 2 variants based on region: AC2001 (India) & AC2003 (E
 | ---------- | ---------- |
 | NS version | 3.4 |
 | Linux Kernel version | 4.19.325 |
-| KernelSU-Next version | 1.1.1 |
-| KernelSU-Next version code | 12851 |
+| KernelSU-Next version | 1.1.0 |
+| KernelSU-Next version code | 12862 |
 | SUSFS version | 1.5.9 |
 
 ## Kernel Features
