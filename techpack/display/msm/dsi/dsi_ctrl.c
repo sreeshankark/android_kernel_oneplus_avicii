@@ -374,6 +374,8 @@ static void dsi_ctrl_dma_cmd_wait_for_done(struct work_struct *work)
 							dsi_ctrl->irq_info.irq_stat_refcount[DSI_SINT_CMD_MODE_DMA_DONE]);
 				dsi_ctrl_disable_status_interrupt(dsi_ctrl,
 						DSI_SINT_CMD_MODE_DMA_DONE);
+			}
+#endif
 		} else {
 			DSI_CTRL_ERR(dsi_ctrl,
 					"Command transfer failed\n");
