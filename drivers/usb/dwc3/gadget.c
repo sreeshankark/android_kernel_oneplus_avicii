@@ -2282,6 +2282,7 @@ static int dwc3_gadget_run_stop(struct dwc3 *dwc, int is_on, int suspend)
 {
 	u32			reg, reg1;
 	u32			timeout = 1500;
+	u32			saved_config = 0;
 #ifdef OPLUS_FEATURE_CHG_BASIC
 	ktime_t		start, diff;
 #endif
