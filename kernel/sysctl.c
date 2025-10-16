@@ -2004,42 +2004,6 @@ static struct ctl_table vm_table[] = {
 		.extra2		= &one_hundred,
 #endif /*OPLUS_FEATURE_ZRAM_OPT*/
 	},
-#ifdef CONFIG_DYNAMIC_TUNNING_SWAPPINESS
-	{
-		.procname	= "vm_swappiness_threshold1",
-		.data		= &vm_swappiness_threshold1,
-		.maxlen		= sizeof(vm_swappiness_threshold1),
-		.mode		= 0644,
-		.proc_handler	= proc_dointvec_minmax,
-		.extra1		= &zero,
-		.extra2		= &two_hundred,
-	},
-	{
-		.procname	= "vm_swappiness_threshold2",
-		.data		= &vm_swappiness_threshold2,
-		.maxlen		= sizeof(vm_swappiness_threshold2),
-		.mode		= 0644,
-		.proc_handler	= proc_dointvec_minmax,
-		.extra1		= &zero,
-		.extra2		= &two_hundred,
-	},
-	{
-		.procname	= "swappiness_threshold1_size",
-		.data		= &swappiness_threshold1_size,
-		.maxlen		= sizeof(swappiness_threshold1_size),
-		.mode		= 0644,
-		.proc_handler	= proc_dointvec_minmax,
-		.extra1		= &zero,
-	},
-	{
-		.procname	= "swappiness_threshold2_size",
-		.data		= &swappiness_threshold2_size,
-		.maxlen		= sizeof(swappiness_threshold2_size),
-		.mode		= 0644,
-		.proc_handler	= proc_dointvec_minmax,
-		.extra1		= &zero,
-	},
-#endif
 #if defined(OPLUS_FEATURE_ZRAM_OPT) && defined(CONFIG_OPLUS_ZRAM_OPT)
 	{
 		.procname	= "direct_swappiness",
@@ -2051,15 +2015,6 @@ static struct ctl_table vm_table[] = {
 		.extra2 	= &two_hundred,
 	},
 #endif
-	{
-		.procname       = "want_old_faultaround_pte",
-		.data           = &want_old_faultaround_pte,
-		.maxlen         = sizeof(want_old_faultaround_pte),
-		.mode           = 0644,
-		.proc_handler   = proc_dointvec_minmax,
-		.extra1         = &zero,
-		.extra2         = &one,
-	},
 #ifdef CONFIG_HUGETLB_PAGE
 	{
 		.procname	= "nr_hugepages",
