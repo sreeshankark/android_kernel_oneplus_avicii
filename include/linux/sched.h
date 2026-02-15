@@ -1533,6 +1533,10 @@ struct task_struct {
 	/* Used by LSM modules for access restriction: */
 	void				*security;
 #endif
+
+#ifdef CONFIG_OPLUS_FEATURE_IM
+	int im_flag;
+#endif
 	/* task is frozen/stopped (used by the cgroup freezer) */
 	ANDROID_KABI_USE(1, unsigned frozen:1);
 
