@@ -631,6 +631,10 @@ void elv_drain_elevator(struct request_queue *q)
 
 void __elv_add_request(struct request_queue *q, struct request *rq, int where)
 {
+#if defined(OPLUS_FEATURE_IOMONITOR) && defined(CONFIG_IOMONITOR)
+	rq->req_ti = ktime_get();
+#endif /*OPLUS_FEATURE_IOMONITOR*/
+
 	trace_block_rq_insert(q, rq);
 
 	blk_pm_add_request(q, rq);
