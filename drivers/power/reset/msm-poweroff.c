@@ -27,6 +27,11 @@
 #include <soc/qcom/watchdog.h>
 #include <soc/qcom/minidump.h>
 
+#ifdef CONFIG_OPLUS_FEATURE_QCOM_MINIDUMP_ENHANCE
+#include <soc/oplus/system/oplus_project.h>
+#include <soc/oplus/system/qcom_minidump_enhance.h>
+#endif
+
 #ifdef CONFIG_OPLUS_FEATURE_MISC
 #include <soc/oplus/system/oplus_misc.h>
 #endif
@@ -71,7 +76,11 @@ static struct kobject dload_kobj;
 
 static int in_panic;
 
+#ifndef CONFIG_OPLUS_FEATURE_QCOM_MINIDUMP_ENHANCE
 static int dload_type = SCM_DLOAD_FULLDUMP;
+#else
+int dload_type = SCM_DLOAD_FULLDUMP;
+#endif
 
 static void *dload_mode_addr;
 static bool dload_mode_enabled;
@@ -228,6 +237,13 @@ static void set_dload_mode(int on)
 	ret = scm_set_dload_mode(on ? dload_type : 0, 0);
 	if (ret)
 		pr_err("Failed to set secure DLOAD mode: %d\n", ret);
+
+#ifdef CONFIG_OPLUS_FEATURE_QCOM_MINIDUMP_ENHANCE
+	if(dload_type == SCM_DLOAD_MINIDUMP)
+		__raw_writel(EMMC_DLOAD_TYPE, dload_type_addr);
+	else
+		__raw_writel(0, dload_type_addr);
+#endif /* CONFIG_OPLUS_FEATURE_QCOM_MINIDUMP_ENHANCE */
 
 	dload_mode_enabled = on;
 }
@@ -542,6 +558,11 @@ static void msm_restart_prepare(const char *cmd)
 		qpnp_pon_system_pwr_off(PON_POWER_OFF_WARM_RESET);
 		qpnp_pon_set_restart_reason(
 					PON_RESTART_REASON_KERNEL);
+#ifdef CONFIG_OPLUS_FEATURE_QCOM_MINIDUMP_ENHANCE
+		if (get_eng_version() == AGING || get_eng_version() == FACTORY) {
+			oplus_switch_fulldump(1);
+		}
+#endif
 		flush_cache_all();
 
 		/*outer_flush_all is not supported by 64bit kernel*/
@@ -721,6 +742,13 @@ static int msm_restart_probe(struct platform_device *pdev)
 	struct resource *mem;
 	struct device_node *np;
 	int ret = 0;
+
+#ifdef CONFIG_OPLUS_FEATURE_QCOM_MINIDUMP_ENHANCE
+	if (oplus_daily_build() == true || get_eng_version() == AGING || get_eng_version() == FACTORY)
+		dload_type = SCM_DLOAD_FULLDUMP;
+	else
+		dload_type = SCM_DLOAD_MINIDUMP;
+#endif
 
 	setup_dload_mode_support();
 
