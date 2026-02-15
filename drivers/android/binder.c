@@ -3031,6 +3031,7 @@ static int binder_proc_transaction(struct binder_transaction *t,
 		binder_node_unlock(node);
 		return proc->is_frozen ? BR_FROZEN_REPLY : BR_DEAD_REPLY;
 	}
+
 	if (!thread && !pending_async)
 		thread = binder_select_thread_ilocked(proc);
 
@@ -4416,7 +4417,17 @@ static int binder_wait_for_work(struct binder_thread *thread,
 			list_add(&thread->waiting_thread_node,
 				 &proc->waiting_threads);
 		binder_inner_proc_unlock(proc);
+#ifdef OPLUS_FEATURE_HEALTHINFO
+#ifdef CONFIG_OPLUS_JANK_INFO
+		current->in_binder = 1;
+#endif
+#endif /* OPLUS_FEATURE_HEALTHINFO */  
 		schedule();
+#ifdef OPLUS_FEATURE_HEALTHINFO
+#ifdef CONFIG_OPLUS_JANK_INFO
+		current->in_binder = 0;
+#endif
+#endif /* OPLUS_FEATURE_HEALTHINFO */
 		binder_inner_proc_lock(proc);
 		list_del_init(&thread->waiting_thread_node);
 		if (signal_pending(current)) {

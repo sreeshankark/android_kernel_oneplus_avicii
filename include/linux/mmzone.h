@@ -164,6 +164,9 @@ enum zone_stat_item {
 #endif
 	NR_IONCACHE_PAGES,
 	NR_FREE_CMA_PAGES,
+#ifdef OPLUS_FEATURE_HEALTHINFO
+        NR_IONCACHE_PAGES,
+#endif /* OPLUS_FEATURE_HEALTHINFO */
 	NR_VM_ZONE_STAT_ITEMS };
 
 enum node_stat_item {

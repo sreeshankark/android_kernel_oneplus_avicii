@@ -30,6 +30,12 @@
 #include <linux/rseq.h>
 #include <linux/android_kabi.h>
 
+#ifdef OPLUS_FEATURE_HEALTHINFO
+#ifdef CONFIG_OPLUS_JANK_INFO
+#include <linux/healthinfo/jank_monitor.h>
+#endif
+#endif /* OPLUS_FEATURE_HEALTHINFO */
+
 #ifdef VENDOR_EDIT
 extern void show_regs(struct pt_regs *);
 #endif /* VENDOR_EDIT */
@@ -1534,12 +1540,32 @@ struct task_struct {
 	void				*security;
 #endif
 
+#ifdef OPLUS_FEATURE_HEALTHINFO
+#ifdef CONFIG_OPLUS_JANK_INFO
+	int jank_trace;
+	struct jank_monitor_info jank_info;
+	unsigned in_mutex:1;
+	unsigned in_downread:1;
+	unsigned in_downwrite:1;
+	unsigned in_futex:1;
+	unsigned in_binder:1;
+	unsigned in_epoll:1;
+#endif
+#endif /* OPLUS_FEATURE_HEALTHINFO */
+
 #ifdef CONFIG_OPLUS_FEATURE_TPP
 	int tpp_flag;
 #endif /* CONFIG_OPLUS_FEATURE_TPP */
 
 #ifdef CONFIG_OPLUS_FEATURE_IM
 	int im_flag;
+#endif
+
+#ifdef CONFIG_OPLUS_FEATURE_TPD
+	int tpd;
+	int dtpd; /* dynamic tpd task */
+	int dtpdg; /* dynamic tpd task group */
+	int tpd_st; /* affinity decision from im */
 #endif
 	/* task is frozen/stopped (used by the cgroup freezer) */
 	ANDROID_KABI_USE(1, unsigned frozen:1);
