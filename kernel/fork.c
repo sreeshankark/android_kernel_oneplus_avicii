@@ -2011,7 +2011,6 @@ static __latent_entropy struct task_struct *copy_process(
 	memset(&p->jank_info, 0, sizeof(struct jank_monitor_info));
 #endif
 #endif /* OPLUS_FEATURE_HEALTHINFO */
-
 	/* Perform scheduler related setup. Assign this task to a CPU. */
 	retval = sched_fork(clone_flags, p);
 	if (retval)
