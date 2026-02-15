@@ -985,7 +985,6 @@ update_stats_wait_end(struct cfs_rq *cfs_rq, struct sched_entity *se)
 			return;
 		}
 		trace_sched_stat_wait(p, delta);
-
 #ifdef OPLUS_FEATURE_HEALTHINFO
 // Add for get sched latency stat
 #ifdef CONFIG_OPLUS_HEALTHINFO
@@ -1036,7 +1035,6 @@ update_stats_enqueue_sleeper(struct cfs_rq *cfs_rq, struct sched_entity *se)
 		if (tsk) {
 			account_scheduler_latency(tsk, delta >> 10, 1);
 			trace_sched_stat_sleep(tsk, delta);
-
 #ifdef OPLUS_FEATURE_HEALTHINFO
 #ifdef CONFIG_OPLUS_JANK_INFO
 			update_jank_trace_info(tsk, JANK_TRACE_SSTATE, 0, delta);
