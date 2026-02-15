@@ -196,7 +196,6 @@ static bool sugov_up_down_rate_limit(struct sugov_policy *sg_policy, u64 time,
 	if (sg_policy->flags & SCHED_CPUFREQ_BOOST)
 		return false;
 #endif
-
 	if (next_freq > sg_policy->next_freq &&
 	    delta_ns < sg_policy->up_rate_delay_ns)
 			return true;

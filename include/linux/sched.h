@@ -39,7 +39,6 @@
 #ifdef VENDOR_EDIT
 extern void show_regs(struct pt_regs *);
 #endif /* VENDOR_EDIT */
-
 /* task_struct member predeclarations (sorted alphabetically): */
 struct audit_context;
 struct backing_dev_info;
