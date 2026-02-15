@@ -104,6 +104,10 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/initcall.h>
 
+#ifdef OPLUS_FEATURE_PHOENIX
+#include "../drivers/soc/oplus/system/oplus_phoenix/oplus_phoenix.h"
+#endif  //OPLUS_FEATURE_PHOENIX
+
 #ifdef CONFIG_MSM_BOOT_TIME_MARKER
 #include <soc/qcom/boot_stats.h>
 #endif
@@ -614,6 +618,11 @@ asmlinkage __visible void __init start_kernel(void)
 	trap_init();
 	mm_init();
 
+#ifdef OPLUS_FEATURE_PHOENIX
+	if(phx_set_boot_stage)
+		phx_set_boot_stage(KERNEL_MM_INIT_DONE);
+#endif //OPLUS_FEATURE_PHOENIX
+
 	ftrace_init();
 
 	/* trace_printk can be enabled here */
@@ -685,6 +694,10 @@ asmlinkage __visible void __init start_kernel(void)
 
 	early_boot_irqs_disabled = false;
 	local_irq_enable();
+#ifdef OPLUS_FEATURE_PHOENIX
+	if(phx_set_boot_stage)
+		phx_set_boot_stage(KERNEL_LOCAL_IRQ_ENABLE);
+#endif //OPLUS_FEATURE_PHOENIX
 
 	kmem_cache_init_late();
 
@@ -753,6 +766,11 @@ asmlinkage __visible void __init start_kernel(void)
 	cgroup_init();
 	taskstats_init_early();
 	delayacct_init();
+
+#ifdef OPLUS_FEATURE_PHOENIX
+	if(phx_set_boot_stage)
+		phx_set_boot_stage(KERNEL_DELAYACCT_INIT_DONE);
+#endif //OPLUS_FEATURE_PHOENIX
 
 	acpi_subsystem_init();
 	arch_post_acpi_subsys_init();
@@ -1002,10 +1020,18 @@ static void __init do_basic_setup(void)
 	cpuset_init_smp();
 	shmem_init();
 	driver_init();
+#ifdef OPLUS_FEATURE_PHOENIX
+	if(phx_set_boot_stage)
+		phx_set_boot_stage(KERNEL_DRIVER_INIT_DONE);
+#endif //OPLUS_FEATURE_PHOENIX
 	init_irq_proc();
 	do_ctors();
 	usermodehelper_enable();
 	do_initcalls();
+#ifdef OPLUS_FEATURE_PHOENIX
+	if(phx_set_boot_stage)
+		phx_set_boot_stage(KERNEL_DO_INITCALLS_DONE);
+#endif //OPLUS_FEATURE_PHOENIX
 }
 
 static void __init do_pre_smp_initcalls(void)
@@ -1110,6 +1136,11 @@ static int __ref kernel_init(void *unused)
 
 	rcu_end_inkernel_boot();
 
+#ifdef OPLUS_FEATURE_PHOENIX
+	if(phx_set_boot_stage)
+		phx_set_boot_stage(KERNEL_INIT_DONE);
+#endif //OPLUS_FEATURE_PHOENIX
+
 #ifdef CONFIG_MSM_BOOT_TIME_MARKER
 	place_marker("M - DRIVER Kernel Boot Done");
 #endif
@@ -1180,6 +1211,10 @@ static noinline void __init kernel_init_freeable(void)
 
 	do_basic_setup();
 
+#ifdef OPLUS_FEATURE_PHOENIX
+	if(phx_set_boot_stage)
+		phx_set_boot_stage(KERNEL_DO_BASIC_SETUP_DONE);
+#endif //OPLUS_FEATURE_PHOENIX
 	/* Open the /dev/console on the rootfs, this should never fail */
 	if (ksys_open((const char __user *) "/dev/console", O_RDWR, 0) < 0)
 		pr_err("Warning: unable to open an initial console.\n");
