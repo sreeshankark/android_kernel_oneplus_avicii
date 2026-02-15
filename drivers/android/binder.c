@@ -86,6 +86,9 @@
 #ifdef OPLUS_FEATURE_HANS_FREEZE
 #include <linux/hans.h>
 #endif /*OPLUS_FEATURE_HANS_FREEZE*/
+#ifdef OPLUS_FEATURE_SCHED_ASSIST
+#include <linux/sched_assist/sched_assist_binder.h>
+#endif /* OPLUS_FEATURE_SCHED_ASSIST */
 
 static HLIST_HEAD(binder_deferred_list);
 static DEFINE_MUTEX(binder_deferred_lock);
@@ -578,6 +581,9 @@ struct binder_proc {
 	bool sync_recv;
 	bool async_recv;
 	wait_queue_head_t freeze_wait;
+#ifdef OPLUS_FEATURE_SCHED_ASSIST
+	int proc_type;
+#endif /* OPLUS_FEATURE_SCHED_ASSIST */
 
 	struct list_head todo;
 	struct binder_stats stats;
@@ -1338,10 +1344,17 @@ static void binder_restore_priority(struct task_struct *task,
 	binder_do_set_priority(task, desired, /* verify = */ false);
 }
 
+#ifdef OPLUS_FEATURE_SCHED_ASSIST
+static void binder_transaction_priority(struct binder_thread *thread, struct task_struct *task,
+					struct binder_transaction *t,
+					struct binder_priority node_prio,
+					bool inherit_rt)
+#else
 static void binder_transaction_priority(struct task_struct *task,
 					struct binder_transaction *t,
 					struct binder_priority node_prio,
 					bool inherit_rt)
+#endif /* OPLUS_FEATURE_SCHED_ASSIST */
 {
 	struct binder_priority desired_prio = t->priority;
 
@@ -1352,6 +1365,13 @@ static void binder_transaction_priority(struct task_struct *task,
 	t->saved_priority.sched_policy = task->policy;
 	t->saved_priority.prio = task->normal_prio;
 
+#ifdef OPLUS_FEATURE_SCHED_ASSIST
+	//NOTE: if task is main thread, and doesn't join pool as a binder thread,
+	//DON'T actually change priority in binder transaction.
+	if ((task->tgid == task->pid) && !(thread->looper & BINDER_LOOPER_STATE_ENTERED)) {
+		return;
+	}
+#endif /* OPLUS_FEATURE_SCHED_ASSIST */
 	if (!inherit_rt && is_rt_policy(desired_prio.sched_policy)) {
 		desired_prio.prio = NICE_TO_PRIO(0);
 		desired_prio.sched_policy = SCHED_NORMAL;
@@ -2975,6 +2995,13 @@ static int binder_fixup_parent(struct binder_transaction *t,
 	return 0;
 }
 
+#ifdef OPLUS_FEATURE_SCHED_ASSIST
+static inline bool is_binder_proc_sf(struct binder_proc *proc)
+{
+	return proc && proc->tsk && strstr(proc->tsk->comm, "surfaceflinger")
+		&& (task_uid(proc->tsk).val == 1000);
+}
+#endif /* OPLUS_FEATURE_SCHED_ASSIST */
 /**
  * binder_proc_transaction() - sends a transaction to a process and wakes it up
  * @t:		transaction to send
@@ -3051,9 +3078,20 @@ static int binder_proc_transaction(struct binder_transaction *t,
 			call_binderevent_notifiers(0, (void *)&binder_notify_obj);
 		}
 #endif
+#ifdef OPLUS_FEATURE_SCHED_ASSIST
+		binder_transaction_priority(thread, thread->task, t, node_prio,
+					    node->inherit_rt);
+#else
 		binder_transaction_priority(thread->task, t, node_prio,
 					    node->inherit_rt);
+#endif /* OPLUS_FEATURE_SCHED_ASSIST */
 		binder_enqueue_thread_work_ilocked(thread, &t->work);
+#ifdef OPLUS_FEATURE_SCHED_ASSIST
+		if (sysctl_sched_assist_enabled) {
+			if (!oneway || proc->proc_type)
+				binder_set_inherit_ux(thread->task, current);
+		}
+#endif /* OPLUS_FEATURE_SCHED_ASSIST */
 	} else if (!pending_async) {
 #if defined(CONFIG_OPLUS_FEATURE_BINDER_STATS_ENABLE)
 		if (NULL != proc && NULL != proc->tsk) {
@@ -3769,6 +3807,11 @@ static void binder_transaction(struct binder_proc *proc,
 		binder_inner_proc_unlock(target_proc);
 
 		wake_up_interruptible_sync(&target_thread->wait);
+#ifdef OPLUS_FEATURE_SCHED_ASSIST
+		if (sysctl_sched_assist_enabled && !proc->proc_type) {
+			binder_unset_inherit_ux(thread->task);
+		}
+#endif /* OPLUS_FEATURE_SCHED_ASSIST */
 		binder_restore_priority(current, in_reply_to->saved_priority);
 		binder_free_transaction(in_reply_to);
 	} else if (!(t->flags & TF_ONE_WAY)) {
@@ -4413,9 +4456,20 @@ static int binder_wait_for_work(struct binder_thread *thread,
 		prepare_to_wait(&thread->wait, &wait, TASK_INTERRUPTIBLE);
 		if (binder_has_work_ilocked(thread, do_proc_work))
 			break;
+#ifdef OPLUS_FEATURE_SCHED_ASSIST
+		if (do_proc_work) {
+			list_add(&thread->waiting_thread_node,
+				 &proc->waiting_threads);
+
+			if (sysctl_sched_assist_enabled) {
+				binder_unset_inherit_ux(thread->task);
+			}
+		}
+#else /* OPLUS_FEATURE_SCHED_ASSIST */
 		if (do_proc_work)
 			list_add(&thread->waiting_thread_node,
 				 &proc->waiting_threads);
+#endif /* OPLUS_FEATURE_SCHED_ASSIST */
 		binder_inner_proc_unlock(proc);
 #ifdef OPLUS_FEATURE_HEALTHINFO
 #ifdef CONFIG_OPLUS_JANK_INFO
@@ -4706,8 +4760,13 @@ retry:
 			trd->cookie =  target_node->cookie;
 			node_prio.sched_policy = target_node->sched_policy;
 			node_prio.prio = target_node->min_priority;
+#ifdef OPLUS_FEATURE_SCHED_ASSIST
+			binder_transaction_priority(thread, current, t, node_prio,
+						    target_node->inherit_rt);
+#else
 			binder_transaction_priority(current, t, node_prio,
 						    target_node->inherit_rt);
+#endif /* OPLUS_FEATURE_SCHED_ASSIST */
 			cmd = BR_TRANSACTION;
 		} else {
 			trd->target.ptr = 0;
@@ -4725,6 +4784,11 @@ retry:
 			trd->sender_pid =
 				task_tgid_nr_ns(sender,
 						task_active_pid_ns(current));
+#ifdef OPLUS_FEATURE_SCHED_ASSIST
+			if (sysctl_sched_assist_enabled) {
+				binder_set_inherit_ux(thread->task, t_from->task);
+			}
+#endif /* OPLUS_FEATURE_SCHED_ASSIST */
 		} else {
 			trd->sender_pid = 0;
 		}
@@ -5674,6 +5738,9 @@ static int binder_open(struct inode *nodp, struct file *filp)
 	spin_lock_init(&proc->outer_lock);
 	get_task_struct(current->group_leader);
 	proc->tsk = current->group_leader;
+#ifdef OPLUS_FEATURE_SCHED_ASSIST
+	proc->proc_type = is_binder_proc_sf(proc) ? 1 : 0;
+#endif /* OPLUS_FEATURE_SCHED_ASSIST */
 	mutex_init(&proc->files_lock);
 	proc->cred = get_cred(filp->f_cred);
 	INIT_LIST_HEAD(&proc->todo);

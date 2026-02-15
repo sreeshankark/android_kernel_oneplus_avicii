@@ -170,5 +170,9 @@ extern unsigned int sysctl_sched_energy_aware;
 int sched_energy_aware_handler(struct ctl_table *table, int write,
 		void *buffer, size_t *lenp, loff_t *ppos);
 #endif
+#ifdef OPLUS_FEATURE_SCHED_ASSIST
+extern int sysctl_sched_assist_scene_handler(struct ctl_table *table, int write,
+	void __user *buffer, size_t *lenp, loff_t *ppos);
+#endif /* OPLUS_FEATURE_SCHED_ASSIST */
 
 #endif /* _LINUX_SCHED_SYSCTL_H */
