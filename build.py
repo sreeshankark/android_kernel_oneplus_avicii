@@ -61,16 +61,16 @@ builddir="${kernel_dir}/build"
 avbtool=${kernel_dir}/scripts/avb/avbtool.py
 ZIMAGE=$kernel_dir/out/arch/arm64/boot/Image.gz-dtb
 DTBOIMAGE=$kernel_dir/out/arch/arm64/boot/dtbo.img
-version="v3.4"
+version="v4.0"
 ksu_version="v3.0.1"
 ksu_version_code="32967"
 build_date="$(date +"%d-%m-%Y")"
-kernel_version=4.19.325
+kernel_version=4.19.325-cip128-st12
 kernel_name="NeverSettle-Kernel-$version-avicii"
 ksu_apk_name="KernelSU_Next_${ksu_version}_${ksu_version_code}-release.apk"
 ksu_apk="https://github.com/KernelSU-Next/KernelSU-Next/releases/download/${ksu_version}/KernelSU_Next_${ksu_version}_${ksu_version_code}-release.apk"
 zip_name="$kernel_name-$(date +"%d%m%Y-%H%M").zip"
-sed -i "s/-NeverSettle-Kernel/-NeverSettle-Kernel-v3.4/g" arch/arm64/configs/avicii_defconfig
+sed -i "s/-NeverSettle-Kernel/-NeverSettle-Kernel-v4.0/g" arch/arm64/configs/avicii_defconfig
 sed -i 's/CONFIG_LOCALVERSION_AUTO=y/# CONFIG_LOCALVERSION_AUTO is not set/g' arch/arm64/configs/avicii_defconfig
 TC_DIR=$HOME/tc/
 export ARCH=arm64
