@@ -312,9 +312,6 @@ struct fuse_file {
 
 	/** Has flock been performed on this file? */
 	bool flock:1;
-
-	/** Container for data related to the passthrough functionality */
-	struct fuse_passthrough passthrough;
 };
 
 /** One input argument of a request */
@@ -844,9 +841,6 @@ struct fuse_conn {
 
 	/* Auto-mount submounts announced by the server */
 	unsigned int auto_submounts:1;
-
-	/** Passthrough mode for read/write IO */
-	unsigned int passthrough:1;
 
 	/** BPF Only, no Daemon running */
 	unsigned int no_daemon:1;

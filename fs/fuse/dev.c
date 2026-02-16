@@ -1017,14 +1017,11 @@ static int fuse_copy_pages(struct fuse_copy_state *cs, unsigned nbytes,
 
 		err = fuse_copy_page(cs, &ap->pages[i], offset, count, zeroing);
 		if (err)
-			goto err;
+			return err;
 
 		nbytes -= count;
 	}
-err:
-	if (req->ff)
-		spin_unlock(&req->ff->fc->lock);
-	return err;
+	return 0;
 }
 
 /* Copy a single argument in the request to/from userspace buffer */

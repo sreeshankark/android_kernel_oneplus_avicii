@@ -104,6 +104,9 @@ ssize_t fuse_passthrough_read_iter(struct kiocb *iocb_fuse,
 	}
 out:
 	revert_creds(old_cred);
+
+        fuse_file_accessed(fuse_filp, passthrough_filp);
+
 	return ret;
 }
 
@@ -194,6 +197,8 @@ ssize_t fuse_passthrough_mmap(struct file *file, struct vm_area_struct *vma)
 		fuse_inode->i_ctime = passthrough_inode->i_ctime;
 	}
 	touch_atime(&file->f_path);
+
+        fuse_file_accessed(file, passthrough_filp);
 
 	return ret;
 }

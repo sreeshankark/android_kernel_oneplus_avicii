@@ -1241,7 +1241,7 @@ static void process_init_reply(struct fuse_mount *fm, struct fuse_args *args,
 			if (arg->flags & FUSE_PASSTHROUGH) {
 				fc->passthrough = 1;
 				/* Prevent further stacking */
-				fc->sb->s_stack_depth =
+				fm->sb->s_stack_depth =
 					FILESYSTEM_MAX_STACK_DEPTH;
 			}
 			if (arg->flags & FUSE_PARALLEL_DIROPS)

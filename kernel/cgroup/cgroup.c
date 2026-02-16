@@ -5250,8 +5250,8 @@ static struct cgroup_subsys_state *css_create(struct cgroup *cgrp,
 #ifdef CONFIG_OPLUS_FEATURE_UID_PERF
 	if(ss->id == cpuset_cgrp_id) {
 		cgroup_name(cgrp, name, MAX_CGROUP_TYPE_NAMELEN);
-		pr_warn("%s: cgroup=%s cgid=%d cgroup_subsys=%s ssid=%d cpuset_cgrp_id=%d", __func__, name, cgrp->id, ss->name, ss->id, cpuset_cgrp_id);
-		cpuset_add_cg(cgrp->id, name);
+		pr_warn("%s: cgroup=%s cgid=%d cgroup_subsys=%s ssid=%d cpuset_cgrp_id=%d", __func__, name, cgroup_id(cgrp), ss->name, ss->id, cpuset_cgrp_id);
+		cpuset_add_cg(cgroup_id(cgrp), name);
 	}
 #endif
 	err = percpu_ref_init(&css->refcnt, css_release, 0, GFP_KERNEL);

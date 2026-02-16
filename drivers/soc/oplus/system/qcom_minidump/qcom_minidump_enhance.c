@@ -152,7 +152,7 @@ void dumpcpuregs(struct pt_regs *pt_regs)
 		cpudata->regs[i][1] = (unsigned int)((addr>>32)&0xffffffff);
 		for(j = 2;j < 256;j++){
 			u32	data;
-			if (probe_kernel_address(p, data)) {
+			if (copy_from_kernel_nofault(&data, p, sizeof(data))) {
 				break;
 			}else{
 				cpudata->regs[i][j] = data;
@@ -171,7 +171,7 @@ void dumpcpuregs(struct pt_regs *pt_regs)
 		cpudata->regs[i][1] = (unsigned int)((addr>>32)&0xffffffff);
 		for(j = 2;j < 256;j++){
 			u32	data;
-			if (probe_kernel_address(p, data)) {
+			if (copy_from_kernel_nofault(&data, p, sizeof(data))) {
 				break;
 			}else{
 				cpudata->regs[31][j] = data;
@@ -189,7 +189,7 @@ void dumpcpuregs(struct pt_regs *pt_regs)
 		cpudata->sps[1] = (unsigned int)((addr>>32)&0xffffffff);
 		for(j = 2;j < 512;j++){
 			u32	data;
-			if (probe_kernel_address(p, data)) {
+			if (copy_from_kernel_nofault(&data, p, sizeof(data))) {
 				break;
 			}else{
 				cpudata->sps[j] = data;
