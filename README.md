@@ -38,17 +38,17 @@ The phone is available in 2 variants based on region: AC2001 (India) & AC2003 (E
 | Sensors | Accelerometer, Electronic compass, Gyroscope, Ambient light sensor, Proximity sensor, Sensor Core |
 | Extras | Bluetooth 5.1 (support aptX & aptX HD & LDAC & AAC), NFC enabled |
 
-### ⚠️ This kernel is not allowed to be included in ROM builds without the [developer's](https://t.me/sksanju0910) approval.
+### ⚠️ Those who uses this kernel in ROM builds should not modify the source code of the kernel.
 
 ## Kernel Details
 
 | Parameter | Value |
 | ---------- | ---------- |
-| NS version | 3.4 |
-| Linux Kernel version | 4.19.325 |
-| KernelSU-Next version | 1.1.0 |
-| KernelSU-Next version code | 12862 |
-| SUSFS version | 1.5.9 |
+| NS version | 4.1 |
+| Linux Kernel version | 4.19.325-cip129-st13 |
+| KernelSU-Next version | 3.1.0 |
+| KernelSU-Next version code | 33025 |
+| SUSFS version | 2.0.0 |
 
 ## Kernel Features
 (1) Supports 5V-6A Fast Charging 
