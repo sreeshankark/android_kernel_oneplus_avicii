@@ -11,7 +11,7 @@
 #include "../include/oplus_fp_common.h"
 
 /**********************************************************/
-enum FP_MODE{
+enum FP_MODE {
 	GF_IMAGE_MODE = 0,
 	GF_KEY_MODE,
 	GF_SLEEP_MODE,
@@ -145,10 +145,10 @@ struct gf_dev {
 
 	struct input_dev *input;
 	/* buffer is NULL unless this device is open (users > 0) */
-	unsigned users;
-	signed irq_gpio;
-	signed reset_gpio;
-	signed pwr_gpio;
+	unsigned int users;
+	signed int irq_gpio;
+	signed int reset_gpio;
+	signed int pwr_gpio;
 	int irq;
 	int irq_enabled;
 	int clk_enabled;
@@ -160,14 +160,14 @@ struct gf_dev {
 	char fb_black;
 
     /* jinrong add for power */
-    unsigned power_num;
+    unsigned int power_num;
     fp_power_info_t pwr_list[FP_MAX_PWR_LIST_LEN];
     uint32_t notify_tpinfo_flag;
     uint32_t ftm_poweroff_flag;
 };
 
 
-int gf_parse_dts(struct gf_dev* gf_dev);
+int gf_parse_dts(struct gf_dev *gf_dev);
 void gf_cleanup(struct gf_dev *gf_dev);
 
 int gf_power_on(struct gf_dev *gf_dev);
@@ -181,8 +181,8 @@ void sendnlmsg(char *msg);
 int netlink_init(void);
 void netlink_exit(void);
 
-void gf_cleanup_pwr_list(struct gf_dev* gf_dev);
-int gf_parse_pwr_list(struct gf_dev* gf_dev);
-int gf_parse_ftm_poweroff_flag(struct gf_dev* gf_dev);
+void gf_cleanup_pwr_list(struct gf_dev *gf_dev);
+int gf_parse_pwr_list(struct gf_dev *gf_dev);
+int gf_parse_ftm_poweroff_flag(struct gf_dev *gf_dev);
 
 #endif /*__GF_SPI_H*/

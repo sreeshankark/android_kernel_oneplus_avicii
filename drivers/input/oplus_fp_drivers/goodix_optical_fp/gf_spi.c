@@ -267,15 +267,15 @@ static int gfspi_ioctl_clk_uninit(struct gf_dev *data)
 static void gf_kernel_key_input(struct gf_dev *gf_dev, struct gf_key *gf_key)
 {
     uint32_t key_input = 0;
-    if (GF_KEY_HOME == gf_key->key)
+    if (gf_key->key == GF_KEY_HOME)
     {
         key_input = GF_KEY_INPUT_HOME;
     }
-    else if (GF_KEY_POWER == gf_key->key)
+    else if (gf_key->key == GF_KEY_POWER)
     {
         key_input = GF_KEY_INPUT_POWER;
     }
-    else if (GF_KEY_CAMERA == gf_key->key)
+    else if (gf_key->key == GF_KEY_CAMERA)
     {
         key_input = GF_KEY_INPUT_CAMERA;
     }
@@ -295,7 +295,7 @@ static void gf_kernel_key_input(struct gf_dev *gf_dev, struct gf_key *gf_key)
         input_sync(gf_dev->input);
     }
 
-    if (GF_KEY_HOME == gf_key->key)
+    if (gf_key->key == GF_KEY_HOME)
     {
         input_report_key(gf_dev->input, key_input, gf_key->value);
         input_sync(gf_dev->input);
@@ -309,7 +309,7 @@ static irqreturn_t gf_irq(int irq, void *handle)
     wake_lock_timeout(&fp_wakelock, msecs_to_jiffies(WAKELOCK_HOLD_TIME));
     sendnlmsg(&msg);
     send_fingerprint_message(E_FP_SENSOR, msg, NULL, 0);
-#elif defined (GF_FASYNC)
+#elif defined(GF_FASYNC)
     struct gf_dev *gf_dev = &gf;
     if (gf_dev->async) {
         kill_fasync(&gf_dev->async, SIGIO, POLL_IN);
@@ -392,7 +392,7 @@ static long gf_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
         if ((cmd == GF_IOC_ENABLE_POWER) || (cmd == GF_IOC_DISABLE_POWER) || (cmd == GF_IOC_POWER_RESET)) {
             pr_info("power cmd\n");
         } else {
-            pr_info("Sensor is power off currently. \n");
+            pr_info("Sensor is power off currently.\n");
             return -ENODEV;
         }
     }
@@ -417,11 +417,11 @@ static long gf_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
             gf_enable_irq(gf_dev);
             break;
         case GF_IOC_RESET:
-            pr_info("%s GF_IOC_RESET. \n", __func__);
+            pr_info("%s GF_IOC_RESET.\n", __func__);
             gf_hw_reset(gf_dev, 10);
             break;
         case GF_IOC_POWER_RESET:
-            pr_info("%s GF_IOC_POWER_RESET. \n", __func__);
+            pr_info("%s GF_IOC_POWER_RESET.\n", __func__);
             gf_power_reset(gf_dev);
             gf_dev->device_available = 1;
             break;
@@ -689,7 +689,7 @@ static int goodix_fb_state_chg_callback(struct notifier_block *nb,
                     msg = GF_NET_EVENT_FB_BLACK;
                     sendnlmsg(&msg);
                     send_fingerprint_message(E_FP_SENSOR, msg, NULL, 0);
-#elif defined (GF_FASYNC)
+#elif defined(GF_FASYNC)
                     if (gf_dev->async) {
                         kill_fasync(&gf_dev->async, SIGIO, POLL_IN);
                     }
@@ -703,7 +703,7 @@ static int goodix_fb_state_chg_callback(struct notifier_block *nb,
                     msg = GF_NET_EVENT_FB_UNBLACK;
                     sendnlmsg(&msg);
                     send_fingerprint_message(E_FP_SENSOR, msg, NULL, 0);
-#elif defined (GF_FASYNC)
+#elif defined(GF_FASYNC)
                     if (gf_dev->async) {
                         kill_fasync(&gf_dev->async, SIGIO, POLL_IN);
                     }
@@ -823,7 +823,7 @@ static int gf_probe(struct platform_device *pdev)
     pr_info("Get the clk resource.\n");
     /* Enable spi clock */
     if (gfspi_ioctl_clk_init(gf_dev))
-        goto gfspi_probe_clk_init_failed:
+        goto gfspi_probe_clk_init_failed :
 
             if (gfspi_ioctl_clk_enable(gf_dev))
                 goto gfspi_probe_clk_enable_failed;
