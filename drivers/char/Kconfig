@@ -627,8 +627,6 @@ config RB5_GPIOS_ENABLE
 source "drivers/char/srandom/Kconfig"
 source "drivers/char/lrng/Kconfig"
 
-endmenu
-
 config RANDOM_TRUST_CPU
 	bool "Initialize RNG using CPU RNG instructions"
 	default y
