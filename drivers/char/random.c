@@ -1295,21 +1295,6 @@ static ssize_t urandom_read_iter(struct kiocb *kiocb, struct iov_iter *iter)
 	return get_random_bytes_user(iter);
 }
 
-static ssize_t random_read_iter(struct kiocb *kiocb, struct iov_iter *iter)
-{
-	int ret;
-
-	if (!crng_ready() &&
-	    ((kiocb->ki_flags & IOCB_NOWAIT) ||
-	     (kiocb->ki_filp->f_flags & O_NONBLOCK)))
-		return -EAGAIN;
-
-	ret = wait_for_random_bytes();
-	if (ret != 0)
-		return ret;
-	return get_random_bytes_user(iter);
-}
-
 static long random_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
 {
 	int __user *p = (int __user *)arg;

@@ -73,42 +73,6 @@ static int zram_slot_trylock(struct zram *zram, u32 index)
 	return bit_spin_trylock(ZRAM_LOCK, &zram->table[index].flags);
 }
 
-static void zram_slot_lock(struct zram *zram, u32 index)
-{
-	bit_spin_lock(ZRAM_LOCK, &zram->table[index].flags);
-}
-
-static void zram_slot_unlock(struct zram *zram, u32 index)
-{
-	bit_spin_unlock(ZRAM_LOCK, &zram->table[index].flags);
-}
-
-static inline bool init_done(struct zram *zram)
-{
-	return zram->disksize;
-}
-
-static inline struct zram *dev_to_zram(struct device *dev)
-{
-	return (struct zram *)dev_to_disk(dev)->private_data;
-}
-
-static struct zram_entry *zram_get_entry(struct zram *zram, u32 index)
-{
-	return zram->table[index].entry;
-}
-
-static void zram_set_entry(struct zram *zram, u32 index,
-			struct zram_entry *entry)
-{
-	zram->table[index].entry = entry;
-}
-
-static unsigned long zram_get_element(struct zram *zram, u32 index)
-{
-	return zram->table[index].element;
-}
-
 static inline bool zram_allocated(struct zram *zram, u32 index)
 {
 	return zram_get_obj_size(zram, index) ||
@@ -1237,7 +1201,7 @@ static void zram_free_page(struct zram *zram, size_t index)
 		goto out;
 	}
 
-	entry = zram_get_entry(zram, index);
+	entry = zram_get_handle(zram, index);
 	if (!entry)
 		return;
 
@@ -1248,7 +1212,7 @@ static void zram_free_page(struct zram *zram, size_t index)
 			     &zram->stats.compr_data_size);
 out:
 	atomic64_dec(&zram->stats.pages_stored);
-	zram_set_entry(zram, index, NULL);
+	zram_set_handle(zram, index, NULL);
 	zram_set_obj_size(zram, index, 0);
 	WARN_ON_ONCE(zram->table[index].flags &
 		~(1UL << ZRAM_LOCK | 1UL << ZRAM_UNDER_WB));
@@ -1412,7 +1376,7 @@ static int __zram_bvec_read(struct zram *zram, struct page *page, u32 index,
 				bio, partial_io);
 	}
 
-	entry = zram_get_entry(zram, index);
+	entry = zram_get_handle(zram, index);
 	if (!entry || zram_test_flag(zram, index, ZRAM_SAME)) {
 		unsigned long value;
 		void *mem;
@@ -1657,7 +1621,7 @@ out:
 		zram_set_flag(zram, index, flags);
 		// Fallthrough
 	default:
-		zram_set_entry(zram, index, entry);
+		zram_set_handle(zram, index, entry);
 		zram_set_obj_size(zram, index, comp_len);
 	}
 
@@ -2147,6 +2111,7 @@ static DEVICE_ATTR_RW(hybridswap_zram_increase);
 #endif
 #ifdef CONFIG_HYBRIDSWAP_ASYNC_COMPRESS
 static DEVICE_ATTR_RW(hybridswap_akcompress);
+#endif
 #ifdef CONFIG_ZRAM_DEDUP
 static DEVICE_ATTR_RW(use_dedup);
 #else

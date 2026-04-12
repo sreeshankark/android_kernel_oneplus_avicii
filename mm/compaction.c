@@ -2869,7 +2869,7 @@ static int __init kcompactd_init(void)
 }
 subsys_initcall(kcompactd_init)
 
-extern struct drm_panel *lcd_active_panel;
+extern struct drm_panel *active_panel;
 
 static int  __init scheduled_compaction_init(void)
 {
@@ -2880,8 +2880,8 @@ static int  __init scheduled_compaction_init(void)
 
 	INIT_DELAYED_WORK(&compaction_work, do_compaction);
 
-	if (lcd_active_panel) {
-		drm_panel_notifier_register(lcd_active_panel,
+	if (active_panel) {
+		drm_panel_notifier_register(active_panel,
 					    &compaction_notifier_block);
 	}
 

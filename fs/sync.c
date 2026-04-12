@@ -33,9 +33,6 @@ DEFINE_TRACE(syscall_sync_timeout);
 bool fsync_enabled = true;
 module_param(fsync_enabled, bool, 0644);
 
-bool fsync_enabled = true;
-module_param(fsync_enabled, bool, 0644);
-
 #define VALID_FLAGS (SYNC_FILE_RANGE_WAIT_BEFORE|SYNC_FILE_RANGE_WRITE| \
 			SYNC_FILE_RANGE_WAIT_AFTER)
 
@@ -244,7 +241,6 @@ static int do_fsync(unsigned int fd, int datasync)
 {
 	struct fd f;
 	int ret = -EBADF;
-#ifdef OPLUS_FEATURE_HEALTHINFO
 // Add for record  fsync  time
 #ifdef CONFIG_OPLUS_HEALTHINFO
     unsigned long fsync_time = jiffies;

@@ -686,7 +686,7 @@ static int limits_dcvs_probe(struct platform_device *pdev)
 	 * to set low/high thresholds.
 	 */
 	hw->temp_limits[LIMITS_TRIP_HI] = INT_MAX;
-	hw->temp_limits[LIMITS_TRIP_ARM] = 0
+	hw->temp_limits[LIMITS_TRIP_ARM] = 0;
 	
 	if (!IS_ENABLED(CONFIG_QTI_THERMAL_LIMITS_DCVS)) {
 		limits_isens_vref_ldo_init(pdev, hw);

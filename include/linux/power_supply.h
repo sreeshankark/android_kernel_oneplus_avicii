@@ -445,7 +445,6 @@ enum power_supply_property {
 	 * MODEL_NAME and SERIAL_NUMBER. Don't add below SERIAL_NUMBER.
 	 */
 	POWER_SUPPLY_PROP_SERIAL_NUMBER,
-<<<<<<< HEAD
 #ifdef OPLUS_CUSTOM_OP_DEF
 	POWER_SUPPLY_PROP_RESET_RD,
 #endif

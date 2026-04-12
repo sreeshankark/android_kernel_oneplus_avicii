@@ -81,6 +81,7 @@ struct zram_table_entry {
 	union {
 		struct zram_entry *entry;
 		unsigned long element;
+                unsigned long blk_idx;
 #ifdef CONFIG_HYBRIDSWAP_ASYNC_COMPRESS
 		unsigned long page;
 #endif
@@ -157,9 +158,7 @@ struct zram {
 	struct dentry *debugfs_dir;
 #endif
 #if (defined CONFIG_ZRAM_WRITEBACK) || (defined CONFIG_HYBRIDSWAP_CORE)
-	struct block_device *bdev;
 	unsigned int old_block_size;
-	unsigned long nr_pages;
 	unsigned long increase_nr_pages;
 #endif
 #ifdef CONFIG_HYBRIDSWAP_CORE
@@ -173,7 +172,6 @@ void ksys_sync(void);
 #ifdef CONFIG_ZWB_HANDLE
 extern struct task_struct *zwb_clear_tsk;
 #endif
-};
 
 static inline bool zram_dedup_enabled(struct zram *zram)
 {

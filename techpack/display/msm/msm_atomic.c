@@ -580,11 +580,10 @@ static void complete_commit(struct msm_commit *c)
 
 	kms->funcs->complete_commit(kms, state);
 
-<<<<<<< HEAD
 	drm_atomic_state_put(state);
 
 	commit_destroy(c);
-=======
+
 	/* End_atomic */
 	spin_lock(&priv->pending_crtcs_event.lock);
 	DBG("end: %08x", crtc_mask);
@@ -592,30 +591,24 @@ static void complete_commit(struct msm_commit *c)
 	priv->pending_planes &= ~plane_mask;
 	wake_up_all_locked(&priv->pending_crtcs_event);
 	spin_unlock(&priv->pending_crtcs_event.lock);
->>>>>>> ace250499feb (drm/msm: Offload commit cleanup onto little CPUs)
 }
 
 static void _msm_drm_commit_work_cb(struct kthread_work *work)
 {
-<<<<<<< HEAD
-	struct msm_commit *commit = NULL;
+        struct msm_commit *c = container_of(work, typeof(*c), commit_work);
+        struct drm_atomic_state *state = c->state;
+        struct drm_device *dev = state->dev;
+        struct msm_drm_private *priv = dev->dev_private;
 
 	if (!work) {
 		DRM_ERROR("%s: Invalid commit work data!\n", __func__);
 		return;
 	}
 
-	commit = container_of(work, struct msm_commit, commit_work);
 	struct pm_qos_request req = {
 		.type = PM_QOS_REQ_AFFINE_CORES,
 		.cpus_affine = ATOMIC_INIT(BIT(raw_smp_processor_id()))
 	};
-=======
-	struct msm_commit *c = container_of(work, typeof(*c), commit_work);
-	struct drm_atomic_state *state = c->state;
-	struct drm_device *dev = state->dev;
-	struct msm_drm_private *priv = dev->dev_private;
->>>>>>> ace250499feb (drm/msm: Offload commit cleanup onto little CPUs)
 
 	/*
 	 * Optimistically assume the current task won't migrate to another CPU
@@ -626,9 +619,7 @@ static void _msm_drm_commit_work_cb(struct kthread_work *work)
 	SDE_ATRACE_BEGIN("complete_commit");
 	complete_commit(c);
 	SDE_ATRACE_END("complete_commit");
-<<<<<<< HEAD
 	pm_qos_remove_request(&req);
-=======
 
 	if (c->nonblock) {
 		/* Offload the cleanup onto little CPUs */
@@ -637,7 +628,6 @@ static void _msm_drm_commit_work_cb(struct kthread_work *work)
 	} else {
 		complete_commit_cleanup(&c->commit_work);
 	}
->>>>>>> ace250499feb (drm/msm: Offload commit cleanup onto little CPUs)
 }
 
 static struct msm_commit *commit_init(struct drm_atomic_state *state,

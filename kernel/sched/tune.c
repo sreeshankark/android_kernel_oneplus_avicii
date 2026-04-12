@@ -641,6 +641,7 @@ int schedtune_crucial(struct task_struct *p)
 	rcu_read_unlock();
 
 	return crucial;
+}
 
 bool schedtune_prefer_high_cap(struct task_struct *p)
 {
@@ -676,6 +677,23 @@ static int prefer_high_cap_write(struct cgroup_subsys_state *css,
 	return 0;
 }
 
+int schedtune_prefer_idle(struct task_struct *p)
+{
+	struct schedtune *st;
+	int prefer_idle;
+
+	if (unlikely(!schedtune_initialized))
+		return 0;
+
+	/* Get prefer_idle value */
+	rcu_read_lock();
+	st = task_schedtune(p);
+	prefer_idle = st->prefer_idle;
+	rcu_read_unlock();
+
+	return prefer_idle;
+}
+
 static u64
 prefer_idle_read(struct cgroup_subsys_state *css, struct cftype *cft)
 {
@@ -694,19 +712,6 @@ prefer_idle_write(struct cgroup_subsys_state *css, struct cftype *cft,
 	struct schedtune *st = css_st(css);
 	st->prefer_idle = !!prefer_idle;
 
-	return 0;
-}
-
-static u64
-prefer_high_cap_read(struct cgroup_subsys_state *css, struct cftype *cft)
-{
-	return 0;
-}
-
-static int
-prefer_high_cap_write(struct cgroup_subsys_state *css, struct cftype *cft,
-	    u64 prefer_idle)
-{
 	return 0;
 }
 
@@ -1116,7 +1121,7 @@ static void write_default_values(struct cgroup_subsys_state *css)
 			pr_info("stune_assist: setting values for %s: boost=%d prefer_idle=%d colocate=%d no_override=%d\n",
 				tgt.name, tgt.boost, tgt.prefer_idle,
 				tgt.colocate, tgt.no_override);
-
+#endif
 			boost_write(css, NULL, tgt.boost);
 			prefer_idle_write(css, NULL, tgt.prefer_idle);
 #ifdef CONFIG_SCHED_WALT

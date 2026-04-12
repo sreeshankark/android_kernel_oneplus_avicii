@@ -1827,6 +1827,7 @@ extern struct pid *cad_pid;
 #define PF_KTHREAD		0x00200000	/* I am a kernel thread */
 #define PF_RANDOMIZE		0x00400000	/* Randomize virtual address space */
 #define PF_SWAPWRITE		0x00800000	/* Allowed to write to swap */
+#define PF_PERF_CRITICAL	0x02000000	/* Thread is performance-critical */
 #ifdef CONFIG_SONY_SCHED
 #define PF_MIGRATE_ED_TASK      0x02000000      /* early detection task migration */
 #endif

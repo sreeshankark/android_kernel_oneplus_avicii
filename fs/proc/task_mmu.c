@@ -221,7 +221,7 @@ static void *m_start(struct seq_file *m, loff_t *ppos)
 	if (!mm || !mmget_not_zero(mm))
 		return NULL;
 
-        sched_migrate_to_cpumask_start(to_cpumask(&priv->old_cpu>
+        sched_migrate_to_cpumask_start(to_cpumask(&priv->old_cpus_allowed),
                                        cpu_lp_mask);
 
 	if (mmap_read_lock_killable(mm)) {

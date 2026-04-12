@@ -60,7 +60,7 @@ unsigned long get_unmmaped_area_from_anti_fragment(struct mm_struct *mm,
 			info_b = *info;
 			info_b.high_limit = current->mm->va_feature_rnd - (SIZE_10M * (ilog2(info->length) - 12));
 			info_b.low_limit = current->mm->va_feature_rnd - (SIZE_10M * 7);
-			addr = unmapped_area_topdown(&info_b);
+			addr = vm_unmapped_area(&info_b);
 			if (!offset_in_page(addr))
 				return addr;
 		default:

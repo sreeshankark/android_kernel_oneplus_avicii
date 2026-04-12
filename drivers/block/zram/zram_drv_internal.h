@@ -16,7 +16,7 @@
 
 #define dev_to_zram(dev) ((struct zram *)dev_to_disk(dev)->private_data)
 
-#define zram_get_handle(zram, index) ((unsigned long)(zram->table[index].entry))
+#define zram_get_handle(zram, index) (zram->table[index].entry)
 
 #define zram_set_handle(zram, index, handle_val) (zram->table[index].entry = (struct zram_entry *)handle_val)
 
@@ -25,6 +25,8 @@
 #define zram_set_flag(zram, index, flag) (zram->table[index].flags |= BIT(flag))
 
 #define zram_clear_flag(zram, index, flag) (zram->table[index].flags &= ~BIT(flag))
+
+#define zram_get_element(zram, index) ((zram)->table[(index)].element)
 
 #define zram_set_element(zram, index, element) (zram->table[index].element = element)
 
