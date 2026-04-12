@@ -1,4 +1,4 @@
-k// SPDX-License-Identifier: GPL-2.0
+// SPDX-License-Identifier: GPL-2.0
 /*
  *  linux/fs/stat.c
  *
