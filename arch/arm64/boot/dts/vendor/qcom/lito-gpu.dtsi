@@ -178,18 +178,6 @@
 			};
 		};
 
-		qcom,gpu-models {
-			#address-cells = <1>;
-			#size-cells = <0>;
-			compatible="qcom,gpu-models";
-
-			qcom,gpu-model@0 {
-				qcom,gpu-model-id = <0>;
-				qcom,gpu-model = "Adreno620v1";
-				qcom,vk-device-id= <0x6020000>;
-			};
-		};
-
 		/*
 		 * Speed-bin zero is default speed bin.
 		 * For rest of the speed bins, speed-bin value
