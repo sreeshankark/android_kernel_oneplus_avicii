@@ -61,16 +61,16 @@ builddir="${kernel_dir}/build"
 avbtool=${kernel_dir}/scripts/avb/avbtool.py
 ZIMAGE=$kernel_dir/out/arch/arm64/boot/Image.gz-dtb
 DTBOIMAGE=$kernel_dir/out/arch/arm64/boot/dtbo.img
-version="v4.1"
-ksu_version="v3.1.0"
-ksu_version_code="33024"
+version="v4.2"
+ksu_version="v3.2.0"
+ksu_version_code="33129"
 build_date="$(date +"%d-%m-%Y")"
-kernel_version=4.19.325-cip129-st13
+kernel_version=4.19.325-cip130-st14
 kernel_name="NeverSettle-Kernel-$version-avicii"
 ksu_apk_name="KernelSU_Next_${ksu_version}_${ksu_version_code}-release.apk"
 ksu_apk="https://github.com/KernelSU-Next/KernelSU-Next/releases/download/${ksu_version}/KernelSU_Next_${ksu_version}_${ksu_version_code}-release.apk"
 zip_name="$kernel_name-$(date +"%d%m%Y-%H%M").zip"
-sed -i "s/-NeverSettle-Kernel/-NeverSettle-Kernel-v4.1/g" arch/arm64/configs/avicii_defconfig
+sed -i "s/-NeverSettle-Kernel/-NeverSettle-Kernel-v4.2/g" arch/arm64/configs/avicii_defconfig
 sed -i 's/CONFIG_LOCALVERSION_AUTO=y/# CONFIG_LOCALVERSION_AUTO is not set/g' arch/arm64/configs/avicii_defconfig
 TC_DIR=$HOME/tc/
 export ARCH=arm64
@@ -133,7 +133,7 @@ completion() {
     DIFF=$(($END - $START))
     BUILDTIME=$(echo $((${END} - ${START})) | awk '{print int ($1/3600)" Hours:"int(($1/60)%60)"Minutes:"int($1%60)" Seconds"}')
     tg_post_build "$HOME/$zip_name" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
-    tg_post_msg "<b>Changelog ($(date +%d-%m-%Y))</b>%0A<code>$CHANGELOG</code>"
+    tg_post_msg "<b>Changelog ($(date +%d-%m-%Y))</b>%0A$CHANGELOG"
     tg_post_build "$HOME/${ksu_apk_name}" "KernelSU-Next Manager for this build"
     tg_post_msg "<code>Compiled successfully✅</code>"
     tg_post_msg "<b>Support the developer❤️</b>%0A<b>UPI:</b> <code>sreeshankar@superyes</code>%0A<b>BuyMeACoffee:</b> buymeacoffee.com/sreeshankark"

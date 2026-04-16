@@ -44,38 +44,27 @@ The phone is available in 2 variants based on region: AC2001 (India) & AC2003 (E
 
 | Parameter | Value |
 | ---------- | ---------- |
-| NS version | 4.1 |
-| Linux Kernel version | 4.19.325-cip129-st13 |
-| KernelSU-Next version | 3.1.0 |
-| KernelSU-Next version code | 33025 |
-| SUSFS version | 2.0.0 |
+| NS version | 4.2 |
+| Linux Kernel version | 4.19.325-cip130-st14 |
+| KernelSU-Next version | 3.2.0 |
+| KernelSU-Next version code | 33131 |
 
 ## Kernel Features
 (1) Supports 5V-6A Fast Charging 
 
-(2) Supports OPlusExtras
-- Touchboost
-- KCAL
-- HBM
-- FSync
-- Adrenoboost
-- Force Fast Charge
+(2) Supports Boeffla Wakelock blocker
 
-(3) Compiled using Clang-LLVM 20.0.0
+(3) Using power efficient workqueues
 
-(4) Supports Boeffla Wakelock blocker
+(4) Supports Schedhorizon CPU governor
 
-(5) Using power efficient workqueues
+(5) Global timeout for wakelock
 
-(6) Supports Schedhorizon CPU governor
+(6) Supports Wireguard VPN
 
-(7) Global timeout for wakelock
+(7) Supports KernelSU-Next & SUSFS
 
-(8) Supports Wireguard VPN
-
-(9) Supports KernelSU-Next & SUSFS
-
-(10) Supports WPA3 SAE WiFi authentication
+(8) Supports WPA3 SAE WiFi authentication
 
 ## Credits
 
@@ -84,3 +73,23 @@ The phone is available in 2 variants based on region: AC2001 (India) & AC2003 (E
 - [Rifat Azad](https://github.com/rifsxd): For the development of KernelSU-Next
 - [simonpunk](https://gitlab.com/simonpunk): For the development of SUSFS4KSU
 - [osm0sis](https://github.com/osm0sis): For the development of AnyKernel3
+
+Linux kernel
+============
+
+There are several guides for kernel developers and users. These guides can
+be rendered in a number of formats, like HTML and PDF. Please read
+Documentation/admin-guide/README.rst first.
+
+In order to build the documentation, use ``make htmldocs`` or
+``make pdfdocs``.  The formatted documentation can also be read online at:
+
+    https://www.kernel.org/doc/html/latest/
+
+There are various text files in the Documentation/ subdirectory,
+several of them using the Restructured Text markup notation.
+See Documentation/00-INDEX for a list of what is contained in each file.
+
+Please read the Documentation/process/changes.rst file, as it contains the
+requirements for building and running the kernel, and information about
+the problems which may result by upgrading your kernel.
