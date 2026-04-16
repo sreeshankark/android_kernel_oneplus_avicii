@@ -63,11 +63,11 @@ obj-$(CONFIG_KSU) += kernelsu.o
 LPATH := /usr/bin/env PATH="$$PATH":/usr/bin:/usr/local/bin
 MDIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
-$(info -- KernelSU-Next version: 33122)
-ccflags-y += -DKSU_VERSION=33122
+$(info -- KernelSU-Next version: 33131)
+ccflags-y += -DKSU_VERSION=33131
 
-$(info -- KernelSU-Next tag: v3.1.0)
-ccflags-y += -DKSU_VERSION_TAG=\"v3.1.0\"
+$(info -- KernelSU-Next tag: v3.2.0)
+ccflags-y += -DKSU_VERSION_TAG=\"v3.2.0\"
 
 ifndef KSU_NEXT_MANAGER_SIZE
 KSU_NEXT_MANAGER_SIZE := 0x3e6
