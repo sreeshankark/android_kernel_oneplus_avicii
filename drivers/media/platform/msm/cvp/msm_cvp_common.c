@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /*
- * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.
+ * Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
  */
 
 #include <linux/jiffies.h>
@@ -194,16 +195,28 @@ struct msm_cvp_inst *cvp_get_inst_validate(struct msm_cvp_core *core,
 	int rc = 0;
 	struct cvp_hfi_device *hdev;
 	struct msm_cvp_inst *s;
+	void *sessObj = NULL;
 
+	if (!core || !session_id) {
+		dprintk(CVP_WARN, "%s invalid input\n", __func__);
+		return NULL;
+	}
 	s = cvp_get_inst(core, session_id);
 	if (!s) {
-		dprintk(CVP_ERR, "%s session doesn't exit\n",
-			__builtin_return_address(0));
+		dprintk(CVP_WARN, "%s Inst doesn't exist\n", __func__);
 		return NULL;
 	}
 
-	hdev = s->core->device;
-	rc = call_hfi_op(hdev, validate_session, s->session, __func__);
+	sessObj = get_sessObj_from_idr(s);
+	if (!sessObj || sessObj != s->session) {
+		dprintk(CVP_ERR,
+			"%s: Either sessionObj is null or not matching with s->session, sessObj=%pK s->session=%pK s=%pK\n",
+			__func__, sessObj, s->session, s);
+		return NULL;
+	}
+
+	hdev = core->device;
+	rc = call_hfi_op(hdev, validate_session, sessObj, __func__);
 	if (rc) {
 		cvp_put_inst(s);
 		s = NULL;
@@ -528,7 +541,7 @@ static void handle_session_init_done(enum hal_command_response cmd, void *data)
 	}
 
 	dprintk(CVP_DBG, "%s: cvp session %#x\n", __func__,
-		hash32_ptr(inst->session));
+		inst->sess_id);
 
 	signal_session_msg_receipt(cmd, inst);
 	cvp_put_inst(inst);
@@ -592,7 +605,7 @@ static void handle_session_error(enum hal_command_response cmd, void *data)
 
 	hdev = inst->core->device;
 	dprintk(CVP_ERR, "Session error received for inst %pK session %x\n",
-		inst, hash32_ptr(inst->session));
+		inst, inst->sess_id);
 
 	if (response->status == CVP_ERR_MAX_CLIENTS) {
 		dprintk(CVP_WARN, "Too many clients, rejecting %pK", inst);
@@ -926,7 +939,7 @@ static int msm_comm_session_abort(struct msm_cvp_inst *inst)
 	abort_completion = SESSION_MSG_INDEX(HAL_SESSION_ABORT_DONE);
 
 	dprintk(CVP_WARN, "%s: inst %pK session %x\n", __func__,
-		inst, hash32_ptr(inst->session));
+		inst, inst->sess_id);
 	rc = call_hfi_op(hdev, session_abort, (void *)inst->session);
 	if (rc) {
 		dprintk(CVP_ERR,
@@ -939,7 +952,7 @@ static int msm_comm_session_abort(struct msm_cvp_inst *inst)
 				inst->core->resources.msm_cvp_hw_rsp_timeout));
 	if (!rc) {
 		dprintk(CVP_ERR, "%s: inst %pK session %x abort timed out\n",
-				__func__, inst, hash32_ptr(inst->session));
+				__func__, inst, inst->sess_id);
 		call_hfi_op(hdev, flush_debug_queue, hdev->hfi_device_data);
 		dump_hfi_queue(hdev->hfi_device_data);
 		msm_cvp_comm_generate_sys_error(inst);
@@ -1293,7 +1306,7 @@ int msm_cvp_comm_try_state(struct msm_cvp_inst *inst, int state)
 	}
 	dprintk(CVP_DBG,
 		"Trying to move inst: %pK (%#x) from: %#x to %#x\n",
-		inst, hash32_ptr(inst->session), inst->state, state);
+		inst, inst->sess_id, inst->state, state);
 
 	mutex_lock(&inst->sync_lock);
 	if (inst->state == MSM_CVP_CORE_INVALID) {
@@ -1306,7 +1319,7 @@ int msm_cvp_comm_try_state(struct msm_cvp_inst *inst, int state)
 	flipped_state = get_flipped_state(inst->state, state);
 	dprintk(CVP_DBG,
 		"inst: %pK (%#x) flipped_state = %#x %x\n",
-		inst, hash32_ptr(inst->session), flipped_state, state);
+		inst, inst->sess_id, flipped_state, state);
 	switch (flipped_state) {
 	case MSM_CVP_CORE_UNINIT_DONE:
 	case MSM_CVP_CORE_INIT:
@@ -1415,27 +1428,26 @@ void msm_cvp_ssr_handler(struct work_struct *work)
 
 		dprintk(CVP_ERR, "Session abort triggered\n");
 		list_for_each_entry(inst, &core->instances, list) {
-			dprintk(CVP_WARN,
-				"Session to abort: inst %#x cmd %x ref %x\n",
-				inst, inst->cur_cmd_type,
-				kref_read(&inst->kref));
+			if (inst != NULL) {
+				s = cvp_get_inst_validate(core, inst);
+				if (!s) {
+					dprintk(CVP_ERR, "%s: Session is not valid\n", __func__);
+					return;
+				}
+				dprintk(CVP_WARN,
+					"Session to abort: inst %#x cmd %x ref %x\n",
+					inst, inst->cur_cmd_type,
+					kref_read(&inst->kref));
+				call_hfi_op(hdev, flush_debug_queue,
+					hdev->hfi_device_data);
+				dump_hfi_queue(hdev->hfi_device_data);
+				msm_cvp_comm_kill_session(inst);
+				cvp_put_inst(s);
+			} else {
+				dprintk(CVP_WARN, "No active CVP session to abort\n");
+			}
 			break;
 		}
-
-		if (inst != NULL) {
-			s = cvp_get_inst_validate(inst->core, inst);
-			if (!s)
-				return;
-
-			call_hfi_op(hdev, flush_debug_queue,
-				hdev->hfi_device_data);
-			dump_hfi_queue(hdev->hfi_device_data);
-			msm_cvp_comm_kill_session(inst);
-			cvp_put_inst(s);
-		} else {
-			dprintk(CVP_WARN, "No active CVP session to abort\n");
-		}
-
 		return;
 	}
 
@@ -1510,7 +1522,7 @@ int msm_cvp_comm_kill_session(struct msm_cvp_inst *inst)
 		return 0;
 	}
 	dprintk(CVP_WARN, "%s: inst %pK, session %x state %d\n", __func__,
-		inst, hash32_ptr(inst->session), inst->state);
+		inst, inst->sess_id, inst->state);
 	/*
 	 * We're internally forcibly killing the session, if fw is aware of
 	 * the session send session_abort to firmware to clean up and release
@@ -1522,7 +1534,7 @@ int msm_cvp_comm_kill_session(struct msm_cvp_inst *inst)
 		if (rc) {
 			dprintk(CVP_ERR,
 				"%s: inst %pK session %x abort failed\n",
-				__func__, inst, hash32_ptr(inst->session));
+				__func__, inst, inst->sess_id);
 			change_cvp_inst_state(inst, MSM_CVP_CORE_INVALID);
 		} else {
 			change_cvp_inst_state(inst, MSM_CVP_CORE_UNINIT);
@@ -1827,14 +1839,15 @@ int cvp_comm_release_persist_buffers(struct msm_cvp_inst *inst)
 		if (buf->buffer_ownership == DRIVER) {
 			dprintk(CVP_DBG,
 			"%s: %x : fd %d %s size %d",
-			"free arp", hash32_ptr(inst->session), buf->smem.fd,
-			buf->smem.dma_buf->name, buf->smem.size);
+			"free arp", inst->sess_id, buf->smem.fd,
+			buf->smem.dma_buf->buf_name, buf->smem.size);
 			msm_cvp_smem_free(handle);
 		} else if (buf->buffer_ownership == CLIENT) {
 			dprintk(CVP_DBG,
 			"%s: %x : fd %d %s size %d",
-			"unmap persist", hash32_ptr(inst->session),
-			buf->smem.fd, buf->smem.dma_buf->name, buf->smem.size);
+			"unmap persist", inst->sess_id,
+			buf->smem.fd, buf->smem.dma_buf->buf_name,
+			buf->smem.size);
 			msm_cvp_smem_unmap_dma_buf(inst, &buf->smem);
 		}
 
@@ -1852,6 +1865,6 @@ void print_client_buffer(u32 tag, const char *str,
 
 	dprintk(tag,
 		"%s: %x : idx %2d fd %d off %d size %d type %d flags 0x%x\n",
-		str, hash32_ptr(inst->session), cbuf->index, cbuf->fd,
+		str, inst->sess_id, cbuf->index, cbuf->fd,
 		cbuf->offset, cbuf->size, cbuf->type, cbuf->flags);
 }
