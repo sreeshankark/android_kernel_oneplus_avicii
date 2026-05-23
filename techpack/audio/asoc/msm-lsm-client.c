@@ -655,14 +655,46 @@ static int msm_lsm_set_conf(struct snd_pcm_substream *substream,
 		struct lsm_params_info_v2 *p_info)
 {
 	struct snd_pcm_runtime *runtime = substream->runtime;
-	struct lsm_priv *prtd = runtime->private_data;
+	struct lsm_priv *prtd = NULL;
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	int rc = 0;
+	struct lsm_char_dev *lsm_dev;
+	struct snd_soc_component *component = NULL;
+
+	if (!rtd) {
+		pr_err("%s substream runtime or private_data not found\n",
+			__func__);
+		return -EINVAL;
+	}
+	component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+	if (!component || !component->dev) {
+		pr_err("%s: invalid component\n", __func__);
+		return -EINVAL;
+	}
+	lsm_dev = (struct lsm_char_dev *) dev_get_drvdata(component->dev);
+	if (!lsm_dev) {
+		pr_err("%s: platform data is NULL\n", __func__);
+		return -EINVAL;
+	}
+
+	mutex_lock(&lsm_dev->lock);
+	if (!runtime) {
+		pr_err("%s: Invalid runtime", __func__);
+		mutex_unlock(&lsm_dev->lock);
+		return -EINVAL;
+	}
+	prtd = runtime->private_data;
+	if (!prtd || !prtd->lsm_client) {
+		pr_err("%s: No LSM session active\n", __func__);
+		mutex_unlock(&lsm_dev->lock);
+		return -EINVAL;
+	}
 
 	if (p_info->param_size > MAX_NUM_CONFIDENCE) {
 		dev_err(rtd->dev,
 			"%s: invalid confidence levels %d\n",
 			__func__, p_info->param_size);
+		mutex_unlock(&lsm_dev->lock);
 		return -EINVAL;
 	}
 
@@ -674,6 +706,7 @@ static int msm_lsm_set_conf(struct snd_pcm_substream *substream,
 		dev_err(rtd->dev,
 			"%s: get_conf_levels failed, err = %d\n",
 			__func__, rc);
+		mutex_unlock(&lsm_dev->lock);
 		return rc;
 	}
 
@@ -689,6 +722,7 @@ static int msm_lsm_set_conf(struct snd_pcm_substream *substream,
 		kfree(prtd->lsm_client->confidence_levels);
 		prtd->lsm_client->confidence_levels = NULL;
 	}
+	mutex_unlock(&lsm_dev->lock);
 	return rc;
 }
 
