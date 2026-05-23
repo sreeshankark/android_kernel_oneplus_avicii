@@ -2035,7 +2035,6 @@ static int q6lsm_mmapcallback(struct apr_client_data *data, void *priv)
 		lsm_common.set_custom_topology = 1;
 		return 0;
 	}
-	
 	/*
 	The payload_size can be either 4 or 8 bytes.
 	It has to be verified whether the payload_size is
@@ -2043,7 +2042,6 @@ static int q6lsm_mmapcallback(struct apr_client_data *data, void *priv)
 
 	The opcode for 4 bytes is 0x12A80
 	The opcode for 8 bytes is 0x110E8.
-	 
 	*/
 
 	if (data->payload_size < (2 * sizeof(uint16_t))) {
