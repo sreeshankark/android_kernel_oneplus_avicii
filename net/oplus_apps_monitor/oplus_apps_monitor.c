@@ -630,7 +630,7 @@ static void apps_monitor_netlink_exit(void)
 	apps_monitor_netlink_sock = NULL;
 }
 
-static void apps_monitor_timer_function(void) {
+static void apps_monitor_timer_function(struct timer_list *t) {
 	if (rrt_period_report_enable && apps_monitor_netlink_pid != 0) {
 		apps_monitor_report_apps_rtt_to_user(ALL_IF_INDEX);
 		apps_monitor_report_dev_rtt_to_user();
