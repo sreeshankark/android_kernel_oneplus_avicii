@@ -777,7 +777,7 @@ noinline int slow_avc_audit(struct selinux_state *state,
 	if (!is_avc_audit_enable())
 		return 0;
 #endif /* OPLUS_FEATURE_SELINUX_CONTROL_LOG */
-
+	
 	if (!a) {
 		a = &stack_data;
 		a->type = LSM_AUDIT_DATA_NONE;
