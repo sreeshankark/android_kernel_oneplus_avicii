@@ -74,7 +74,7 @@ static inline void *ksu_kvmalloc(size_t size, gfp_t flags)
 	return buf;
 }
 
-static inline void ksu_kvfree(void *buf)
+static inline void ksu_kvfree(const void *buf)
 {
 	if (is_vmalloc_addr(buf))
 		vfree(buf);
@@ -100,7 +100,7 @@ static inline ssize_t __strscpy_pad(char *dest, const char *src, size_t count)
     if (count == 0)
         return -E2BIG;
 
-    strncpy(dest, src, count);
+    memcpy(dest, src, count);
     dest[count - 1] = '\0';
     return strlen(dest);
 #endif

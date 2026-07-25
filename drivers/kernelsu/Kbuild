@@ -2,15 +2,16 @@ kernelsu-objs := core/init.o
 
 kernelsu-objs += compat/kernel_compat.o
 kernelsu-objs += feature/kernel_umount.o
+kernelsu-objs += feature/sulog.o
 kernelsu-objs += feature/sucompat.o
 
 kernelsu-objs += hook/hook_manager.o
 kernelsu-objs += hook/lsm_hooks.o
 kernelsu-objs += hook/setuid_hook.o
 kernelsu-objs += extras.o
-kernelsu-objs += tiny_sulog.o
 
 kernelsu-objs += infra/file_wrapper.o
+kernelsu-objs += infra/event_queue.o
 kernelsu-objs += infra/seccomp_cache.o
 kernelsu-objs += infra/su_mount_ns.o
 
@@ -31,9 +32,15 @@ kernelsu-objs += selinux/selinux.o
 kernelsu-objs += selinux/rules.o
 kernelsu-objs += selinux/sepolicy.o
 
+kernelsu-objs += sulog/event.o
+kernelsu-objs += sulog/fd.o
+
 kernelsu-objs += supercall/dispatch.o
 kernelsu-objs += supercall/perm.o
 kernelsu-objs += supercall/supercall.o
+
+kernelsu-objs += feature/adb_root.o
+kernelsu-objs += feature/selinux_hide.o
 
 ifdef KBUILD_EXTMOD
 ifeq ($(CONFIG_KSU_DISABLE_MANAGER),y)
@@ -63,11 +70,11 @@ obj-$(CONFIG_KSU) += kernelsu.o
 LPATH := /usr/bin/env PATH="$$PATH":/usr/bin:/usr/local/bin
 MDIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
-$(info -- KernelSU-Next version: 33131)
-ccflags-y += -DKSU_VERSION=33131
+$(info -- KernelSU-Next version: 33292)
+ccflags-y += -DKSU_VERSION=33292
 
-$(info -- KernelSU-Next tag: v3.2.0)
-ccflags-y += -DKSU_VERSION_TAG=\"v3.2.0\"
+$(info -- KernelSU-Next tag: v3.3.0)
+ccflags-y += -DKSU_VERSION_TAG=\"v3.3.0\"
 
 ifndef KSU_NEXT_MANAGER_SIZE
 KSU_NEXT_MANAGER_SIZE := 0x3e6
@@ -214,6 +221,9 @@ ccflags-y += -DKSU_COMPAT_USE_SELINUX_STATE
 endif
 ifeq ($(shell grep -q "^DEFINE_RWLOCK(policy_rwlock);" $(srctree)/security/selinux/ss/services.c; echo $$?),0)
 ccflags-y += -DKSU_COMPAT_HAS_EXPORTED_POLICY_RWLOCK
+endif
+ifeq ($(shell grep -q "cpus_ptr;" $(srctree)/include/linux/sched.h; echo $$?),0)
+ccflags-y += -DKSU_COMPAT_HAS_BACKPORTED_CPUS_PTR
 endif
 
 # Handle optional backports
