@@ -3945,7 +3945,7 @@
 
 		/* Power Config */
 		vdd_2v8-supply = <&pm8150_l13>;
-		//vcc_1v8-supply = <&pm8150a_l1>;
+		vcc_1v8-supply = <&pm8150a_l1>;
 		vdd_2v8_volt = <3008000>;
 
 		/* Other HW Resource */
@@ -3962,11 +3962,11 @@
 
 		/* SW Support Feature Control */
 		black_gesture_support = <1>;
-		//fw_edge_limit_support;
-		//charger_pump_support;
+		fw_edge_limit_support;
+		charger_pump_support;
 		//spurious_fingerprint_support;
-		//fw_update_app_support;
-		//smart_gesture_support;
+		fw_update_app_support;
+		smart_gesture_support;
 		//game_switch_support = <1>;
 		face_detect_support = <1>;
 		lcd_refresh_rate_switch = <1>;
@@ -3976,9 +3976,9 @@
 		//module_id_support = <1>;
 		//kernel_grip_support;
 		//health_monitor_support;
-		//fingerprint_underscreen_support;
+		fingerprint_underscreen_support;
 		//headset_pump_support;
-		//pressure_report_support;
+		pressure_report_support;
 
 		/*
 		 *Virtual Key Config:

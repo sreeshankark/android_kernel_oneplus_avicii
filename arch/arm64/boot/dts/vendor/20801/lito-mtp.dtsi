@@ -452,8 +452,9 @@
 
                 /* Power Config */
                 vdd_2v8-supply = <&pm8150_l13>;
-                vdd_2v8_volt = <3008000>;
+		vcc_1v8-supply = <&pm8150a_l1>;
 		enable1v8_gpio = <&pm8150l_gpios 1 GPIO_ACTIVE_LOW>;
+                vdd_2v8_volt = <3008000>;
 
                	/* Other HW Resource */
                 irq-gpio = <&tlmm 9 0x2002>;
