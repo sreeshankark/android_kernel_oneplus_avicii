@@ -44,10 +44,10 @@ The phone is available in 2 variants based on region: AC2001 (India) & AC2003 (E
 
 | Parameter | Value |
 | ---------- | ---------- |
-| NS version | 4.3 |
-| Linux Kernel version | 4.19.325-cip132-st16 |
-| KernelSU-Next version | 3.2.0 |
-| KernelSU-Next version code | 33131 |
+| NS version | 4.4 |
+| Linux Kernel version | 4.19.325-cip133-st17 |
+| KernelSU-Next version | 3.3.0 |
+| KernelSU-Next version code | 33292 |
 
 ## Kernel Features
 (1) Supports 5V-6A Fast Charging 

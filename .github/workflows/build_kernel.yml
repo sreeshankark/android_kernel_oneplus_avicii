@@ -24,18 +24,13 @@ jobs:
        - name: Install packages
          run: |
             sudo apt-get update
-            sudo apt-get -y install mkisofs git python2 bc cpio python3 python-is-python3 device-tree-compiler
-       - name: Clone NS Kernel Source & Clang-LLVM
+            sudo apt-get -y install mkisofs git python2 bc cpio python3 python-is-python3 device-tree-compiler wget jq
+       - name: Initiate cloning
          run: |
             cd ~
-            git clone https://github.com/sreeshankark/android_kernel_oneplus_avicii --depth=1 kernel
-            curl -sL https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main/clang-r547379.tar.gz > ~/clang.tar.gz
-            mkdir ~/clang
-            tar -xvf ~/clang.tar.gz -C ~/clang
-            mkdir ~/kernel/clang-llvm
-            mv ~/clang/* ~/kernel/clang-llvm/
-            rm ~/clang.tar.gz
-            rm -rf ~/clang
+            git clone https://github.com/sreeshankark/android_kernel_oneplus_avicii -b $GITHUB_REF_NAME --depth=1 kernel
+            cd kernel
+            sed -i 's/ccflags-y += $(subst $(srctree),source,$(INCS))/ccflags-y += $(INCS)/g' drivers/staging/qcacld-3.0/Kbuild
        - name: Build NS Kernel
          run: |
             cd ~/kernel

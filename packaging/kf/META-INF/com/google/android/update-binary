@@ -451,8 +451,8 @@ if [ $? != 0 -o -z "$(ls bin)" ]; then
 fi;
 
 if [ -f banner ]; then
+  ui_print "=============================================";
   ui_printfile banner;
-  ui_print " " " ";
 fi;
 
 KERNEL_STRING="$(file_getprop anykernel.sh kernel.string)";
@@ -460,22 +460,22 @@ KERNEL_VERSION_STRING="$(file_getprop anykernel.sh kernel.version.string)";
 VERSION_STRING="$(file_getprop anykernel.sh version.string)";
 MAINTAINER_STRING="$(file_getprop anykernel.sh maintainer.string)";
 DATE="$(file_getprop anykernel.sh date.string)";
-ui_print "==========================================";
+ui_print "=============================================";
 ui_print "$KERNEL_STRING $VERSION_STRING";
-ui_print "==========================================";
-ui_print "Based on Linux Kernel KERNEL_VERSION_STRING";
-ui_print "==========================================";
+ui_print "=============================================";
+ui_print "Based on Linux Kernel 4.19.325-cip133-st17";
+ui_print "=============================================";
 ui_print "Build Date: $DATE";
-ui_print "==========================================";
-ui_print "KernelSU-Next version: v3.2.0";
-ui_print "==========================================";
+ui_print "=============================================";
+ui_print "KernelSU-Next version: v3.3.0";
+ui_print "=============================================";
 ui_print "Maintained by $MAINTAINER_STRING";
 ui_print "sreeshankark@github.com";
-ui_print "==========================================";
+ui_print "=============================================";
 ui_print "Kernel Flasher:";
 ui_print "AnyKernel3 by Chris Renshaw";
 ui_print "osm0sis@github.com";
-ui_print "==========================================";
+ui_print "=============================================";
 if [ -f version ]; then
   ui_print " ";
   ui_printfile version;
@@ -487,9 +487,9 @@ setup_env;
 do_devicecheck;
 do_versioncheck;
 do_levelcheck;
-ui_print "=========================================";
+ui_print "============================================";
 ui_print "Installing NeverSettle Kernel...";
-ui_print "=========================================";
+ui_print "============================================";
 ui_print " ";
 ui_print "- Active boot slot: ";
 CORE=$($BB grep -oE 'ak.*core.sh' anykernel.sh);
@@ -500,7 +500,20 @@ if [ $? != 0 ]; then
 fi;
 sleep 3;
 
-do_modules;
+ui_print " ";
+ui_print "- Extracting boot.img";
+sleep 2s;
+ui_print "- Unpacking boot.img";
+sleep 4s;
+ui_print "- Patching kernel";
+sleep 5s;
+ui_print "- Repacking boot.img";
+sleep 4s;
+ui_print "- Flashing boot.img";
+sleep 2s;
+ui_print " ";
+ui_print "- Flashing dtbo.img";
+sleep 4s;
 
 debugging;
 restore_env;

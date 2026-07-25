@@ -1,6 +1,6 @@
 # 
 # NeverSettle Kernel
-# Linux/arm64 4.19.325-cip132-st16 Kernel Configuration
+# Linux/arm64 4.19.325-cip133-st17 Kernel Configuration
 #
 
 CONFIG_OPLUS_SYSTEM_KERNEL_QCOM=y
