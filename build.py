@@ -79,8 +79,7 @@ kernel_dir="${PWD}"
 TC_DIR=$HOME/tc/
 CLANG_DIR=$TC_DIR
 objdir="${kernel_dir}/out"
-kf="$kernel_dir/packaging/kf"
-kmu="$kernel_dir/packaging/kmu"
+kf="$kernel_dir/packaging"
 builddir="${kernel_dir}/build"
 avbtool=${kernel_dir}/scripts/avb/avbtool.py
 ZIMAGE=$kernel_dir/out/arch/arm64/boot/Image.gz-dtb
@@ -95,7 +94,6 @@ kernel_name="NeverSettle-Kernel-$version-avicii"
 ksu_apk_name="KernelSU_Next_${ksu_version}_${ksu_version_code}-release.apk"
 ksu_apk="https://github.com/KernelSU-Next/KernelSU-Next/releases/download/${ksu_version}/KernelSU_Next_${ksu_version}_${ksu_version_code}-release.apk"
 zip_name="$kernel_name-$(date +"%d%m%Y-%H%M").zip"
-zip_name_module="KMU_$kernel_name-$(date +"%d%m%Y-%H%M").zip"
 sed -i "s/-NeverSettle-Kernel/-NeverSettle-Kernel-v4.4/g" arch/arm64/configs/avicii_defconfig
 sed -i 's/CONFIG_LOCALVERSION_AUTO=y/# CONFIG_LOCALVERSION_AUTO is not set/g' arch/arm64/configs/avicii_defconfig
 
@@ -166,30 +164,21 @@ completion() {
     sleep 5s
     tg_edit_msg "<code>📦 Creating flashable zip...</code>"
     cd $kf
-	mv -f $ZIMAGE $DTBOIMAGE $kf
-    find . -name "*.zip" -type f
-    find . -name "*.zip" -type f -delete
+    mv -f $ZIMAGE $DTBOIMAGE $kf
     sed -i "s/version.string=/version.string=$version/g" anykernel.sh
     sed -i "s/date.string=/date.string=$build_date/g" anykernel.sh
-    sed -i "s/Based on Linux Kernel KERNEL_VERSION_STRING/Based on Linux Kernel $kernel_version/g" META-INF/com/google/android/update-binary
-    sed -i "s/KernelSU-Next version: KSU_VERSION/KernelSU-Next version: $ksu_version/g" META-INF/com/google/android/update-binary
+    sed -i "s/kernel.version=/kernel.version=$kernel_version/g" anykernel.sh
+    sed -i "s/ksu.version=/ksu.version=$ksu_version/g" anykernel.sh
+    mkdir -p $kf/modules/kmu-nsk/system/vendor/lib/modules
+    find $objdir/modules_install -type f -name "*.ko" -exec mv {} $kf/modules/kmu-nsk/system/vendor/lib/modules/ \;
+    sed -i "s/name=/name=NeverSettle KMU (Kernel Modules Updater)/g" $kf/modules/kmu-nsk/module.prop
+    sed -i "s/version=/version=$version/g" $kf/modules/kmu-nsk/module.prop
+    sed -i "s/versionCode=/versionCode=$versioncode/g" $kf/modules/kmu-nsk/module.prop
+    sed -i "s/description=/description=NeverSettle Kernel $version | Build date: $build_date/g" $kf/modules/kmu-nsk/module.prop
     zip -r $zip_name *
     mv $kf/$zip_name $HOME/$zip_name
-    sleep 6s
+    sleep 10s
     tg_edit_msg "<code>📦 Flashable zip created ✅</code>"
-    sleep 2s
-    tg_edit_msg "<code>📦 Creating kernel modules updater zip...</code>"
-    cd $kmu
-    mkdir -p $kmu/system/vendor/lib/modules
-    find $objdir/modules_install -type f -name "*.ko" -exec mv {} $kmu/system/vendor/lib/modules/ \;
-    sed -i "s/name=/name=Kernel modules updater for NeverSettle Kernel/g" $kmu/module.prop
-    sed -i "s/version=/version=$version/g" $kmu/module.prop
-    sed -i "s/versionCode=/versionCode=$versioncode/g" $kmu/module.prop
-    sed -i "s/description=/description=NeverSettle Kernel $version | Build date: $build_date/g" $kmu/module.prop
-    zip -r $zip_name_module *
-    mv $kmu/$zip_name_module $HOME/$zip_name_module
-    sleep 4s
-    tg_edit_msg "<code>📦 Kernel modules updater zip created ✅</code>"
     sleep 2s
     tg_edit_msg "<code>🧑‍💼 Downloading KernelSU-Next manager...</code>"
     LAST_MSG_ID2=$LAST_MSG_ID
@@ -203,25 +192,20 @@ completion() {
     sleep 2s
     tg_edit_msg2 "<code>📤 File upload started ✅</code>"
     sleep 2s
-    tg_edit_msg2 "<code>📤 [1/3] Uploading NeverSettle Kernel flashable zip...</code>"
+    tg_edit_msg2 "<code>📤 [1/2] Uploading NeverSettle Kernel flashable zip...</code>"
     sleep 6s
     tg_post_build "$HOME/$zip_name" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
-    tg_edit_msg2 "<code>📤 [1/3] NeverSettle Kernel flashable zip uploaded ✅</code>"
-    sleep 2s
-    tg_edit_msg2 "<code>📤 [2/3] Uploading kernel modules updater zip</code>"
-    sleep 4s
-    tg_post_build "$HOME/$zip_name_module" "Kernel modules updater (KMU), install this module after flashing the kernel. Use Magisk/KernelSU-Next. Metamodule (eg: Mountify) needed!"
-    tg_edit_msg2 "<code>📤 [2/3] Kernel modules updater zip uploaded ✅</code>"
+    tg_edit_msg2 "<code>📤 [1/2] NeverSettle Kernel flashable zip uploaded ✅</code>"
     sleep 2s
     tg_edit_msg2 "<code>📝 Generating changelog...</code>"
     sleep 3s
     tg_post_msg "<b>Changelog ($(date +%d-%m-%Y))</b>%0A<code>$CHANGELOG</code>"
     tg_edit_msg2 "<code>📝 Changelog generated ✅</code>"
     sleep 2s
-    tg_edit_msg2 "<code>📤 [3/3] Uploading KernelSU-Next manager apk...</code>"
+    tg_edit_msg2 "<code>📤 [2/2] Uploading KernelSU-Next manager apk...</code>"
     sleep 6s
     tg_post_build "$HOME/${ksu_apk_name}" "KernelSU-Next Manager for this build"
-    tg_edit_msg2 "<code>📤 [3/3] KernelSU-Next manager apk uploaded ✅</code>"
+    tg_edit_msg2 "<code>📤 [2/2] KernelSU-Next manager apk uploaded ✅</code>"
     sleep 2s
     tg_edit_msg2 "<code>📤 Files uploaded ✅</code>"
     sleep 2s
