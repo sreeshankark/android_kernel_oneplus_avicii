@@ -260,7 +260,7 @@ char *d_path_outlen(const struct path *path, char *buf, int *buflen)
 	int error;
 
 #ifdef CONFIG_NOMOUNT
-	char *nm_path = nomount_handle_dpath(path, buf, buflen);
+	char *nm_path = nomount_handle_dpath(path, buf, *buflen);
 	if (unlikely(nm_path)) {
 		return nm_path;
 	}
