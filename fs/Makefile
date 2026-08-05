@@ -23,6 +23,8 @@ endif
 
 obj-$(CONFIG_NOMOUNT) += nomount.o
 
+obj-$(CONFIG_KSU_SUSFS)         += susfs.o
+
 obj-$(CONFIG_PROC_FS) += proc_namespace.o
 
 obj-y				+= notify/

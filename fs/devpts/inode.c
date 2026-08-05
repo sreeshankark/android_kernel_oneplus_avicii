@@ -621,7 +621,6 @@ void *devpts_get_priv(struct dentry *dentry)
 void devpts_pty_kill(struct dentry *dentry)
 {
 	WARN_ON_ONCE(dentry->d_sb->s_magic != DEVPTS_SUPER_MAGIC);
-
 	dentry->d_fsdata = NULL;
 	drop_nlink(dentry->d_inode);
 	d_delete(dentry);

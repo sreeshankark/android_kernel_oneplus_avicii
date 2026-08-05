@@ -335,4 +335,8 @@ config NOMOUNT
 	  NoMount allows path redirection and virtual file injection
 	  without mounting filesystems. Useful for systemless modifications.
 
+config KSU_SUSFS
+    bool "Enable SUSFS"
+    depends on KSU
+    default y
 endmenu
