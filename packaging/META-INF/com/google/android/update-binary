@@ -345,8 +345,9 @@ ksu_modules() {
   mod=/data/adb/modules;
   modup=/data/adb/modules_update;
   dyui_print "- Update kernel modules";
+  metamodule=$($BB find /data/adb/modules -name "module.prop" -exec grep -l -iE '^metamodule=(true|1)$' {} +);
   sleep 2s;
-  if [ -f "$metamod_dir/uninstall.sh" ]; then
+  if [ -f "$metamodule" ]; then
       dyui_print "-> Metamodule found";
   else
       dyui_print "-> KSUN: Installing Metamodule";
