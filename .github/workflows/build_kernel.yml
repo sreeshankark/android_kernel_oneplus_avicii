@@ -29,8 +29,6 @@ jobs:
          run: |
             cd ~
             git clone https://github.com/sreeshankark/android_kernel_oneplus_avicii -b $GITHUB_REF_NAME --depth=1 kernel
-            cd kernel
-            sed -i 's/ccflags-y += $(subst $(srctree),source,$(INCS))/ccflags-y += $(INCS)/g' drivers/staging/qcacld-3.0/Kbuild
        - name: Build NS Kernel
          run: |
             cd ~/kernel

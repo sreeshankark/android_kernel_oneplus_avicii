@@ -9,6 +9,7 @@ version.string=
 date.string=
 ksu.version=
 kernel.version=
+susfs.version=
 do.devicecheck=1
 do.cleanup=1
 do.cleanuponabort=0

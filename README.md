@@ -44,10 +44,11 @@ The phone is available in 2 variants based on region: AC2001 (India) & AC2003 (E
 
 | Parameter | Value |
 | ---------- | ---------- |
-| NS version | 4.4 |
-| Linux Kernel version | 4.19.325-cip133-st17 |
+| NS version | 5.0 |
+| Linux Kernel version | 4.19.325-cip135-st19 |
 | KernelSU-Next version | 3.3.0 |
 | KernelSU-Next version code | 33292 |
+| SUSFS version | 2.2.0 |
 
 ## Kernel Features
 (1) Supports 5V-6A Fast Charging 
@@ -65,6 +66,8 @@ The phone is available in 2 variants based on region: AC2001 (India) & AC2003 (E
 (7) Supports KernelSU-Next & SUSFS
 
 (8) Supports WPA3 SAE WiFi authentication
+
+(9) De-OPLUS-ified kernel, removed unwanted OPLUS code additions
 
 ## Credits
 

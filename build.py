@@ -77,32 +77,37 @@ tg_post_sticker() {
 
 kernel_dir="${PWD}"
 TC_DIR=$HOME/tc/
-CLANG_DIR=$TC_DIR
 objdir="${kernel_dir}/out"
 kf="$kernel_dir/packaging"
 builddir="${kernel_dir}/build"
 avbtool=${kernel_dir}/scripts/avb/avbtool.py
 ZIMAGE=$kernel_dir/out/arch/arm64/boot/Image.gz-dtb
 DTBOIMAGE=$kernel_dir/out/arch/arm64/boot/dtbo.img
-version="v4.4"
-versioncode="4400"
-kernel_version="4.19.325-cip133-st17"
+if [[ "$BUILDTYPE" == "TEST" ]]; then
+       version="TEST"
+else
+       version="v5.0"
+fi
+versioncode="5000"
+kernel_version="4.19.325-cip135-st19"
 ksu_version="v3.3.0"
 ksu_version_code="33214"
+susfs_version="v2.2.0"
 build_date="$(date +"%d-%m-%Y")"
 kernel_name="NeverSettle-Kernel-$version-avicii"
 ksu_apk_name="KernelSU_Next_${ksu_version}_${ksu_version_code}-release.apk"
 ksu_apk="https://github.com/KernelSU-Next/KernelSU-Next/releases/download/${ksu_version}/KernelSU_Next_${ksu_version}_${ksu_version_code}-release.apk"
 zip_name="$kernel_name-$(date +"%d%m%Y-%H%M").zip"
-sed -i "s/-NeverSettle-Kernel/-NeverSettle-Kernel-v4.4/g" arch/arm64/configs/avicii_defconfig
+sed -i "s/-NeverSettle-Kernel/-NeverSettle-Kernel-$version/g" arch/arm64/configs/avicii_defconfig
 sed -i 's/CONFIG_LOCALVERSION_AUTO=y/# CONFIG_LOCALVERSION_AUTO is not set/g' arch/arm64/configs/avicii_defconfig
+sed -i 's/ccflags-y += $(subst $(srctree),source,$(INCS))/ccflags-y += $(INCS)/g' drivers/staging/qcacld-3.0/Kbuild
 
 export ARCH=arm64
 export SUBARCH=arm64
 export CONFIG_FILE="avicii_defconfig avicii_ext.config"
 export BRAND_SHOW_FLAG=oneplus
 export CCACHE=$(command -v ccache)
-export PATH="$CLANG_DIR/bin:$PATH"
+export PATH="$TC_DIR/bin:$PATH"
 export CC="ccache clang"
 export CLANG_TRIPLE="aarch64-linux-gnu-"
 export CROSS_COMPILE="aarch64-linux-gnu-"
@@ -169,6 +174,7 @@ completion() {
     sed -i "s/date.string=/date.string=$build_date/g" anykernel.sh
     sed -i "s/kernel.version=/kernel.version=$kernel_version/g" anykernel.sh
     sed -i "s/ksu.version=/ksu.version=$ksu_version/g" anykernel.sh
+    sed -i "s/susfs.version=/susfs.version=$susfs_version/g" anykernel.sh
     mkdir -p $kf/modules/kmu-nsk/system/vendor/lib/modules
     find $objdir/modules_install -type f -name "*.ko" -exec mv {} $kf/modules/kmu-nsk/system/vendor/lib/modules/ \;
     sed -i "s/name=/name=NeverSettle KMU (Kernel Modules Updater)/g" $kf/modules/kmu-nsk/module.prop
@@ -182,12 +188,12 @@ completion() {
     sleep 2s
     tg_edit_msg "<code>🧑‍💼 Downloading KernelSU-Next manager...</code>"
     LAST_MSG_ID2=$LAST_MSG_ID
-    curl -sL ${ksu_apk} > $HOME/${ksu_apk_name}
+    wget ${ksu_apk} -O $HOME/${ksu_apk_name}
     sleep 6s
     tg_edit_msg2 "<code>🧑‍💼 KernelSU-Next manager downloaded ✅</code>"
     END=$(date +"%s")
     DIFF=$(($END - $START))
-	sleep 2s
+    sleep 2s
     tg_edit_msg2 "<code>📤 Initiate file upload...</code>"
     sleep 2s
     tg_edit_msg2 "<code>📤 File upload started ✅</code>"
