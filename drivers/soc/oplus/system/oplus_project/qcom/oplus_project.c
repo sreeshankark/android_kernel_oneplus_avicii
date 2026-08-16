@@ -435,103 +435,6 @@ static void dump_secure_stage(struct seq_file *s)
     seq_printf(s, "%d", secure_oem_config);
 }
 
-//#ifdef OPLUS_FEATURE_NFC_FELICA
-static void __init update_felica_cfg(struct proc_dir_entry *parent) {
-
-    static const char* simfree_cfg_src[3] = {
-        "/odm/etc/felica_cfg/simfree/common.cfg",
-        "/odm/etc/felica_cfg/simfree/mfm.cfg",
-        "/odm/etc/felica_cfg/simfree/mfs.cfg",
-    };
-
-    static const char* ymobile_cfg_file[3] = {
-        "/odm/etc/felica_cfg/ymobile/common.cfg",
-        "/odm/etc/felica_cfg/ymobile/mfm.cfg",
-        "/odm/etc/felica_cfg/ymobile/mfs.cfg",
-    };
-
-    char * substr = strstr(boot_command_line, "japan.operator=");
-    pr_err("update_japan_softlink\n");
-    if(!substr)
-        return;
-
-    substr += strlen("japan.operator=");
-
-    if (substr[0] == '0') {
-        proc_symlink("felicaCommon", parent, simfree_cfg_src[0]);
-        proc_symlink("felicaMfm", parent, simfree_cfg_src[1]);
-        proc_symlink("felicaMfs", parent, simfree_cfg_src[2]);
-    }
-    else if (substr[0] == '1') {
-        proc_symlink("felicaCommon", parent, ymobile_cfg_file[0]);
-        proc_symlink("felicaMfm", parent, ymobile_cfg_file[1]);
-        proc_symlink("felicaMfs", parent, ymobile_cfg_file[2]);
-    }
-    else
-    {
-       pr_err("no felica cfg\n");
-    }
-}
-//#endif /*OPLUS_FEATURE_NFC_FELICA*/
-
-static void __init update_manifest(struct proc_dir_entry *parent)
-{
-    static const char* manifest_src[2] = {
-        "/vendor/odm/etc/vintf/manifest_ssss.xml",
-        "/vendor/odm/etc/vintf/manifest_dsds.xml",
-    };
-    mm_segment_t fs;
-    char * substr = strstr(saved_command_line, "simcardnum.doublesim=");
-
-    if(!substr)
-        return;
-
-    substr += strlen("simcardnum.doublesim=");
-
-    fs = get_fs();
-    set_fs(KERNEL_DS);
-
-    if (parent) {
-        if (substr[0] == '0') {
-            proc_symlink("manifest", parent, manifest_src[0]);//single sim
-        }
-        else {
-            proc_symlink("manifest", parent, manifest_src[1]);
-        }
-    }
-
-    set_fs(fs);
-}
-
-static void __init update_telephony_manifest(struct proc_dir_entry *parent)
-{
-    static const char* manifest_src[2] = {
-        "/vendor/odm/etc/vintf/telephony_manifest_ssss.xml",
-        "/vendor/odm/etc/vintf/telephony_manifest_dsds.xml",
-    };
-    mm_segment_t fs;
-    char * substr = strstr(saved_command_line, "simcardnum.doublesim=");
-
-    if(!substr)
-        return;
-
-    substr += strlen("simcardnum.doublesim=");
-
-    fs = get_fs();
-    set_fs(KERNEL_DS);
-
-    if (parent) {
-        if (substr[0] == '0') {
-            proc_symlink("telephony_manifest", parent, manifest_src[0]);//single sim
-        }
-        else {
-            proc_symlink("telephony_manifest", parent, manifest_src[1]);
-        }
-    }
-
-    set_fs(fs);
-}
-
 static int project_read_func(struct seq_file *s, void *v)
 {
     void *p = s->private;
@@ -679,11 +582,6 @@ static int __init oplus_project_init(void)
     p_entry = proc_create_data("test", S_IRUGO, oplus_info, &project_info_fops, UINT2Ptr(PROJECT_TEST));
     if (!p_entry)
         goto error_init;
-
-    /*update single or double cards*/
-    update_manifest(oplus_info);
-    update_telephony_manifest(oplus_info);
-    update_felica_cfg(oplus_info);
 
     return 0;
 
