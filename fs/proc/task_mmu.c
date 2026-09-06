@@ -453,10 +453,6 @@ static int show_vma_header_prefix(struct seq_file *m, unsigned long start,
 	return 0;
 }
 
-#ifdef CONFIG_NOMOUNT
-extern bool nomount_spoof_mmap_metadata(struct inode *inode, dev_t *dev, unsigned long *ino);
-#endif
-
 #ifdef CONFIG_KSU_SUSFS_SUS_KSTAT
 extern void susfs_sus_ino_for_show_map_vma(unsigned long ino, dev_t *out_dev, unsigned long *out_ino);
 #endif
@@ -493,9 +489,6 @@ show_map_vma(struct seq_file *m, struct vm_area_struct *vma)
 #endif
 		dev = inode->i_sb->s_dev;
 		ino = inode->i_ino;
-#ifdef CONFIG_NOMOUNT
-		nomount_spoof_mmap_metadata(inode, &dev, &ino);
-#endif
 		pgoff = ((loff_t)vma->vm_pgoff) << PAGE_SHIFT;
 #ifdef CONFIG_KSU_SUSFS_SUS_KSTAT
 		susfs_show_map_vma_spoofer(inode, &dev, &ino);
