@@ -96,7 +96,7 @@ susfs_version="v2.2.0"
 build_date="$(date +"%d-%m-%Y")"
 kernel_name="NeverSettle-Kernel-$version-avicii"
 ksu_apk_name="KernelSU_Next_${ksu_version}_${ksu_version_code}-release.apk"
-ksu_apk="https://github.com/KernelSU-Next/KernelSU-Next/releases/download/${ksu_version}/KernelSU_Next_${ksu_version}_${ksu_version_code}-release.apk"
+ksu_apk="https://github.com/KernelSU-Next/KernelSU-Next/releases/download/${ksu_version}/KernelSU_Next_${ksu_version}-spoofed_${ksu_version_code}-release.apk"
 zip_name="$kernel_name-$(date +"%d%m%Y-%H%M").zip"
 sed -i "s/-NeverSettle-Kernel/-NeverSettle-Kernel-$version/g" arch/arm64/configs/avicii_defconfig
 sed -i 's/CONFIG_LOCALVERSION_AUTO=y/# CONFIG_LOCALVERSION_AUTO is not set/g' arch/arm64/configs/avicii_defconfig
@@ -150,11 +150,6 @@ compile()
     2>&1 | tee error.log
     tg_edit_msg "<code>🏗️ Built kernel ✅</code>"
     sleep 3s
-    tg_edit_msg "<code>🏗️ Building kernel modules...</code>"
-    make O=out ARCH=arm64 INSTALL_MOD_PATH=modules_install INSTALL_MOD_STRIP=1 modules_install
-    sleep 15s
-    tg_edit_msg "<code>🏗️ Built kernel modules ✅</code>"
-    sleep 3s
     tg_edit_msg "<code>🏗️ Building dtbo.img...</code>"
     python3 ${avbtool} add_hash_footer --image ${DTBOIMAGE} --partition_size 25165824 --partition_name dtbo
     sleep 10s
@@ -175,12 +170,6 @@ completion() {
     sed -i "s/kernel.version=/kernel.version=$kernel_version/g" anykernel.sh
     sed -i "s/ksu.version=/ksu.version=$ksu_version/g" anykernel.sh
     sed -i "s/susfs.version=/susfs.version=$susfs_version/g" anykernel.sh
-    mkdir -p $kf/modules/kmu-nsk/system/vendor/lib/modules
-    find $objdir/modules_install -type f -name "*.ko" -exec mv {} $kf/modules/kmu-nsk/system/vendor/lib/modules/ \;
-    sed -i "s/name=/name=NeverSettle KMU (Kernel Modules Updater)/g" $kf/modules/kmu-nsk/module.prop
-    sed -i "s/version=/version=$version/g" $kf/modules/kmu-nsk/module.prop
-    sed -i "s/versionCode=/versionCode=$versioncode/g" $kf/modules/kmu-nsk/module.prop
-    sed -i "s/description=/description=NeverSettle Kernel $version | Build date: $build_date/g" $kf/modules/kmu-nsk/module.prop
     zip -r $zip_name *
     mv $kf/$zip_name $HOME/$zip_name
     sleep 10s
