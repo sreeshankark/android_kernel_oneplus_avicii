@@ -3109,7 +3109,6 @@ void exit_mmap(struct mm_struct *mm)
 		mmap_write_unlock(mm);
 	}
 
-	down_write(&mm->mmap_sem);
 	if (mm->locked_vm) {
 		vma = mm->mmap;
 		while (vma) {
@@ -3124,7 +3123,6 @@ void exit_mmap(struct mm_struct *mm)
 	vma = mm->mmap;
 	if (!vma) {
 		/* Can happen if dup_mmap() received an OOM */
-		up_write(&mm->mmap_sem);;
 		return;
 	}
 
@@ -3144,7 +3142,6 @@ void exit_mmap(struct mm_struct *mm)
 		vma = remove_vma(vma);
 		cond_resched();
 	}
-	up_write(&mm->mmap_sem);
 	vm_unacct_memory(nr_accounted);
 }
 
