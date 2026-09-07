@@ -10,7 +10,7 @@ on:
              description: 'Build Changelog'
              required: true
              default: '* No Changelog provided by the developer'
-  
+
 env:
   TOKEN: ${{ secrets.TG_BOT_TOKEN }}
   CHATID: ${{ secrets.TG_CHAT_ID }}
@@ -24,7 +24,7 @@ jobs:
        - name: Install packages
          run: |
             sudo apt-get update
-            sudo apt-get -y install mkisofs git python2 bc cpio python3 python-is-python3 device-tree-compiler wget jq
+            sudo apt-get -y install mkisofs git bc cpio python2 python3 python-is-python3 device-tree-compiler wget jq
        - name: Initiate cloning
          run: |
             cd ~
@@ -32,4 +32,4 @@ jobs:
        - name: Build NS Kernel
          run: |
             cd ~/kernel
-            python build.py 	    
+            python scripts/build_kernel.py

@@ -6,6 +6,7 @@
 # begin properties
 properties() { '
 version.string=
+clang.version=
 date.string=
 ksu.version=
 kernel.version=
@@ -17,7 +18,7 @@ device.name1=avicii
 device.name2=Nord
 device.name3=AC2001
 device.name4=AC2003
-supported.versions=14 - 16
+supported.versions=14 - 17
 supported.patchlevels=
 '; } # end properties
 

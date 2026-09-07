@@ -37,21 +37,21 @@ os=$(awk '{print $1, $2, $3; exit}' /etc/issue)
 time=$(TZ="Asia/Kolkata" date "+%a %b %d %r")
 
 # send msgs to tg and track the ID
-tg_post_msg() 
+tg_post_msg()
 {
   response=$(curl -s -X POST "$BOT_MSG_URL" -d chat_id="$CHATID" -d message_thread_id="$MESSAGEID" -d "disable_web_page_preview=true" -d "parse_mode=html" -d text="$1")
-  
+
   LAST_MSG_ID=$(echo "$response" | jq '.result.message_id')
 }
 
 # edit the last message sent by this script execution
-tg_edit_msg() 
+tg_edit_msg()
 {
   if [ -z "$LAST_MSG_ID" ] || [ "$LAST_MSG_ID" = "null" ]; then
     echo "No valid LAST_MSG_ID found to edit."
     return 1
   fi
-  
+
   curl -s -X POST "$BOT_EDIT_URL" -d chat_id="$CHATID" -d message_id="$LAST_MSG_ID" -d "disable_web_page_preview=true" -d "parse_mode=html" -d text="$1"
 }
 
@@ -77,6 +77,7 @@ tg_post_sticker() {
 
 kernel_dir="${PWD}"
 TC_DIR=$HOME/tc/
+CLANG_VER="r614150"
 objdir="${kernel_dir}/out"
 kf="$kernel_dir/packaging"
 builddir="${kernel_dir}/build"
@@ -86,16 +87,16 @@ DTBOIMAGE=$kernel_dir/out/arch/arm64/boot/dtbo.img
 if [[ "$BUILDTYPE" == "TEST" ]]; then
        version="TEST"
 else
-       version="v5.0"
+       version="v5.1"
 fi
-versioncode="5000"
 kernel_version="4.19.325-cip135-st19"
+clang_version="23.0.1"
 ksu_version="v3.3.0"
 ksu_version_code="33214"
 susfs_version="v2.2.0"
 build_date="$(date +"%d-%m-%Y")"
 kernel_name="NeverSettle-Kernel-$version-avicii"
-ksu_apk_name="KernelSU_Next_${ksu_version}_${ksu_version_code}-release.apk"
+ksu_apk_name="KernelSU_Next_${ksu_version}-spoofed_${ksu_version_code}-release.apk"
 ksu_apk="https://github.com/KernelSU-Next/KernelSU-Next/releases/download/${ksu_version}/KernelSU_Next_${ksu_version}-spoofed_${ksu_version_code}-release.apk"
 zip_name="$kernel_name-$(date +"%d%m%Y-%H%M").zip"
 sed -i "s/-NeverSettle-Kernel/-NeverSettle-Kernel-$version/g" arch/arm64/configs/avicii_defconfig
@@ -132,10 +133,10 @@ tg_post_msg "<code>🧬 Cloning NeverSettle Kernel source...</code>"
 sleep 10s
 tg_edit_msg "<code>🧬 Cloned NeverSettle Kernel source ✅</code>"
 sleep 3s
-tg_post_msg "<code>🛠️ Cloning ZyC-Clang (22.0.0)...</code>"
-wget https://github.com/ZyCromerZ/Clang/releases/download/22.0.0git-20250920-release/Clang-22.0.0git-20250920.tar.gz
-mkdir $TC_DIR && tar -xvf Clang-22.0.0git-20250920.tar.gz -C $TC_DIR && rm -rf Clang-22.0.0git-20250920.tar.gz
-tg_edit_msg "<code>🛠️ Cloned ZyC-Clang (22.0.0) ✅</code>"
+tg_post_msg "<code>🛠️ Cloning Clang ($clang_version)...</code>"
+wget https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main-kernel/clang-$CLANG_VER.tar.gz
+mkdir $TC_DIR && tar -xvf clang-$CLANG_VER.tar.gz -C $TC_DIR && rm -rf clang-$CLANG_VER.tar.gz
+tg_edit_msg "<code>🛠️ Cloned Clang ($clang_version) ✅</code>"
 
 make_defconfig()
 {
@@ -154,7 +155,7 @@ compile()
     python3 ${avbtool} add_hash_footer --image ${DTBOIMAGE} --partition_size 25165824 --partition_name dtbo
     sleep 10s
     tg_edit_msg "<code>🏗️ Built dtbo.img ✅</code>"
-	sleep 2s
+    sleep 2s
 }
 
 completion() {
@@ -170,6 +171,7 @@ completion() {
     sed -i "s/kernel.version=/kernel.version=$kernel_version/g" anykernel.sh
     sed -i "s/ksu.version=/ksu.version=$ksu_version/g" anykernel.sh
     sed -i "s/susfs.version=/susfs.version=$susfs_version/g" anykernel.sh
+    sed -i "s/clang.version=/clang.version=$clang_version/g" anykernel.sh
     zip -r $zip_name *
     mv $kf/$zip_name $HOME/$zip_name
     sleep 10s
