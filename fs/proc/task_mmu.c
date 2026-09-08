@@ -1924,7 +1924,7 @@ int reclaim_address_space(struct address_space *mapping,
 		}
 	}
 	rcu_read_unlock();
-	reclaimed = reclaimed = reclaim_pages_from_list(&page_list, NULL);
+	reclaimed = reclaim_pages_from_list(&page_list, NULL);
 	rp->nr_reclaimed += reclaimed;
 
 	if (rp->nr_scanned >= rp->nr_to_reclaim)
