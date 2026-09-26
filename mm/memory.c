@@ -79,6 +79,7 @@
 #include <asm/tlb.h>
 #include <asm/tlbflush.h>
 #include <linux/pgtable.h>
+
 #ifdef CONFIG_KSU_SUSFS_SUS_MAP
 #include <linux/susfs_def.h>
 #endif // #ifdef CONFIG_KSU_SUSFS_SUS_MAP
@@ -4489,12 +4490,13 @@ int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
 	struct vm_area_struct *vma;
 	void *old_buf = buf;
 	int write = gup_flags & FOLL_WRITE;
-#ifdef CONFIG_KSU_SUSFS_SUS_MAP
-	vma = find_vma(mm, addr);
-#endif // #ifdef CONFIG_KSU_SUSFS_SUS_MAP
 
 	if (mmap_read_lock_killable(mm))
 		return 0;
+
+#ifdef CONFIG_KSU_SUSFS_SUS_MAP
+	vma = find_vma(mm, addr);
+#endif // #ifdef CONFIG_KSU_SUSFS_SUS_MAP
 
 	/* ignore errors, just check how much was successfully transferred */
 	while (len) {
@@ -4506,6 +4508,7 @@ int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
 		if (vma && vma->vm_file && SUSFS_IS_INODE_SUS_MAP(file_inode(vma->vm_file)))
 			break;
 #endif // #ifdef CONFIG_KSU_SUSFS_SUS_MAP
+
 		ret = get_user_pages_remote(tsk, mm, addr, 1,
 				gup_flags, &page, &vma, NULL);
 		if (ret <= 0) {
