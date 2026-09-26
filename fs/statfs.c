@@ -9,10 +9,10 @@
 #include <linux/security.h>
 #include <linux/uaccess.h>
 #include <linux/compat.h>
-#if defined(CONFIG_KSU_SUSFS_SUS_MOUNT) || defined(CONFIG_KSU_SUSFS_OPEN_REDIRECT)
+#ifdef CONFIG_KSU_SUSFS
 #include <linux/susfs_def.h>
 #include "mount.h"
-#endif
+#endif // #if defined(CONFIG_KSU_SUSFS_SUS_MOUNT) || defined(CONFIG_KSU_SUSFS_OPEN_REDIRECT)
 #include "internal.h"
 
 static int flags_by_mnt(int mnt_flags)
@@ -71,39 +71,78 @@ static int statfs_by_dentry(struct dentry *dentry, struct kstatfs *buf)
 	return retval;
 }
 
+#ifdef CONFIG_KSU_SUSFS_SUS_KSTAT
+extern bool susfs_is_inode_sus_kstat(struct inode *inode, bool *out_is_fuse);
+extern int susfs_sus_kstat_spoof_vfs_statfs(struct inode *inode, struct kstatfs *buf, bool *is_fuse);
+#endif // #ifdef CONFIG_KSU_SUSFS_SUS_KSTAT
 #ifdef CONFIG_KSU_SUSFS_SUS_MOUNT
 extern struct vfsmount *susfs_get_non_sus_vfsmnt_from_vfsmnt(struct vfsmount *vfsmnt);
 #endif //#ifdef CONFIG_KSU_SUSFS_SUS_MOUNT
 
-#ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT
-extern int susfs_open_redirect_spoof_vfs_statfs(struct inode *inode, struct kstatfs *buf);
-#endif // #ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT
+#ifdef CONFIG_KSU_SUSFS_SUS_KSTAT
+int statfs_by_dentry_wrapper(struct dentry *dentry, struct kstatfs *buf){
+	return statfs_by_dentry(dentry, buf);
+}
+
+int calculate_f_flags_wrapper(struct vfsmount *mnt)
+{
+	return calculate_f_flags(mnt);
+}
+
+static int susfs_statfs_by_dentry(struct dentry *dentry, struct vfsmount *mnt, struct kstatfs *buf, bool *is_fuse)
+{
+	int retval;
+
+	if (!dentry->d_sb->s_op->statfs)
+		return -ENOSYS;
+
+	memset(buf, 0, sizeof(*buf));
+	retval = security_sb_statfs(dentry);
+	if (retval)
+		return retval;
+	if (!susfs_sus_kstat_spoof_vfs_statfs(d_backing_inode(dentry), buf, is_fuse)) {
+		if (buf->f_frsize == 0)
+			buf->f_frsize = buf->f_bsize;
+		return retval;
+	}
+	retval = dentry->d_sb->s_op->statfs(dentry, buf);
+	if (retval == 0) {
+		buf->f_flags = calculate_f_flags(mnt);
+		if (buf->f_frsize == 0)
+			buf->f_frsize = buf->f_bsize;
+	}
+	return retval;
+}
+#endif // #ifdef CONFIG_KSU_SUSFS_SUS_KSTAT
 
 int vfs_statfs(const struct path *path, struct kstatfs *buf)
 {
 	int error;
-#ifdef CONFIG_KSU_SUSFS_SUS_MOUNT
-	struct vfsmount *no_sus_vfsmnt = NULL;
-#endif // #ifdef CONFIG_KSU_SUSFS_SUS_MOUNT
-#ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT
-	struct inode *inode = path->dentry->d_inode;
-
-	if (SUSFS_IS_INODE_OPEN_REDIRECT(inode)) {
-		if (susfs_open_redirect_spoof_vfs_statfs(inode, buf))
-			goto orig_flow;
-		return 0;
+#ifdef CONFIG_KSU_SUSFS_SUS_KSTAT
+	if (susfs_is_current_app_uid()) {
+		struct inode *inode = d_backing_inode(path->dentry);
+		bool is_fuse = false;
+		if (susfs_is_inode_sus_kstat(inode, &is_fuse)) {
+			// - here we do not call calculate_f_flags() here as buf->f_flags on the
+			//   sus_kstat path will be handled by susfs_statfs_by_dentry().
+			return susfs_statfs_by_dentry(path->dentry, path->mnt, buf, &is_fuse);
+		}
 	}
-#endif // #ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT
+#endif // #ifdef CONFIG_KSU_SUSFS_SUS_KSTAT
 
 #ifdef CONFIG_KSU_SUSFS_SUS_MOUNT
-	if (likely(susfs_is_current_proc_umounted() && path->mnt)) {
+	if (likely(susfs_is_current_proc_umounted())) {
+		struct vfsmount *no_sus_vfsmnt = NULL;
 		no_sus_vfsmnt = susfs_get_non_sus_vfsmnt_from_vfsmnt(path->mnt);
 		if (path->mnt == no_sus_vfsmnt) {
 			dput(no_sus_vfsmnt->mnt_root);
 			mntput(no_sus_vfsmnt);
-			goto orig_flow;
+			error = statfs_by_dentry(path->dentry, buf);
+			if (!error)
+				buf->f_flags = calculate_f_flags(path->mnt);
+			return error;
 	}
-	error = statfs_by_dentry(no_sus_vfsmnt->mnt_root, buf);
+		error = statfs_by_dentry(no_sus_vfsmnt->mnt_root, buf);
 		if (!error)
 			buf->f_flags = calculate_f_flags(no_sus_vfsmnt);
 		dput(no_sus_vfsmnt->mnt_root);
@@ -112,9 +151,6 @@ int vfs_statfs(const struct path *path, struct kstatfs *buf)
 	}
 #endif // #ifdef CONFIG_KSU_SUSFS_SUS_MOUNT
 
-#if defined(CONFIG_KSU_SUSFS_SUS_MOUNT) || defined(CONFIG_KSU_SUSFS_OPEN_REDIRECT)
-orig_flow:
-#endif // #if defined(CONFIG_KSU_SUSFS_SUS_MOUNT) || defined(CONFIG_KSU_SUSFS_OPEN_REDIRECT)
 	error = statfs_by_dentry(path->dentry, buf);
 	if (!error)
 		buf->f_flags = calculate_f_flags(path->mnt);
