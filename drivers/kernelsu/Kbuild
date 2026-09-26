@@ -70,11 +70,11 @@ obj-$(CONFIG_KSU) += kernelsu.o
 LPATH := /usr/bin/env PATH="$$PATH":/usr/bin:/usr/local/bin
 MDIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
-$(info -- KernelSU-Next version: 33292)
-ccflags-y += -DKSU_VERSION=33292
+$(info -- KernelSU-Next version: 33314)
+ccflags-y += -DKSU_VERSION=33314
 
-$(info -- KernelSU-Next tag: v3.3.0)
-ccflags-y += -DKSU_VERSION_TAG=\"v3.3.0\"
+$(info -- KernelSU-Next tag: v3.4.0)
+ccflags-y += -DKSU_VERSION_TAG=\"v3.4.0\"
 
 ifndef KSU_NEXT_MANAGER_SIZE
 KSU_NEXT_MANAGER_SIZE := 0x3e6
@@ -102,6 +102,15 @@ $(info -- KernelSU-Next: Hook mode: Kprobes)
 ccflags-y += -DKSU_KPROBES_HOOK
 # Let's make it 0, so it would pass.
 HAVE_KSU_HOOK := 0
+endif
+
+ifeq ($(CONFIG_KSU_SYSCALL_TABLE_HOOK), y)
+$(info -- KernelSU-Next: Hook mode: Syscall table patching)
+ccflags-y += -DKSU_SYSCALL_TABLE_HOOK
+HAVE_KSU_HOOK := 0
+kernelsu-objs += hook/patch_memory.o
+kernelsu-objs += hook/syscall_table_hook.o
+kernelsu-objs += infra/symbol_resolver.o
 endif
 
 ifeq ($(CONFIG_KSU_MANUAL_HOOK), y)
@@ -230,6 +239,9 @@ ccflags-y += -DKSU_COMPAT_HAS_EXPORTED_POLICY_RWLOCK
 endif
 ifeq ($(shell grep -q "cpus_ptr;" $(srctree)/include/linux/sched.h; echo $$?),0)
 ccflags-y += -DKSU_COMPAT_HAS_BACKPORTED_CPUS_PTR
+endif
+ifeq ($(shell grep -q "struct pid \*task_pgrp" $(srctree)/include/linux/sched.h; echo $$?),0)
+ccflags-y += -DKSU_COMPAT_HAS_TASK_PGRP_FUNC
 endif
 
 # fallthrough check for allowlist v2
