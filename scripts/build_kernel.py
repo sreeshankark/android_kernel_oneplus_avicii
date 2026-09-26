@@ -100,7 +100,6 @@ ksu_apk_name="KernelSU_Next_${ksu_version}-spoofed_${ksu_version_code}-release.a
 ksu_apk="https://github.com/KernelSU-Next/KernelSU-Next/releases/download/${ksu_version}/KernelSU_Next_${ksu_version}-spoofed_${ksu_version_code}-release.apk"
 zip_name="$kernel_name-$(date +"%d%m%Y-%H%M").zip"
 sed -i "s/-NeverSettle-Kernel/-NeverSettle-Kernel-$version/g" arch/arm64/configs/avicii_defconfig
-sed -i 's/CONFIG_LOCALVERSION_AUTO=y/# CONFIG_LOCALVERSION_AUTO is not set/g' arch/arm64/configs/avicii_defconfig
 sed -i 's/ccflags-y += $(subst $(srctree),source,$(INCS))/ccflags-y += $(INCS)/g' drivers/staging/qcacld-3.0/Kbuild
 
 export ARCH=arm64
