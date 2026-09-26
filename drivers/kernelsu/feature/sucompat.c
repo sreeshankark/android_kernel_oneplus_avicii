@@ -20,6 +20,7 @@
 #include <linux/sched.h>
 #endif
 #include <linux/ptrace.h>
+#include <linux/fcntl.h>
 
 #include "objsec.h"
 
@@ -33,6 +34,7 @@
 #include "policy/app_profile.h"
 #include "selinux/selinux.h"
 #include "tiny_sulog.h"
+#include "supercall/supercall.h"
 #include "sulog/event.h"
 
 #define SU_PATH "/system/bin/su"
@@ -93,6 +95,10 @@ int ksu_handle_faccessat(int *dfd, const char __user **filename_user,
 {
 	const char su[] = SU_PATH;
 
+	if (!ksu_su_compat_enabled) {
+		return 0;
+	}
+
 	if (!ksu_is_allow_uid_for_current(current_uid().val)) {
 		return 0;
 	}
@@ -115,6 +121,10 @@ int ksu_handle_stat(int *dfd, const char __user **filename_user, int *flags)
 	// const char sh[] = SH_PATH;
 	const char su[] = SU_PATH;
 
+	if (!ksu_su_compat_enabled) {
+		return 0;
+	}
+
 	if (!ksu_is_allow_uid_for_current(current_uid().val)) {
 		return 0;
 	}
@@ -136,17 +146,26 @@ int ksu_handle_stat(int *dfd, const char __user **filename_user, int *flags)
 	return 0;
 }
 
-long ksu_handle_execve_sucompat(const char __user **filename_user, int orig_nr, const struct pt_regs *regs)
+static long ksu_handle_execve_sucompat_common(const char __user **filename_user,
+		const char __user *const __user *argv_user, bool execveat,
+		const struct pt_regs *regs)
 {
 	const char su[] = SU_PATH;
 	const char __user *fn;
-	const char __user *const __user *argv_user = (const char __user *const __user *)PT_REGS_PARM2(regs);
 	struct ksu_sulog_pending_event *pending_sucompat = NULL;
 	char path[sizeof(su) + 1];
 	long ret;
 	unsigned long addr;
+	int su_fd = -1;
+
+	if (execveat && ((int)PT_REGS_PARM1(regs) != AT_FDCWD ||
+			 (int)PT_REGS_SYSCALL_PARM4(regs) != 0))
+		goto do_orig_execve;
 
 	if (unlikely(!filename_user))
+		goto do_orig_execve;
+
+	if (!ksu_su_compat_enabled)
 		goto do_orig_execve;
 
 	if (!ksu_is_allow_uid_for_current(current_uid().val))
@@ -165,6 +184,13 @@ long ksu_handle_execve_sucompat(const char __user **filename_user, int orig_nr, 
 
 	if (ret < 0) {
 		goto do_orig_execve;
+	} else {
+		// Only grant the scoped driver capability after the selected root
+		// profile has been applied successfully.
+		su_fd = ksu_install_su_fd();
+		if (su_fd < 0) {
+			pr_warn("install su session fd failed: %d\n", su_fd);
+		}
 	}
 
 	if (likely(memcmp(path, su, sizeof(su))))
@@ -200,6 +226,20 @@ do_orig_execve:
 	return 0;
 }
 
+long ksu_handle_execve_sucompat(const char __user **filename_user, int orig_nr, const struct pt_regs *regs)
+{
+	return ksu_handle_execve_sucompat_common(filename_user,
+			(const char __user *const __user *)PT_REGS_PARM2(regs),
+			false, regs);
+}
+
+long ksu_handle_execveat_sucompat_user(const char __user **filename_user, int orig_nr, const struct pt_regs *regs)
+{
+	return ksu_handle_execve_sucompat_common(filename_user,
+			(const char __user *const __user *)PT_REGS_PARM3(regs),
+			true, regs);
+}
+
 int ksu_handle_execveat_sucompat(int *fd, struct filename **filename_ptr,
 				 void *__never_use_argv, void *__never_use_envp,
 				 int *__never_use_flags)
@@ -231,7 +271,7 @@ int ksu_handle_execveat_sucompat(int *fd, struct filename **filename_ptr,
 	return 0;
 }
 
-/*int __ksu_handle_devpts(struct inode *inode)
+int __ksu_handle_devpts(struct inode *inode)
 {
 #ifndef KSU_KPROBES_HOOK
 	if (!ksu_su_compat_enabled)
@@ -258,11 +298,10 @@ int ksu_handle_execveat_sucompat(int *fd, struct filename **filename_ptr,
 	return 0;
 }
 
-// dead code: devpts handling
 int __maybe_unused ksu_handle_devpts(struct inode *inode)
 {
 	return __ksu_handle_devpts(inode);
-}*/
+}
 
 // sucompat: permitted process can execute 'su' to gain root access.
 void __init ksu_sucompat_init()
