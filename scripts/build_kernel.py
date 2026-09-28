@@ -87,17 +87,18 @@ DTBOIMAGE=$kernel_dir/out/arch/arm64/boot/dtbo.img
 if [[ "$BUILDTYPE" == "TEST" ]]; then
        version="TEST"
 else
-       version="v5.1"
+       version="v5.2"
 fi
-kernel_version="4.19.325-cip135-st19"
+kernel_version="4.19.325-cip136-st20"
 clang_version="23.0.1"
-ksu_version="v3.3.0"
-ksu_version_code="33214"
-susfs_version="v2.2.0"
+ksu_version="v3.4.0"
+ksu_version_code="33314"
+ksu_version_code_apk="33294"
+susfs_version="v2.3.0"
 build_date="$(date +"%d-%m-%Y")"
 kernel_name="NeverSettle-Kernel-$version-avicii"
-ksu_apk_name="KernelSU_Next_${ksu_version}-spoofed_${ksu_version_code}-release.apk"
-ksu_apk="https://github.com/KernelSU-Next/KernelSU-Next/releases/download/${ksu_version}/KernelSU_Next_${ksu_version}-spoofed_${ksu_version_code}-release.apk"
+ksu_apk_name="KernelSU_Next_${ksu_version}-spoofed_${ksu_version_code_apk}-release.apk"
+ksu_apk="https://github.com/KernelSU-Next/KernelSU-Next/releases/download/${ksu_version}/KernelSU_Next_${ksu_version}-spoofed_${ksu_version_code_apk}-release.apk"
 zip_name="$kernel_name-$(date +"%d%m%Y-%H%M").zip"
 sed -i "s/-NeverSettle-Kernel/-NeverSettle-Kernel-$version/g" arch/arm64/configs/avicii_defconfig
 sed -i 's/ccflags-y += $(subst $(srctree),source,$(INCS))/ccflags-y += $(INCS)/g' drivers/staging/qcacld-3.0/Kbuild
@@ -105,7 +106,6 @@ sed -i 's/ccflags-y += $(subst $(srctree),source,$(INCS))/ccflags-y += $(INCS)/g
 export ARCH=arm64
 export SUBARCH=arm64
 export CONFIG_FILE="avicii_defconfig avicii_ext.config"
-export BRAND_SHOW_FLAG=oneplus
 export CCACHE=$(command -v ccache)
 export PATH="$TC_DIR/bin:$PATH"
 export CC="ccache clang"
@@ -134,17 +134,24 @@ tg_edit_msg "<code>🧬 Cloned NeverSettle Kernel source ✅</code>"
 sleep 3s
 tg_post_msg "<code>🛠️ Cloning Clang ($clang_version)...</code>"
 wget https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main-kernel/clang-$CLANG_VER.tar.gz
-mkdir $TC_DIR && tar -xvf clang-$CLANG_VER.tar.gz -C $TC_DIR && rm -rf clang-$CLANG_VER.tar.gz
+mkdir $TC_DIR && tar -xf clang-$CLANG_VER.tar.gz -C $TC_DIR && rm -rf clang-$CLANG_VER.tar.gz
 tg_edit_msg "<code>🛠️ Cloned Clang ($clang_version) ✅</code>"
+sleep 2s
 
 make_defconfig()
 {
     START=$(date +"%s")
+    tg_post_msg "<code>📝 Generating Defconfig...</code>"
+    sleep 3s
     echo -e ${LGR} "########### Generating Defconfig ############${NC}"
     make -s ARCH=arm64 O=out $CONFIG_FILE -j$cores
+    tg_edit_msg "<code>📝 Defconfig generated ✅</code>"
+    sleep 2s
 }
+
 compile()
 {
+    tg_edit_msg "<code>🏗️ Building kernel...</code>"
     echo -e ${LGR} "######### Compiling kernel #########${NC}"
     make ARCH=arm64 O=out -j$cores \\
     2>&1 | tee error.log
@@ -223,13 +230,6 @@ completion() {
   fi
 }
 make_defconfig
-if [ $? -eq 0 ]; then
-  tg_post_msg "<code>📝 Generating Defconfig...</code>"
-  sleep 3s
-  tg_edit_msg "<code>📝 Defconfig generated ✅</code>"
-  sleep 4s
-  tg_edit_msg "<code>🏗️ Building kernel...</code>"
-fi
 compile
 completion
 cd ${kernel_dir}

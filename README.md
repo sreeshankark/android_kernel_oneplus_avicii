@@ -3,11 +3,11 @@
 
 | Parameter | Value |
 | ---------- | ---------- |
-| NS version | 5.1 |
-| Linux Kernel version | 4.19.325-cip135-st19 |
-| KernelSU-Next version | 3.3.0 |
-| KernelSU-Next version code | 33292 |
-| SUSFS version | 2.2.0 |
+| NS version | 5.2 |
+| Linux Kernel version | 4.19.325-cip136-st20 |
+| KernelSU-Next version | 3.4.0 |
+| KernelSU-Next version code | 33314 |
+| SUSFS version | 2.3.0 |
 
 ## Kernel Features
 (1) Supports 5V-6A Fast Charging 
