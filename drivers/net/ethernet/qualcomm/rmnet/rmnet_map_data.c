@@ -436,6 +436,7 @@ struct sk_buff *rmnet_map_deaggregate(struct sk_buff *skb,
 		memcpy(skbn->data, data, packet_len);
 	}
 
+	skbn->dev = skb->dev;
 	pskb_pull(skb, packet_len);
 
 	return skbn;

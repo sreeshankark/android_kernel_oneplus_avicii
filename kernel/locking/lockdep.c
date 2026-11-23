@@ -3836,7 +3836,6 @@ __lock_set_class(struct lockdep_map *lock, const char *name,
 	class = register_lock_class(lock, subclass, 0);
 	if (!class)
 		return 0;
-
 	hlock->class_idx = class - lock_classes + 1;
 
 	curr->lockdep_depth = i;

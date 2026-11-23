@@ -995,6 +995,14 @@ struct bpf_array {
 	u32 elem_size;
 	u32 index_mask;
 	struct bpf_array_aux *aux;
+	/* 'ownership' of prog_array is claimed by the first program that
+	 * is going to use this map or by the first program which FD is stored
+	 * in the map to make sure that all callers and callees have the same
+	 * prog_type and JITed flag
+	 */
+	enum bpf_prog_type owner_prog_type;
+	bool owner_jited;
+	enum bpf_attach_type owner_attach_type;
 	union {
 		char value[0] __aligned(8);
 		void *ptrs[0] __aligned(8);

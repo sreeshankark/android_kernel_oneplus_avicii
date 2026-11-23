@@ -87,7 +87,7 @@ static void fib6_walker_link(struct net *net, struct fib6_walker *w)
 static void fib6_walker_unlink(struct net *net, struct fib6_walker *w)
 {
 	write_lock_bh(&net->ipv6.fib6_walker_lock);
-	list_del(&w->lh);
+	list_del_init(&w->lh);
 	write_unlock_bh(&net->ipv6.fib6_walker_lock);
 }
 
@@ -603,7 +603,6 @@ static int inet6_dump_fib(struct sk_buff *skb, struct netlink_callback *cb)
 		if (rtm->rtm_flags & RTM_F_PREFIX)
 			arg.filter.flags = RTM_F_PREFIX;
 	}
-
 	w = (void *)cb->args[2];
 	if (!w) {
 		/* New dump:
@@ -2560,7 +2559,7 @@ static void *ipv6_route_seq_start(struct seq_file *seq, loff_t *pos)
 static bool ipv6_route_iter_active(struct ipv6_route_iter *iter)
 {
 	struct fib6_walker *w = &iter->w;
-	return w->node && !(w->state == FWS_U && w->node == w->root);
+	return w->node && !list_empty(&w->lh);
 }
 
 static void ipv6_route_native_seq_stop(struct seq_file *seq, void *v)

@@ -151,7 +151,6 @@ static void __evdev_queue_syn_dropped(struct evdev_client *client)
 	ktime_t *ev_time = input_get_timestamp(client->evdev->handle.dev);
 	struct timespec64 ts = ktime_to_timespec64(ev_time[client->clk_type]);
 	struct input_event ev;
-
 	memset(&ev, 0, sizeof(ev));
 	ev.input_event_sec = ts.tv_sec;
 	ev.input_event_usec = ts.tv_nsec / NSEC_PER_USEC;
@@ -1236,6 +1235,8 @@ static long evdev_do_ioctl(struct file *file, unsigned int cmd,
 				return -EINVAL;
 
 			t = _IOC_NR(cmd) & ABS_MAX;
+
+			memset(&abs, 0, sizeof(abs));
 
 			if (copy_from_user(&abs, p, min_t(size_t,
 					size, sizeof(struct input_absinfo))))

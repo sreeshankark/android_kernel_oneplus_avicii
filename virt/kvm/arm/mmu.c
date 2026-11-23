@@ -1507,6 +1507,17 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
 		return -EFAULT;
 	}
 
+	/*
+	 * Top up the MMU cache before reading mmu_notifier_seq (and before
+	 * taking mmap_sem) so that a potentially blocking allocation does
+	 * not widen the window in which a change to the VMA can go
+	 * undetected.
+	 */
+	ret = mmu_topup_memory_cache(memcache, KVM_MMU_CACHE_MIN_PAGES,
+				     KVM_NR_MEM_OBJS);
+	if (ret)
+		return ret;
+
 	/* Let's check if we will get back a huge page backed by hugetlbfs */
 	mmap_read_lock(current->mm);
 	vma = find_vma_intersection(current->mm, hva, hva + 1);
@@ -1533,15 +1544,10 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
 		    ((memslot->base_gfn << PAGE_SHIFT) & ~PMD_MASK))
 			force_pte = true;
 	}
+	/* Sample the notifier sequence while the VMA is still protected. */
+	mmu_seq = vcpu->kvm->mmu_notifier_seq;
 	mmap_read_unlock(current->mm);
 
-	/* We need minimum second+third level pages */
-	ret = mmu_topup_memory_cache(memcache, KVM_MMU_CACHE_MIN_PAGES,
-				     KVM_NR_MEM_OBJS);
-	if (ret)
-		return ret;
-
-	mmu_seq = vcpu->kvm->mmu_notifier_seq;
 	/*
 	 * Ensure the read of mmu_notifier_seq happens before we call
 	 * gfn_to_pfn_prot (which calls get_user_pages), so that we don't risk
