@@ -1,0 +1,168 @@
+#ifndef __KSU_H_ARCH
+#define __KSU_H_ARCH
+
+#include <linux/version.h>
+#include <linux/types.h>
+#include "compat/kernel_compat.h"
+
+#if defined(__aarch64__)
+
+#define __PT_PARM1_REG regs[0]
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 3, 0)
+#define __PT_SYSCALL_PARM1_REG orig_x0
+#endif
+#define __PT_PARM2_REG regs[1]
+#define __PT_PARM3_REG regs[2]
+#define __PT_SYSCALL_PARM4_REG regs[3]
+#define __PT_CCALL_PARM4_REG regs[3]
+#define __PT_PARM5_REG regs[4]
+#define __PT_PARM6_REG regs[5]
+#define __PT_RET_REG regs[30]
+#define __PT_FP_REG regs[29] /* Works only with CONFIG_FRAME_POINTER */
+#define __PT_RC_REG regs[0]
+#define __PT_SP_REG sp
+#define __PT_IP_REG pc
+#define __PT_ORIG_SYSCALL_REG regs[8]
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 16, 0)
+#define REBOOT_SYMBOL "__arm64_sys_reboot"
+#define SYS_READ_SYMBOL "__arm64_sys_read"
+#define SYS_EXECVE_SYMBOL "__arm64_sys_execve"
+#define SYS_SETNS_SYMBOL __arm64_sys_setns
+// https://cs.android.com/android/kernel/superproject/+/common-android-mainline:common/scripts/syscalltbl.sh;l=57;drc=9142be9e6443fd641ca37f820efe00d9cd890eb1
+// https://cs.android.com/android/kernel/superproject/+/common-android-mainline:common/scripts/syscall.tbl;l=104;drc=b36d4b6aa88ef039647228b98c59a875e92f8c8e
+#define SYS_FSTAT_SYMBOL "__arm64_sys_newfstat"
+#else
+#define REBOOT_SYMBOL "sys_reboot"
+#define SYS_READ_SYMBOL "sys_read"
+#define SYS_EXECVE_SYMBOL "sys_execve"
+#define SYS_SETNS_SYMBOL sys_setns
+#define SYS_FSTAT_SYMBOL "compat_sys_newfstat"
+#endif
+
+#elif defined(__x86_64__)
+
+#define __PT_PARM1_REG di
+#define __PT_PARM2_REG si
+#define __PT_PARM3_REG dx
+/* syscall uses r10 for PARM4 */
+#define __PT_SYSCALL_PARM4_REG r10
+#define __PT_CCALL_PARM4_REG cx
+#define __PT_PARM5_REG r8
+#define __PT_PARM6_REG r9
+#define __PT_RET_REG sp
+#define __PT_FP_REG bp
+#define __PT_RC_REG ax
+#define __PT_SP_REG sp
+#define __PT_IP_REG ip
+#define __PT_ORIG_SYSCALL_REG orig_ax
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 16, 0)
+#define REBOOT_SYMBOL "__x64_sys_reboot"
+#define SYS_READ_SYMBOL "__x64_sys_read"
+#define SYS_EXECVE_SYMBOL "__x64_sys_execve"
+#define SYS_SETNS_SYMBOL __x64_sys_setns
+#define SYS_FSTAT_SYMBOL "__x64_sys_newfstat"
+#else
+#define REBOOT_SYMBOL "sys_reboot"
+#define SYS_READ_SYMBOL "sys_read"
+#define SYS_EXECVE_SYMBOL "sys_execve"
+#define SYS_SETNS_SYMBOL sys_setns
+#endif
+
+#elif defined(__riscv)
+
+#define __PT_PARM1_REG a0
+#define __PT_SYSCALL_PARM1_REG orig_a0
+#define __PT_PARM2_REG a1
+#define __PT_PARM3_REG a2
+#define __PT_SYSCALL_PARM4_REG a3
+#define __PT_CCALL_PARM4_REG a3
+#define __PT_PARM5_REG a4
+#define __PT_PARM6_REG a5
+#define __PT_RET_REG ra
+#define __PT_FP_REG s0
+#define __PT_RC_REG a0
+#define __PT_SP_REG sp
+#define __PT_IP_REG epc
+#define __PT_ORIG_SYSCALL_REG a7
+
+#define REBOOT_SYMBOL "__riscv_sys_reboot"
+#define SYS_READ_SYMBOL "__riscv_sys_read"
+#define SYS_EXECVE_SYMBOL "__riscv_sys_execve"
+#define SYS_FSTAT_SYMBOL "__riscv_sys_newfstat"
+
+#else
+#ifdef CONFIG_KSU_TRACEPOINT_HOOK
+#error "Unsupported arch"
+#endif
+#endif
+
+/* allow some architecutres to override `struct pt_regs` */
+#ifndef __PT_REGS_CAST
+#define __PT_REGS_CAST(x) (x)
+#endif
+
+/* RISC-V saves syscall argument zero before using a0 as the return slot.
+ * Kprobe C-call arguments (including PT_REAL_REGS) still use the live a0.
+ */
+#ifndef __PT_SYSCALL_PARM1_REG
+#define __PT_SYSCALL_PARM1_REG __PT_PARM1_REG
+#endif
+
+/* Native slots remain writable for kernel C calls and register updates. */
+#define PT_REGS_NATIVE_PARM1(x) (__PT_REGS_CAST(x)->__PT_PARM1_REG)
+#define PT_REGS_NATIVE_SYSCALL_PARM1(x) (__PT_REGS_CAST(x)->__PT_SYSCALL_PARM1_REG)
+#define PT_REGS_NATIVE_PARM2(x) (__PT_REGS_CAST(x)->__PT_PARM2_REG)
+#define PT_REGS_NATIVE_PARM3(x) (__PT_REGS_CAST(x)->__PT_PARM3_REG)
+#define PT_REGS_NATIVE_SYSCALL_PARM4(x) (__PT_REGS_CAST(x)->__PT_SYSCALL_PARM4_REG)
+#define PT_REGS_NATIVE_PARM5(x) (__PT_REGS_CAST(x)->__PT_PARM5_REG)
+#define PT_REGS_NATIVE_PARM6(x) (__PT_REGS_CAST(x)->__PT_PARM6_REG)
+
+#if defined(__aarch64__) && defined(CONFIG_COMPAT)
+#include <linux/compat.h>
+
+/* AArch32 values occupy the low 32 bits of the saved arm64 register slots. */
+#define __PT_REGS_READ(x, native, compat)                                                                              \
+    (is_compat_task() ? (unsigned long)(u32)(__PT_REGS_CAST(x)->compat) : (__PT_REGS_CAST(x)->native))
+#define PT_REGS_ORIG_SYSCALL(x)                                                                                        \
+    (*(is_compat_task() ? &__PT_REGS_CAST(x)->regs[7] : &__PT_REGS_CAST(x)->__PT_ORIG_SYSCALL_REG))
+#else
+#define __PT_REGS_READ(x, native, compat) (__PT_REGS_CAST(x)->native)
+#define PT_REGS_ORIG_SYSCALL(x) (__PT_REGS_CAST(x)->__PT_ORIG_SYSCALL_REG)
+#endif
+
+#define PT_REGS_SYSCALL_PARM1(x) __PT_REGS_READ(x, __PT_SYSCALL_PARM1_REG, regs[0])
+#define PT_REGS_PARM1(x) __PT_REGS_READ(x, __PT_PARM1_REG, regs[0])
+#define PT_REGS_PARM2(x) __PT_REGS_READ(x, __PT_PARM2_REG, regs[1])
+#define PT_REGS_PARM3(x) __PT_REGS_READ(x, __PT_PARM3_REG, regs[2])
+#define PT_REGS_SYSCALL_PARM4(x) __PT_REGS_READ(x, __PT_SYSCALL_PARM4_REG, regs[3])
+/* Kernel C calls always use the native ABI, including for compat tasks. */
+#define PT_REGS_CCALL_PARM4(x) (__PT_REGS_CAST(x)->__PT_CCALL_PARM4_REG)
+#define PT_REGS_PARM5(x) __PT_REGS_READ(x, __PT_PARM5_REG, regs[4])
+#define PT_REGS_PARM6(x) __PT_REGS_READ(x, __PT_PARM6_REG, regs[5])
+#define PT_REGS_RET(x) __PT_REGS_READ(x, __PT_RET_REG, regs[14])
+#define PT_REGS_FP(x) __PT_REGS_READ(x, __PT_FP_REG, regs[11])
+#define PT_REGS_RC(x) __PT_REGS_READ(x, __PT_RC_REG, regs[0])
+#define PT_REGS_SP(x) __PT_REGS_READ(x, __PT_SP_REG, regs[13])
+#define PT_REGS_IP(x) __PT_REGS_READ(x, __PT_IP_REG, pc)
+
+static inline void __user *ksu_task_user_ptr(unsigned long addr)
+{
+#if defined(__aarch64__) && defined(CONFIG_COMPAT)
+    if (is_compat_task())
+        return compat_ptr((compat_uptr_t)addr);
+#endif
+    return (void __user *)addr;
+}
+
+#define PT_REGS_USER_PTR(x, n) ksu_task_user_ptr(PT_REGS_PARM##n(x))
+#define PT_REGS_SYSCALL_PARM1_USER_PTR(x) ksu_task_user_ptr(PT_REGS_SYSCALL_PARM1(x))
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 16, 0)
+#define PT_REAL_REGS(regs) ((struct pt_regs *)PT_REGS_NATIVE_PARM1(regs))
+#else
+#define PT_REAL_REGS(regs) ((regs))
+#endif
+
+#endif
