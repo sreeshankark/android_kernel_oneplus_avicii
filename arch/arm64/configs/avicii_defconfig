@@ -4670,7 +4670,7 @@ CONFIG_INTEGRITY_AUDIT=y
 # CONFIG_EVM is not set
 CONFIG_DEFAULT_SECURITY_SELINUX=y
 # CONFIG_DEFAULT_SECURITY_DAC is not set
-CONFIG_LSM="lockdown,yama,loadpin,safesetid,integrity,selinux,smack,tomoyo,apparmor,bpf"
+CONFIG_LSM="lockdown,yama,loadpin,safesetid,integrity,selinux,smack,tomoyo,apparmor,bpf,baseband_guard"
 CONFIG_CC_HAS_AUTO_VAR_INIT_PATTERN=y
 CONFIG_CC_HAS_AUTO_VAR_INIT_ZERO_BARE=y
 CONFIG_CC_HAS_AUTO_VAR_INIT_ZERO=y
@@ -5125,3 +5125,6 @@ CONFIG_ARM64_STRICT_BREAK_BEFORE_MAKE=y
 # CONFIG_CORESIGHT is not set
 CONFIG_RMNET_PERF=y
 CONFIG_RMNET_SHS=y
+CONFIG_BBG=y
+# CONFIG_BBG_BLOCK_BOOT is not set
+# CONFIG_BBG_BLOCK_RECOVERY is not set
