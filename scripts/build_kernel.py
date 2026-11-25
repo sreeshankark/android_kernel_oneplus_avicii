@@ -87,18 +87,18 @@ DTBOIMAGE=$kernel_dir/out/arch/arm64/boot/dtbo.img
 if [[ "$BUILDTYPE" == "TEST" ]]; then
        version="TEST"
 else
-       version="v5.2"
+       version="v5.3"
 fi
-kernel_version="4.19.325-cip136-st20"
+kernel_version="4.19.325-cip137-st21"
 clang_version="23.0.1"
-ksu_version="v3.4.0"
-ksu_version_code="33314"
-ksu_version_code_apk="33294"
-susfs_version="v2.3.0"
+ksu_version="v4.2.0-rc3"
+ksu_version_code="35285"
+ksu_version_code_apk="35285"
+susfs_version="v2.4.0"
 build_date="$(date +"%d-%m-%Y")"
 kernel_name="NeverSettle-Kernel-$version-avicii"
-ksu_apk_name="KernelSU_Next_${ksu_version}-spoofed_${ksu_version_code_apk}-release.apk"
-ksu_apk="https://github.com/KernelSU-Next/KernelSU-Next/releases/download/${ksu_version}/KernelSU_Next_${ksu_version}-spoofed_${ksu_version_code_apk}-release.apk"
+ksu_apk_name="BakaSU_${ksu_version}_${ksu_version_code_apk}-arm64-v8a-release.apk"
+ksu_apk="https://github.com/Baka-SU/BakaSU/releases/download/${ksu_version}/${ksu_apk_name}"
 zip_name="$kernel_name-$(date +"%d%m%Y-%H%M").zip"
 sed -i "s/-NeverSettle-Kernel/-NeverSettle-Kernel-$version/g" arch/arm64/configs/avicii_defconfig
 sed -i 's/ccflags-y += $(subst $(srctree),source,$(INCS))/ccflags-y += $(INCS)/g' drivers/staging/qcacld-3.0/Kbuild
@@ -183,11 +183,11 @@ completion() {
     sleep 10s
     tg_edit_msg "<code>📦 Flashable zip created ✅</code>"
     sleep 2s
-    tg_edit_msg "<code>🧑‍💼 Downloading KernelSU-Next manager...</code>"
+    tg_edit_msg "<code>🧑‍💼 Downloading BakaSU manager...</code>"
     LAST_MSG_ID2=$LAST_MSG_ID
     wget ${ksu_apk} -O $HOME/${ksu_apk_name}
     sleep 6s
-    tg_edit_msg2 "<code>🧑‍💼 KernelSU-Next manager downloaded ✅</code>"
+    tg_edit_msg2 "<code>🧑‍💼 BakaSU manager downloaded ✅</code>"
     END=$(date +"%s")
     DIFF=$(($END - $START))
     sleep 2s
@@ -205,10 +205,10 @@ completion() {
     tg_post_msg "<b>Changelog ($(date +%d-%m-%Y))</b>%0A<code>$CHANGELOG</code>"
     tg_edit_msg2 "<code>📝 Changelog generated ✅</code>"
     sleep 2s
-    tg_edit_msg2 "<code>📤 [2/2] Uploading KernelSU-Next manager apk...</code>"
+    tg_edit_msg2 "<code>📤 [2/2] Uploading BakaSU manager apk...</code>"
     sleep 6s
-    tg_post_build "$HOME/${ksu_apk_name}" "KernelSU-Next Manager for this build"
-    tg_edit_msg2 "<code>📤 [2/2] KernelSU-Next manager apk uploaded ✅</code>"
+    tg_post_build "$HOME/${ksu_apk_name}" "BakaSU Manager for this build"
+    tg_edit_msg2 "<code>📤 [2/2] BakaSU manager apk uploaded ✅</code>"
     sleep 2s
     tg_edit_msg2 "<code>📤 Files uploaded ✅</code>"
     sleep 2s

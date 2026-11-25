@@ -5,6 +5,9 @@
 | ---------- | ---------- |
 | NS version | 5.3 |
 | Linux Kernel version | 4.19.325-cip137-st21 |
+| BakaSU version | 4.2.0-rc3 |
+| BakaSU version code | 35285 |
+| SUSFS version | 2.4.0 |
 
 ## Kernel Features
 (1) Supports 5V-6A Fast Charging 
@@ -19,13 +22,19 @@
 
 (6) Supports Wireguard VPN
 
-(7) Supports WPA3 SAE WiFi authentication
+(7) Supports BakaSU with SUSFS
 
-(8) De-OPLUS-ified kernel, removed unwanted OPLUS code additions
+(8) Supports WPA3 SAE WiFi authentication
+
+(9) De-OPLUS-ified kernel, removed unwanted OPLUS code additions
 
 ## Credits
 
 - [Linux Kernel Organisation](https://kernel.org): For the development of base kernel
+- [weishu](https://github.com/tiann): For the development of KernelSU
+- [AlexLiuDev233](https://github.com/AlexLiuDev233): For the development of BakaSU
+- [simonpunk](https://gitlab.com/simonpunk): For the development of SUSFS4KSU
+- [osm0sis](https://github.com/osm0sis): For the development of AnyKernel3
 
 Linux kernel
 ============
